@@ -1,10 +1,10 @@
 class Card:
-    def __init__(self, name, priority, cost=None, needs=None, rules=None,
+    def __init__(self, name, priority, costs=None, needs=None, rules=None,
                  icons=None, when_played=None, next_turn=None, each_turn=None,
                  end_of_game=None):
         self.name = name
         self.priority = priority
-        self.cost = cost
+        self.costs = [Cost()] if costs is None else costs
         self.needs = Icons() if needs is None else needs
         self.rules = rules
         self.icons = Icons() if icons is None else icons
@@ -12,6 +12,13 @@ class Card:
         self.next_turn = next_turn
         self.each_turn = each_turn
         self.end_of_game = end_of_game
+
+
+class Cost:
+    def __init__(self, cash=0, thugs=0, holdings=0):
+        self.cash = cash
+        self.thugs = thugs
+        self.holdings = holdings
 
 
 class Icons:

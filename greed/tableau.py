@@ -28,9 +28,38 @@ class Tableau:
         return Icons(guns, cars, keys, alcohol, hearts, wrenches)
 
     def play_card(self, card):
-        self.cash = self.cash - card.cost
+        cost_paid = self.pay_cost(card)
+        if cost_paid:
+            tableau_icons = self.calculate_icons()
+            if card.needs <= tableau_icons:
+                if card.when_played:
+                    card.when_played(self)
 
-        tableau_icons = self.calculate_icons()
-        if card.needs <= tableau_icons:
-            if card.when_played:
-                card.when_played(self)
+    def choose_cost(self, card):
+        # TODO: Implement actual selection
+        return card.costs.pop()
+
+    def choose_thug(self):
+        # TODO: Implement actual selection
+        return self.thugs[:-1]
+
+    def choose_holding(self):
+        # TODO: Implement actual selection
+        return self.holdings[:-1]
+
+    def pay_cost(self, card):
+        cost_paid = False
+        cost = self.choose_cost(card)
+        if (cost.cash <= self.cash and
+                cost.thugs <= len(self.thugs) and
+                cost.holdings <= len(self.holdings)):
+            self.cash = self.cash - cost.cash
+            for _ in range(0, cost.thugs):
+                self.thugs = self.choose_thug()
+            for _ in range(0, cost.holdings):
+                self.holdings = self.choose_holding()
+            cost_paid = True
+
+        return cost_paid
+
+

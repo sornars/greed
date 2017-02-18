@@ -1,2 +1,2 @@
-from .card import Card, Icons
+from .card import Card, Cost, Icons
 from .tableau import Tableau
