@@ -1,11 +1,11 @@
 from . import Icons
 
 class Tableau:
-    def __init__(self, cash=0, thugs=None, holdings=None, cards=None):
+    def __init__(self, cash=0, thugs=None, holdings=None, hand=None):
         self.cash = cash
         self.thugs = [] if thugs is None else thugs
         self.holdings = [] if holdings is None else holdings
-        self.cards = [] if cards is None else cards
+        self.hand = [] if hand is None else hand
 
     def calculate_icons(self):
         """Calculate the number of icons in the Tableau"""
@@ -30,6 +30,7 @@ class Tableau:
     def play_card(self, card):
         self.cash = self.cash - card.cost
 
-        # tableau_icons = self.calculate_icons()
-        # if card.needs < tableau_icons:
-        #     card.execute_rules(self)
+        tableau_icons = self.calculate_icons()
+        if card.needs <= tableau_icons:
+            if card.when_played:
+                card.when_played(self)

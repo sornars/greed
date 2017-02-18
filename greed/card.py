@@ -1,21 +1,17 @@
 class Card:
-    def __init__(self, name, priority, cost=None, needs=None, rules=None, icons=None):
+    def __init__(self, name, priority, cost=None, needs=None, rules=None,
+                 icons=None, when_played=None, next_turn=None, each_turn=None,
+                 end_of_game=None):
         self.name = name
         self.priority = priority
         self.cost = cost
-        self.needs = needs
+        self.needs = Icons() if needs is None else needs
         self.rules = rules
-        self.icons = icons
-
-
-class Action(Card):
-    def __init__(self, name, priority, cost, needs, rules):
-        super().__init__(name, priority, cost, needs, rules, Icons())
-
-
-class Rule:
-    def __init__(self, text):
-        self.text = text
+        self.icons = Icons() if icons is None else icons
+        self.when_played = when_played
+        self.next_turn = next_turn
+        self.each_turn = each_turn
+        self.end_of_game = end_of_game
 
 
 class Icons:
@@ -27,13 +23,25 @@ class Icons:
         self.hearts = hearts
         self.wrenches = wrenches
 
-    def __lt__(self, other):
-        return (True if self.guns < other.guns or
-                self.cars < other.cars or
-                self.keys < other.keys or
-                self.alcohol < other.alcohol or
-                self.hearts < other.hearts or
-                self.wrenches < other.wrenches else False)
+    def __le__(self, other):
+        return (True if self.guns <= other.guns and
+                self.cars <= other.cars and
+                self.keys <= other.keys and
+                self.alcohol <= other.alcohol and
+                self.hearts <= other.hearts and
+                self.wrenches <= other.wrenches else False)
+
+    def __repr__(self):
+        return str(
+            {
+                'guns': self.guns,
+                'cars': self.cars,
+                'keys': self.keys,
+                'alcohol': self.alcohol,
+                'hearts': self.hearts,
+                'wrenches': self.wrenches
+            }
+            )
 
 
 class ThugIcons(Icons):
