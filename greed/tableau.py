@@ -1,11 +1,12 @@
-from . import Icons
+from .card import CardType, Icons
+from .deck import Deck
 
 class Tableau:
     def __init__(self, cash=0, thugs=None, holdings=None, hand=None):
         self.cash = cash
         self.thugs = [] if thugs is None else thugs
         self.holdings = [] if holdings is None else holdings
-        self.hand = [] if hand is None else hand
+        self.hand = Deck() if hand is None else hand
 
     def calculate_icons(self):
         """Calculate the number of icons in the Tableau"""
@@ -29,15 +30,31 @@ class Tableau:
 
     def play_card(self, card):
         cost_paid = self.pay_cost(card)
-        if cost_paid:
-            tableau_icons = self.calculate_icons()
-            if card.needs <= tableau_icons:
-                if card.when_played:
-                    card.when_played(self)
+        tableau_icons = self.calculate_icons()
+        discard_card = True
+        if cost_paid and card.needs <= tableau_icons + card.icons:
+            discard_card = False
+            card.when_played(self)
+            self.place_markers(card)
+            if card.card_type == CardType.THUG:
+                self.thugs.append(card)
+            elif card.card_type == CardType.HOLDING:
+                self.holdings.append(card)
+            elif card.card_type == CardType.ACTION:
+                discard_card = True
+
+        return discard_card
+
+    def place_markers(self, card):
+        tableau_icons = self.calculate_icons()
+        alcohol_markers = card.icons.alcohol + tableau_icons.alcohol
+        heart_markers = card.icons.hearts + tableau_icons.hearts
+        wrench_markers = card.icons.hearts + tableau_icons.wrenches
+        card.markers += alcohol_markers + heart_markers + wrench_markers
 
     def choose_cost(self, card):
         # TODO: Implement actual selection
-        return card.costs.pop()
+        return card.costs[0]
 
     def choose_thug(self):
         # TODO: Implement actual selection
@@ -62,4 +79,10 @@ class Tableau:
 
         return cost_paid
 
-
+    def __repr__(self):
+        return str({
+            'cash': self.cash,
+            'thugs': self.thugs,
+            'holdings': self.holdings,
+            'hand': self.hand
+        })
