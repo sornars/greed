@@ -3,10 +3,20 @@ from .deck import Deck
 
 class Tableau:
     def __init__(self, cash=0, thugs=None, holdings=None, hand=None):
+        self.notify_players = []
         self.cash = cash
         self.thugs = [] if thugs is None else thugs
         self.holdings = [] if holdings is None else holdings
         self.hand = Deck() if hand is None else hand
+
+    def __setattr__(self, name, value):
+        # TODO: This could be very inefficient
+        if name != 'notify_players':
+            for callback in self.notify_players:
+                callback(self, name, value)
+
+        super().__setattr__(name, value)
+
 
     def calculate_icons(self):
         """Calculate the number of icons in the Tableau"""

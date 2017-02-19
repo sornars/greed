@@ -8,13 +8,14 @@ class Game:
     def __init__(self, players):
         self.players = players
         self.round = 1
+        self.current_player = None
         self.draw_deck = self._create_draw_deck()
-        self.draft_decks = [Deck([self.draw_deck.draw_card() for _ in range(0, 12)]) for _ in self.players]
+        self.draft_decks = [Deck([self.draw_deck.cards.pop() for _ in range(0, 12)]) for _ in self.players]
         self.discard_deck = []
 
     def _create_draw_deck(self):
         # TODO: Implement generation of actual card deck
-        cards = [Card(random.choice(list(CardType)), 'Test Card {0}'.format(i), i) for i in range(0, 80)]
+        cards = [Card(random.choice(list(CardType)), 'Card {0}'.format(i), i) for i in range(0, 80)]
         return Deck(cards)
 
     def start_round(self):
@@ -28,7 +29,9 @@ class Game:
 
             played_cards.sort(key=lambda x: x[1].priority)
             for player, played_card in played_cards:
+                self.current_player = player
                 discard_card = player.tableau.play_card(played_card)
+                played_card.this_turn(self)
                 if discard_card:
                     self.discard_deck.append(played_card)
 
@@ -61,11 +64,11 @@ class Player:
 
     def draft_card(self, deck):
         # TODO: Implement player selection of card to draft
-        self.tableau.hand.add_card(deck.draw_card())
+        self.tableau.hand.cards.append(deck.cards.pop())
 
     def select_card(self):
         # TODO: Implement card selection
-        return self.tableau.hand.draw_card()
+        return self.tableau.hand.cards.pop()
 
     def __repr__(self):
         return str({
