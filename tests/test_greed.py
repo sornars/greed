@@ -18,19 +18,13 @@ class TestGreed(unittest.TestCase):
         tableau.play_card(card)
         self.assertEqual(tableau.cash, 5000)
 
-    def test_tableau_play_card_requires_needs_when_played(self):
+    def test_tableau_play_card_requires_needs(self):
         icons = greed.Icons(1, 1, 1)
         tableau_1 = greed.Tableau(10000)
-        def plus_10000(tableau):
-            tableau.cash += 10000
         cost = greed.Cost(5000)
-        card_1 = greed.Card(greed.CardType.ACTION, 'Test Card 1', 1, costs=[cost], needs=icons, when_played=plus_10000)
+        card_1 = greed.Card(greed.CardType.ACTION, 'Test Card 1', 1, costs=[cost], needs=icons)
         tableau_1.play_card(card_1)
-        tableau_2 = greed.Tableau(10000)
-        card_2 = greed.Card(greed.CardType.ACTION, 'Test Card 2', 1, costs=[cost], when_played=plus_10000)
-        tableau_2.play_card(card_2)
-        self.assertEqual(tableau_1.cash, 5000)
-        self.assertEqual(tableau_2.cash, 15000)
+        self.assertEqual(tableau_1.cash, 10000)
 
     def test_game_start_round_increments_round_counter(self):
         player_1 = greed.Player('Player 1')
@@ -70,8 +64,8 @@ class TestGreed(unittest.TestCase):
         player_1 = greed.Player('Player 1')
         player_2 = greed.Player('Player 2')
         thug_1 = greed.generate_thugs()[0]
-        def plus_10000(tableau):
-            tableau.cash += 10000
+        def plus_10000(game):
+            game.current_player.tableau.cash += 10000
         card = greed.Card(greed.CardType.ACTION, 'Test Card 1', 2, when_played=plus_10000)
         game = greed.Game((player_1, player_2))
         game.round = 3
@@ -98,6 +92,21 @@ class TestGreed(unittest.TestCase):
         player_1.tableau.cash = 0
         game.start_round()
         self.assertEqual(player_1.tableau.cash, 10000)
+
+    def test_tableau_play_thug_4_ability(self):
+        player_1 = greed.Player('Player 1')
+        player_2 = greed.Player('Player 2')
+        thug_4 = greed.generate_thugs()[3]
+        card = greed.Card(greed.CardType.ACTION, 'Test Card 1', 2)
+        game = greed.Game((player_1, player_2))
+        game.draft_decks[0].cards.append(thug_4)
+        game.draft_decks[1].cards.append(card)
+        game.round = 10        
+        game.start_round()
+        self.assertEqual(player_1.tableau.cash, 20000)
+        player_1.tableau.cash = 25000
+        game.start_round()
+        self.assertEqual(player_1.tableau.cash, 0)
 
 
 if __name__ == '__main__':

@@ -39,12 +39,9 @@ class Tableau:
         return Icons(guns, cars, keys, alcohol, hearts, wrenches)
 
     def play_card(self, card):
-        cost_paid = self.pay_cost(card)
-        tableau_icons = self.calculate_icons()
         discard_card = True
-        if cost_paid and card.needs <= tableau_icons + card.icons:
+        if card.needs <= self.calculate_icons() + card.icons and self.pay_cost(card):
             discard_card = False
-            card.when_played(self)
             self.place_markers(card)
             if card.card_type == CardType.THUG:
                 self.thugs.append(card)

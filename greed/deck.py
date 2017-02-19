@@ -49,4 +49,27 @@ def generate_thugs():
         each_turn=gain_10000_each_turn_with_no_cash
     ))
 
+    thugs.append(Card(
+        CardType.THUG,
+        '"King" Richard the Third',
+        21,
+        icons=Icons(guns=1, cars=1, keys=1)
+    ))
+
+    def gain_20000_when_played(game):
+        game.current_player.tableau.cash += 20000
+
+    def lose_25000_end_of_game(game):
+        game.current_player.tableau.cash -= 25000
+
+    thugs.append(Card(
+        CardType.THUG,
+        '"Generous" Jenny Jones',
+        24,
+        'Gain $20000. At the end of the game lose $25000',
+        when_played=gain_20000_when_played,
+        end_of_game=lose_25000_end_of_game,
+        icons=Icons(guns=1)
+    ))
+
     return thugs

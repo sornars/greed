@@ -31,6 +31,7 @@ class Game:
             for player, played_card in played_cards:
                 self.current_player = player
                 discard_card = player.tableau.play_card(played_card)
+                played_card.when_played(self)
                 played_card.this_turn(self)
                 if discard_card:
                     self.discard_deck.append(played_card)
@@ -52,6 +53,15 @@ class Game:
 
     def end_game(self):
         # TODO: Implement end of game scoring
+        played_cards = []
+        for player in self.players:
+            played_cards += [(player, card) for card in player.tableau.thugs]
+            played_cards += [(player, card) for card in player.tableau.holdings]
+        
+        played_cards.sort(key=lambda x: x[1].priority)
+        for player, played_card in played_cards:
+            self.current_player = player
+            played_card.end_of_game(self)
         pass
 
     def end_round(self):
