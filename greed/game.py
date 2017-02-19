@@ -35,6 +35,16 @@ class Game:
                 if discard_card:
                     self.discard_deck.append(played_card)
 
+            played_cards = []
+            for player in self.players:
+                played_cards += [(player, card) for card in player.tableau.thugs]
+                played_cards += [(player, card) for card in player.tableau.holdings]
+
+            played_cards.sort(key=lambda x: x[1].priority)
+            for player, played_card in played_cards:
+                self.current_player = player
+                played_card.each_turn(self)
+
         self.end_round()
 
         if self.round == 12:
@@ -58,6 +68,7 @@ class Game:
 
 
 class Player:
+    # TODO: Combine Player and Tableau classes
     def __init__(self, name):
         self.name = name
         self.tableau = Tableau()

@@ -13,6 +13,7 @@ def generate_standard_deck():
     return thugs
 
 def generate_thugs():
+    thugs = []
     def gain_money_equal_to_opponent_on_left(game):
         current_player = game.current_player
         current_player_index = game.players.index(current_player)
@@ -26,11 +27,26 @@ def generate_thugs():
 
         left_player.tableau.notify_players.append(gain_money_this_round)
 
-    thug_1 = Card(
+    thugs.append(Card(
         CardType.THUG,
         'Harvey "Brains" Ratcliffe',
         1,
-        'This turn, when the player to your left gains $, you also gain that much $',
-        this_turn=gain_money_equal_to_opponent_on_left)
+        'This turn, when the player to your left gains $, you also gain that much $.',
+        icons=Icons(guns=1),
+        this_turn=gain_money_equal_to_opponent_on_left
+    ))
 
-    return [thug_1]
+    def gain_10000_each_turn_with_no_cash(game):
+        if game.current_player.tableau.cash == 0:
+            game.current_player.tableau.cash += 10000
+
+    thugs.append(Card(
+        CardType.THUG,
+        '"Biscuits" O\'Malley',
+        6,
+        'Each turn: If you have no $, gain $10,000.',
+        icons=Icons(cars=1),
+        each_turn=gain_10000_each_turn_with_no_cash
+    ))
+
+    return thugs
