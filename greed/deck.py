@@ -67,6 +67,17 @@ def generate_thugs():
         when_played=gain_10000_when_played
     ))
 
+    def gain_5000_per_gun_when_played(game):
+        game.current_player.tableau.cash += 5000 * game.current_player.tableau.calculate_icons().guns
+
+    thugs.append(Card(
+        CardType.THUG,
+        'Ed "Cheesecloth" McGinty',
+        23,
+        icons=Icons(guns=1, keys=1),
+        when_played=gain_5000_per_gun_when_played
+    ))
+
     def gain_20000_when_played(game):
         game.current_player.tableau.cash += 20000
 
