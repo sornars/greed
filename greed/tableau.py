@@ -20,23 +20,14 @@ class Tableau:
 
     def calculate_icons(self):
         """Calculate the number of icons in the Tableau"""
-        guns = 0
-        cars = 0
-        keys = 0
-        alcohol = 0
-        hearts = 0
-        wrenches = 0
+        icons = Icons()
         for thug in self.thugs:
-            guns += thug.icons.guns
-            cars += thug.icons.cars
-            keys += thug.icons.keys
+            icons += thug.icons
 
         for holding in self.holdings:
-            alcohol += holding.icons.alcohol
-            hearts += holding.icons.hearts
-            wrenches += holding.icons.wrenches
+            icons += holding.icons
 
-        return Icons(guns, cars, keys, alcohol, hearts, wrenches)
+        return icons
 
     def play_card(self, card):
         discard_card = True
@@ -54,10 +45,8 @@ class Tableau:
 
     def place_markers(self, card):
         tableau_icons = self.calculate_icons()
-        alcohol_markers = card.icons.alcohol + tableau_icons.alcohol
-        heart_markers = card.icons.hearts + tableau_icons.hearts
-        wrench_markers = card.icons.hearts + tableau_icons.wrenches
-        card.markers += alcohol_markers + heart_markers + wrench_markers
+        total_icons = card.icons + tableau_icons
+        card.markers += total_icons.alcohol + total_icons.hearts + total_icons.wrenches
 
     def choose_cost(self, card):
         # TODO: Implement actual selection

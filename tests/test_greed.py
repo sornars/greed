@@ -135,6 +135,21 @@ class TestGreed(unittest.TestCase):
         game.start_round()
         self.assertEqual(player_1.tableau.cash, 0)
 
+    def test_tableau_play_thug_7_ability(self):
+        player_1 = greed.Player('Player 1')
+        player_2 = greed.Player('Player 2')
+        thug_7 = greed.generate_thugs()[6]
+        card_1 = greed.Card(greed.CardType.ACTION, 'Test Card 1', 2)
+        card_2 = greed.Card(greed.CardType.HOLDING, 'Test Card 1', 2, icons=greed.Icons(alcohol=3))
+        game = greed.Game((player_1, player_2))
+        game.round = 3
+        game.draft_decks[0].cards.append(card_2)
+        game.draft_decks[1].cards.append(card_1)
+        game.start_round()
+        game.draft_decks[0].cards.append(thug_7)
+        game.start_round()
+        self.assertEqual(player_1.tableau.cash, 30000)
+
 
 if __name__ == '__main__':
     unittest.main()

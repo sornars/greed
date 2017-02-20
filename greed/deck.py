@@ -68,7 +68,9 @@ def generate_thugs():
     ))
 
     def gain_5000_per_gun_when_played(game):
-        game.current_player.tableau.cash += 5000 * game.current_player.tableau.calculate_icons().guns
+        game.current_player.tableau.cash += (
+            5000 * game.current_player.tableau.calculate_icons().guns
+        )
 
     thugs.append(Card(
         CardType.THUG,
@@ -92,6 +94,20 @@ def generate_thugs():
         when_played=gain_20000_when_played,
         end_of_game=lose_25000_end_of_game,
         icons=Icons(guns=1)
+    ))
+
+    def gain_10000_for_each_alcohol_when_played(game):
+        game.current_player.tableau.cash += (
+            10000 * game.current_player.tableau.calculate_icons().alcohol
+        )
+
+    thugs.append(Card(
+        CardType.THUG,
+        'Mickey Istari',
+        25,
+        'Gain $10000 for each {Alcohol} you have.',
+        when_played=gain_10000_for_each_alcohol_when_played,
+        icons=Icons(cars=1)
     ))
 
     return thugs
