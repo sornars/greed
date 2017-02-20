@@ -36,7 +36,7 @@ def generate_thugs():
         this_turn=gain_money_equal_to_opponent_on_left
     ))
 
-    def gain_10000_each_turn_with_no_cash(game):
+    def gain_10000_if_0_cash_each_turn(game):
         if game.current_player.tableau.cash == 0:
             game.current_player.tableau.cash += 10000
 
@@ -46,7 +46,7 @@ def generate_thugs():
         6,
         'Each turn: If you have no $, gain $10,000.',
         icons=Icons(cars=1),
-        each_turn=gain_10000_each_turn_with_no_cash
+        each_turn=gain_10000_if_0_cash_each_turn
     ))
 
     thugs.append(Card(
@@ -54,6 +54,17 @@ def generate_thugs():
         '"King" Richard the Third',
         21,
         icons=Icons(guns=1, cars=1, keys=1)
+    ))
+
+    def gain_10000_when_played(game):
+        game.current_player.tableau.cash += 10000
+
+    thugs.append(Card(
+        CardType.THUG,
+        'Dickie "Flush" Diamond',
+        22,
+        icons=Icons(guns=1),
+        when_played=gain_10000_when_played
     ))
 
     def gain_20000_when_played(game):
