@@ -69,8 +69,8 @@ class TestGreed(unittest.TestCase):
         card = greed.Card(greed.CardType.ACTION, 'Test Card 1', 2, when_played=plus_10000)
         game = greed.Game((player_1, player_2))
         game.round = 3
-        game.draft_decks[0].cards.append(thug_1)
-        game.draft_decks[1].cards.append(card)
+        game.draft_decks[0].append(thug_1)
+        game.draft_decks[1].append(card)
         game.start_round()
         self.assertEqual(player_1.tableau.cash, 10000)
         game.start_round()
@@ -83,8 +83,8 @@ class TestGreed(unittest.TestCase):
         card = greed.Card(greed.CardType.ACTION, 'Test Card 1', 2)
         game = greed.Game((player_1, player_2))
         game.round = 3
-        game.draft_decks[0].cards.append(thug_2)
-        game.draft_decks[1].cards.append(card)
+        game.draft_decks[0].append(thug_2)
+        game.draft_decks[1].append(card)
         game.start_round()
         self.assertEqual(player_1.tableau.cash, 10000)
         game.start_round()
@@ -100,8 +100,8 @@ class TestGreed(unittest.TestCase):
         card = greed.Card(greed.CardType.ACTION, 'Test Card 1', 2)
         game = greed.Game((player_1, player_2))
         game.round = 3
-        game.draft_decks[0].cards.append(thug_4)
-        game.draft_decks[1].cards.append(card)
+        game.draft_decks[0].append(thug_4)
+        game.draft_decks[1].append(card)
         game.start_round()
         self.assertEqual(player_1.tableau.cash, 10000)
 
@@ -113,10 +113,10 @@ class TestGreed(unittest.TestCase):
         card_2 = greed.Card(greed.CardType.THUG, 'Test Card 1', 2, icons=greed.Icons(guns=3))
         game = greed.Game((player_1, player_2))
         game.round = 3
-        game.draft_decks[0].cards.append(card_2)
-        game.draft_decks[1].cards.append(card_1)
+        game.draft_decks[0].append(card_2)
+        game.draft_decks[1].append(card_1)
         game.start_round()
-        game.draft_decks[0].cards.append(thug_5)
+        game.draft_decks[0].append(thug_5)
         game.start_round()
         self.assertEqual(player_1.tableau.cash, 20000)
 
@@ -126,8 +126,8 @@ class TestGreed(unittest.TestCase):
         thug_6 = greed.generate_thugs()[5]
         card = greed.Card(greed.CardType.ACTION, 'Test Card 1', 2)
         game = greed.Game((player_1, player_2))
-        game.draft_decks[0].cards.append(thug_6)
-        game.draft_decks[1].cards.append(card)
+        game.draft_decks[0].append(thug_6)
+        game.draft_decks[1].append(card)
         game.round = 10
         game.start_round()
         self.assertEqual(player_1.tableau.cash, 20000)
@@ -143,10 +143,10 @@ class TestGreed(unittest.TestCase):
         card_2 = greed.Card(greed.CardType.HOLDING, 'Test Card 1', 2, icons=greed.Icons(alcohol=3))
         game = greed.Game((player_1, player_2))
         game.round = 3
-        game.draft_decks[0].cards.append(card_2)
-        game.draft_decks[1].cards.append(card_1)
+        game.draft_decks[0].append(card_2)
+        game.draft_decks[1].append(card_1)
         game.start_round()
-        game.draft_decks[0].cards.append(thug_7)
+        game.draft_decks[0].append(thug_7)
         game.start_round()
         self.assertEqual(player_1.tableau.cash, 30000)
 

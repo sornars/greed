@@ -1,12 +1,5 @@
 from .card import Card, CardType, Cost, Icons
 
-class Deck:
-    def __init__(self, cards=None):
-        self.cards = [] if cards is None else cards
-
-    def __repr__(self):
-        return str(len(self.cards))
-
 def generate_standard_deck():
     thugs = generate_thugs()
 

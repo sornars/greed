@@ -1,7 +1,6 @@
 import random
 
 from .card import Card, CardType
-from .deck import Deck
 from .tableau import Tableau
 
 class Game:
@@ -10,13 +9,14 @@ class Game:
         self.round = 1
         self.current_player = None
         self.draw_deck = self._create_draw_deck()
-        self.draft_decks = [Deck([self.draw_deck.cards.pop() for _ in range(0, 12)]) for _ in self.players]
+        self.draft_decks = [[self.draw_deck.pop() for _ in range(0, 12)] for _ in self.players]
         self.discard_deck = []
+
 
     def _create_draw_deck(self):
         # TODO: Implement generation of actual card deck
         cards = [Card(random.choice(list(CardType)), 'Card {0}'.format(i), i) for i in range(0, 80)]
-        return Deck(cards)
+        return cards
 
     def start_round(self):
         for index, player in enumerate(self.players):
@@ -85,11 +85,11 @@ class Player:
 
     def draft_card(self, deck):
         # TODO: Implement player selection of card to draft
-        self.tableau.hand.cards.append(deck.cards.pop())
+        self.tableau.hand.append(deck.pop())
 
     def select_card(self):
         # TODO: Implement card selection
-        return self.tableau.hand.cards.pop()
+        return self.tableau.hand.pop()
 
     def __repr__(self):
         return str({

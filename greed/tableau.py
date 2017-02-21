@@ -1,5 +1,4 @@
 from .card import CardType, Icons
-from .deck import Deck
 
 class Tableau:
     def __init__(self, cash=0, thugs=None, holdings=None, hand=None):
@@ -7,7 +6,7 @@ class Tableau:
         self.cash = cash
         self.thugs = [] if thugs is None else thugs
         self.holdings = [] if holdings is None else holdings
-        self.hand = Deck() if hand is None else hand
+        self.hand = [] if hand is None else hand
 
     def __setattr__(self, name, value):
         # TODO: This could be very inefficient
