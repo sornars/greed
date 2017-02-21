@@ -42,13 +42,15 @@ class Cost:
 
 
 class Icons:
-    def __init__(self, guns=0, cars=0, keys=0, alcohol=0, hearts=0, wrenches=0):
+    def __init__(self, guns=0, cars=0, keys=0, alcohol=0, hearts=0, wrenches=0, thugs=0, holdings=0):
         self.guns = guns
         self.cars = cars
         self.keys = keys
         self.alcohol = alcohol
         self.hearts = hearts
         self.wrenches = wrenches
+        self.thugs = thugs
+        self.holdings = holdings
 
     def __le__(self, other):
         return (True if self.guns <= other.guns and
@@ -56,7 +58,9 @@ class Icons:
                 self.keys <= other.keys and
                 self.alcohol <= other.alcohol and
                 self.hearts <= other.hearts and
-                self.wrenches <= other.wrenches else False)
+                self.wrenches <= other.wrenches and
+                self.thugs <= other.thugs and
+                self.holdings <= other.holdings else False)
 
     def __add__(self, other):
         return Icons(
@@ -65,8 +69,10 @@ class Icons:
             self.keys + other.keys,
             self.alcohol + other.alcohol,
             self.hearts + other.hearts,
-            self.wrenches + other.wrenches
-            )
+            self.wrenches + other.wrenches,
+            self.thugs + other.thugs,
+            self.holdings + other.holdings
+        )
 
     def __repr__(self):
         return str({
@@ -75,7 +81,9 @@ class Icons:
             'keys': self.keys,
             'alcohol': self.alcohol,
             'hearts': self.hearts,
-            'wrenches': self.wrenches
+            'wrenches': self.wrenches,
+            'thugs': self.thugs,
+            'holdings': self.holdings
         })
 
 

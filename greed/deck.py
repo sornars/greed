@@ -11,14 +11,14 @@ def generate_thugs():
         current_player = game.current_player
         current_player_index = game.players.index(current_player)
         current_round = game.round
-        left_player = game.players[current_player_index % len(game.players) - 1]
-        def gain_money_this_round(tableau, property_name, value):
-            if (property_name == 'cash' and
-                    game.round == current_round and
+        left_player = game.players[current_player_index - 1]
+        def gain_equal_money(tableau, property_name, value):
+            if (game.round == current_round and
+                    property_name == 'cash' and
                     tableau.cash < value):
                 current_player.tableau.cash += value - tableau.cash
 
-        left_player.tableau.notify_players.append(gain_money_this_round)
+        left_player.tableau.notify_players.append(gain_equal_money)
 
     thugs.append(Card(
         CardType.THUG,
@@ -101,6 +101,25 @@ def generate_thugs():
         'Gain $10000 for each {Alcohol} you have.',
         when_played=gain_10000_for_each_alcohol_when_played,
         icons=Icons(cars=1)
+    ))
+
+    def place_an_extra_marker_on_holding(game):
+        current_player = game.current_player
+        def place_extra_marker(tableau, property_name, value):
+            if property_name == 'holdings':
+                value[-1].markers += 0.5 # TODO: 0.5 markers as assignment to holdings happens twice in Tableau.start_round
+
+        current_player.tableau.notify_players.append(place_extra_marker)
+
+
+    thugs.append(Card(
+        CardType.THUG,
+        'Wolfgang Buttercup',
+        42,
+        'When you play a HOLDING, place an extra counter on it.',
+        passive=place_an_extra_marker_on_holding,
+        needs=Icons(thugs=2),
+        icons=Icons(cars=2)
     ))
 
     return thugs

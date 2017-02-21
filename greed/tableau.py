@@ -4,8 +4,8 @@ class Tableau:
     def __init__(self, cash=0, thugs=None, holdings=None, hand=None):
         self.notify_players = []
         self.cash = cash
-        self.thugs = [] if thugs is None else thugs
-        self.holdings = [] if holdings is None else holdings
+        self.thugs = () if thugs is None else thugs
+        self.holdings = () if holdings is None else holdings
         self.hand = [] if hand is None else hand
 
     def __setattr__(self, name, value):
@@ -26,6 +26,9 @@ class Tableau:
         for holding in self.holdings:
             icons += holding.icons
 
+        icons.thugs = len(self.thugs)
+        icons.holdings = len(self.holdings)
+
         return icons
 
     def play_card(self, card):
@@ -34,9 +37,9 @@ class Tableau:
             discard_card = False
             self.place_markers(card)
             if card.card_type == CardType.THUG:
-                self.thugs.append(card)
+                self.thugs += (card,)
             elif card.card_type == CardType.HOLDING:
-                self.holdings.append(card)
+                self.holdings += (card,)
             elif card.card_type == CardType.ACTION:
                 discard_card = True
 
