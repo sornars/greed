@@ -32,7 +32,7 @@ class Game:
                 self.current_player = player
                 discard_card = player.tableau.play_card(played_card)
                 played_card.when_played(self)
-                played_card.this_turn(self)
+                played_card.passive(self)
                 if discard_card:
                     self.discard_deck.append(played_card)
 
@@ -57,7 +57,7 @@ class Game:
         for player in self.players:
             played_cards += [(player, card) for card in player.tableau.thugs]
             played_cards += [(player, card) for card in player.tableau.holdings]
-        
+
         played_cards.sort(key=lambda x: x[1].priority)
         for player, played_card in played_cards:
             self.current_player = player

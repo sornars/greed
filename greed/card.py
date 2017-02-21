@@ -2,8 +2,7 @@ import enum
 
 class Card:
     def __init__(self, card_type, name, priority, rules='', costs=None, needs=None,
-                 icons=None, when_played=None, this_turn=None, next_turn=None, each_turn=None,
-                 end_of_game=None, markers=0):
+                 icons=None, when_played=None, passive=None, each_turn=None, end_of_game=None):
         if card_type not in CardType:
             raise ValueError('Invalid card_type')
         self.card_type = card_type
@@ -14,12 +13,10 @@ class Card:
         self.needs = Icons() if needs is None else needs
         self.icons = Icons() if icons is None else icons
         self.when_played = (lambda x: None) if when_played is None else when_played
-        self.this_turn = (lambda x: None) if this_turn is None else this_turn
-        self.next_turn = (lambda x: None) if next_turn is None else next_turn
+        self.passive = (lambda x: None) if passive is None else passive
         self.each_turn = (lambda x: None) if each_turn is None else each_turn
         self.end_of_game = (lambda x: None) if end_of_game is None else end_of_game
         self.markers = 0
-        self.active_current_turn = True
 
     def __repr__(self):
         return self.name
@@ -73,12 +70,12 @@ class Icons:
 
     def __repr__(self):
         return str({
-                'guns': self.guns,
-                'cars': self.cars,
-                'keys': self.keys,
-                'alcohol': self.alcohol,
-                'hearts': self.hearts,
-                'wrenches': self.wrenches
-            })
+            'guns': self.guns,
+            'cars': self.cars,
+            'keys': self.keys,
+            'alcohol': self.alcohol,
+            'hearts': self.hearts,
+            'wrenches': self.wrenches
+        })
 
 

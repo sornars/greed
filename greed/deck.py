@@ -33,7 +33,7 @@ def generate_thugs():
         1,
         'This turn, when the player to your left gains $, you also gain that much $.',
         icons=Icons(guns=1),
-        this_turn=gain_money_equal_to_opponent_on_left
+        passive=gain_money_equal_to_opponent_on_left
     ))
 
     def gain_10000_if_0_cash_each_turn(game):
