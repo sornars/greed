@@ -7,16 +7,16 @@ class TestGreed(unittest.TestCase):
         icons_1 = greed.Icons(0, 0, 0, 0, 0, 0)
         icons_2 = greed.Icons(1, 1, 1, 1, 1, 1)
         icons_3 = greed.Icons(1, 1, 1)
-        self.assertTrue(icons_1 <= icons_2)
-        self.assertFalse(icons_2 <= icons_1)
-        self.assertFalse(icons_3 <= icons_1)
+        assert icons_1 <= icons_2
+        assert not icons_2 <= icons_1
+        assert not icons_3 <= icons_1
 
     def test_tableau_play_card_subtracts_cost(self):
         tableau = greed.Tableau(10000)
         cost = greed.Cost(5000)
         card = greed.Card(greed.CardType.ACTION, 'Test Card', 1, costs=[cost])
         tableau.play_card(card)
-        self.assertEqual(tableau.cash, 5000)
+        assert tableau.cash == 5000
 
     def test_tableau_play_card_requires_needs(self):
         icons = greed.Icons(1, 1, 1)
@@ -24,28 +24,28 @@ class TestGreed(unittest.TestCase):
         cost = greed.Cost(5000)
         card_1 = greed.Card(greed.CardType.ACTION, 'Test Card 1', 1, costs=[cost], needs=icons)
         tableau_1.play_card(card_1)
-        self.assertEqual(tableau_1.cash, 10000)
+        assert tableau_1.cash == 10000
 
     def test_game_start_round_increments_round_counter(self):
         player_1 = greed.Player('Player 1')
         player_2 = greed.Player('Player 2')
         game = greed.Game((player_1, player_2))
         game.start_round()
-        self.assertEqual(game.round, 2)
+        assert game.round == 2
 
     def test_tableau_play_card_extends_thugs(self):
         tableau = greed.Tableau(10000)
         cost = greed.Cost(5000)
         card = greed.Card(greed.CardType.THUG, 'Test Card', 1, costs=[cost])
         tableau.play_card(card)
-        self.assertEqual(len(tableau.thugs), 1)
+        assert len(tableau.thugs) == 1
 
     def test_tableau_play_card_extends_holdings(self):
         tableau = greed.Tableau(10000)
         cost = greed.Cost(5000)
         card = greed.Card(greed.CardType.HOLDING, 'Test Card', 1, costs=[cost])
         tableau.play_card(card)
-        self.assertEqual(len(tableau.holdings), 1)
+        assert len(tableau.holdings) == 1
 
     def test_tableau_pay_cost_removes_thugs_and_holdings(self):
         tableau = greed.Tableau(15000)
@@ -57,8 +57,8 @@ class TestGreed(unittest.TestCase):
         tableau.play_card(card_1)
         tableau.play_card(card_2)
         tableau.play_card(card_3)
-        self.assertEqual(len(tableau.thugs), 0)
-        self.assertEqual(len(tableau.holdings), 0)
+        assert len(tableau.thugs) == 0
+        assert len(tableau.holdings) == 0
 
     def test_gain_money_equal_to_opponent_on_left(self):
         player_1 = greed.Player('Player 1')
@@ -146,6 +146,11 @@ class TestGreed(unittest.TestCase):
         game.current_player = player_1
         thug_9.when_played(game)
         assert len(player_1.tableau.thugs) == 1
+        card_1 = greed.Card(greed.CardType.THUG, 'Test Card 1', 3, costs=greed.Cost(10000), needs=greed.Icons(3, 3, 3))
+        game.draw_deck.append(card_1)
+        thug_9.when_played(game)
+        assert player_1.tableau.thugs[-1] is card_1
+
 
 if __name__ == '__main__':
     unittest.main()
