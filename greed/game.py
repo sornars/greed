@@ -32,7 +32,6 @@ class Game:
                 self.current_player = player
                 discard_card = player.tableau.play_card(played_card)
                 played_card.when_played(self)
-                played_card.passive(self)
                 if discard_card:
                     self.discard_deck.append(played_card)
 

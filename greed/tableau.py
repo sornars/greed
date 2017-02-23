@@ -31,16 +31,16 @@ class Tableau:
 
         return icons
 
-    def play_card(self, card):
+    def play_card(self, card, ignore_costs=False, ignore_needs=False):
         discard_card = True
-        if card.needs <= self.calculate_icons() + card.icons and self.pay_cost(card):
+        if self._satisfied_needs(card, ignore_needs) and self._pay_cost(card, ignore_costs):
             discard_card = False
             self.place_markers(card)
-            if card.card_type == CardType.THUG:
+            if card.card_type is CardType.THUG:
                 self.thugs += (card,)
-            elif card.card_type == CardType.HOLDING:
+            elif card.card_type is CardType.HOLDING:
                 self.holdings += (card,)
-            elif card.card_type == CardType.ACTION:
+            elif card.card_type is CardType.ACTION:
                 discard_card = True
 
         return discard_card
@@ -62,20 +62,32 @@ class Tableau:
         # TODO: Implement actual selection
         return self.holdings[:-1]
 
-    def pay_cost(self, card):
+    def _pay_cost(self, card, ignore_costs):
         cost_paid = False
-        cost = self.choose_cost(card)
-        if (cost.cash <= self.cash and
-                cost.thugs <= len(self.thugs) and
-                cost.holdings <= len(self.holdings)):
-            self.cash = self.cash - cost.cash
-            for _ in range(0, cost.thugs):
-                self.thugs = self.choose_thug()
-            for _ in range(0, cost.holdings):
-                self.holdings = self.choose_holding()
+        if ignore_costs:
             cost_paid = True
+        else:
+            cost = self.choose_cost(card)
+            if (cost.cash <= self.cash and
+                    cost.thugs <= len(self.thugs) and
+                    cost.holdings <= len(self.holdings)):
+                self.cash = self.cash - cost.cash
+                for _ in range(0, cost.thugs):
+                    self.thugs = self.choose_thug()
+                for _ in range(0, cost.holdings):
+                    self.holdings = self.choose_holding()
+                cost_paid = True
 
         return cost_paid
+
+    def _satisfied_needs(self, card, ignore_needs):
+        needs_satisfied = False
+        if ignore_needs:
+            needs_satisfied = True
+        else:
+            needs_satisfied = card.needs <= self.calculate_icons() + card.icons
+
+        return needs_satisfied
 
     def __repr__(self):
         return str({

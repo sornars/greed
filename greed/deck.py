@@ -7,6 +7,7 @@ def generate_standard_deck():
 
 def generate_thugs():
     thugs = []
+
     def gain_money_equal_to_opponent_on_left(game):
         current_player = game.current_player
         current_player_index = game.players.index(current_player)
@@ -26,10 +27,10 @@ def generate_thugs():
         1,
         'This turn, when the player to your left gains $, you also gain that much $.',
         icons=Icons(guns=1),
-        passive=gain_money_equal_to_opponent_on_left
+        when_played=gain_money_equal_to_opponent_on_left
     ))
 
-    def gain_10000_if_0_cash_each_turn(game):
+    def gain_10000_if_0_cash(game):
         if game.current_player.tableau.cash == 0:
             game.current_player.tableau.cash += 10000
 
@@ -39,7 +40,7 @@ def generate_thugs():
         6,
         'Each turn: If you have no $, gain $10,000.',
         icons=Icons(cars=1),
-        each_turn=gain_10000_if_0_cash_each_turn
+        each_turn=gain_10000_if_0_cash
     ))
 
     thugs.append(Card(
@@ -49,7 +50,7 @@ def generate_thugs():
         icons=Icons(guns=1, cars=1, keys=1)
     ))
 
-    def gain_10000_when_played(game):
+    def gain_10000(game):
         game.current_player.tableau.cash += 10000
 
     thugs.append(Card(
@@ -57,12 +58,12 @@ def generate_thugs():
         'Dickie "Flush" Diamond',
         22,
         icons=Icons(guns=1),
-        when_played=gain_10000_when_played
+        when_played=gain_10000
     ))
 
-    def gain_5000_per_gun_when_played(game):
+    def gain_5000_per_gun(game):
         game.current_player.tableau.cash += (
-            5000 * game.current_player.tableau.calculate_icons().guns
+            5000 * (game.current_player.tableau.calculate_icons().guns + 1)
         )
 
     thugs.append(Card(
@@ -70,13 +71,13 @@ def generate_thugs():
         'Ed "Cheesecloth" McGinty',
         23,
         icons=Icons(guns=1, keys=1),
-        when_played=gain_5000_per_gun_when_played
+        when_played=gain_5000_per_gun
     ))
 
-    def gain_20000_when_played(game):
+    def gain_20000(game):
         game.current_player.tableau.cash += 20000
 
-    def lose_25000_end_of_game(game):
+    def lose_25000(game):
         game.current_player.tableau.cash -= 25000
 
     thugs.append(Card(
@@ -84,12 +85,12 @@ def generate_thugs():
         '"Generous" Jenny Jones',
         24,
         'Gain $20000. At the end of the game lose $25000',
-        when_played=gain_20000_when_played,
-        end_of_game=lose_25000_end_of_game,
+        when_played=gain_20000,
+        end_of_game=lose_25000,
         icons=Icons(guns=1)
     ))
 
-    def gain_10000_for_each_alcohol_when_played(game):
+    def gain_10000_per_alcohol(game):
         game.current_player.tableau.cash += (
             10000 * game.current_player.tableau.calculate_icons().alcohol
         )
@@ -99,7 +100,7 @@ def generate_thugs():
         'Mickey Istari',
         25,
         'Gain $10000 for each {Alcohol} you have.',
-        when_played=gain_10000_for_each_alcohol_when_played,
+        when_played=gain_10000_per_alcohol,
         icons=Icons(cars=1)
     ))
 
@@ -107,19 +108,36 @@ def generate_thugs():
         current_player = game.current_player
         def place_extra_marker(tableau, property_name, value):
             if property_name == 'holdings':
-                value[-1].markers += 0.5 # TODO: 0.5 markers as assignment to holdings happens twice in Tableau.start_round
+                value[-1].markers += 1
 
         current_player.tableau.notify_players.append(place_extra_marker)
-
 
     thugs.append(Card(
         CardType.THUG,
         'Wolfgang Buttercup',
         42,
         'When you play a HOLDING, place an extra counter on it.',
-        passive=place_an_extra_marker_on_holding,
+        when_played=place_an_extra_marker_on_holding,
         needs=Icons(thugs=2),
         icons=Icons(cars=2)
+    ))
+
+    def reveal_a_new_thug(game):
+        new_thug = game.draw_deck.pop()
+        while new_thug.card_type is not CardType.THUG and game.draw_deck:
+            game.discard_deck.append(new_thug)
+            new_thug = game.draw_deck.pop()
+
+        game.current_player.tableau.play_card(new_thug, ignore_costs=True, ignore_needs=True)
+
+    thugs.append(Card(
+        CardType.THUG,
+        '"Polycephalus" Patricia Jones',
+        53,
+        'Turn over cards from the deck until you find a THUG. '
+        'Play it, ignoring COSTS and NEEDS. '
+        'Discard all other cards that you revealed from the deck.',
+        when_played=reveal_a_new_thug
     ))
 
     return thugs

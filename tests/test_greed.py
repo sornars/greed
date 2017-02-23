@@ -60,117 +60,92 @@ class TestGreed(unittest.TestCase):
         self.assertEqual(len(tableau.thugs), 0)
         self.assertEqual(len(tableau.holdings), 0)
 
-    def test_tableau_play_thug_1_ability(self):
+    def test_gain_money_equal_to_opponent_on_left(self):
         player_1 = greed.Player('Player 1')
         player_2 = greed.Player('Player 2')
         thug_1 = greed.generate_thugs()[0]
-        def plus_10000(game):
-            game.current_player.tableau.cash += 10000
-        card = greed.Card(greed.CardType.ACTION, 'Test Card 1', 2, when_played=plus_10000)
         game = greed.Game((player_1, player_2))
         game.round = 3
-        game.draft_decks[0].append(thug_1)
-        game.draft_decks[1].append(card)
-        game.start_round()
-        self.assertEqual(player_1.tableau.cash, 10000)
-        game.start_round()
-        self.assertEqual(player_1.tableau.cash, 10000)
+        game.current_player = player_1
+        thug_1.when_played(game)
+        player_2.tableau.cash += 10000
+        assert player_1.tableau.cash == 10000
+        game.round = 4
+        player_2.tableau.cash += 10000
+        assert player_1.tableau.cash == 10000
 
-    def test_tableau_play_thug_2_ability(self):
+    def test_gain_10000_if_0_cash(self):
         player_1 = greed.Player('Player 1')
-        player_2 = greed.Player('Player 2')
         thug_2 = greed.generate_thugs()[1]
-        card = greed.Card(greed.CardType.ACTION, 'Test Card 1', 2)
-        game = greed.Game((player_1, player_2))
-        game.round = 3
-        game.draft_decks[0].append(thug_2)
-        game.draft_decks[1].append(card)
-        game.start_round()
-        self.assertEqual(player_1.tableau.cash, 10000)
-        game.start_round()
-        self.assertEqual(player_1.tableau.cash, 10000)
-        player_1.tableau.cash = 0
-        game.start_round()
-        self.assertEqual(player_1.tableau.cash, 10000)
+        game = greed.Game((player_1,))
+        game.current_player = player_1
+        thug_2.each_turn(game)
+        assert player_1.tableau.cash == 10000
+        thug_2.each_turn(game)
+        assert player_1.tableau.cash == 10000
 
-    def test_tableau_play_thug_4_ability(self):
+    def test_gain_10000(self):
         player_1 = greed.Player('Player 1')
-        player_2 = greed.Player('Player 2')
         thug_4 = greed.generate_thugs()[3]
-        card = greed.Card(greed.CardType.ACTION, 'Test Card 1', 2)
-        game = greed.Game((player_1, player_2))
-        game.round = 3
-        game.draft_decks[0].append(thug_4)
-        game.draft_decks[1].append(card)
-        game.start_round()
-        self.assertEqual(player_1.tableau.cash, 10000)
+        game = greed.Game((player_1,))
+        game.current_player = player_1
+        thug_4.when_played(game)
+        assert player_1.tableau.cash == 10000
 
-    def test_tableau_play_thug_5_ability(self):
+    def test_gain_5000_per_gun(self):
         player_1 = greed.Player('Player 1')
-        player_2 = greed.Player('Player 2')
         thug_5 = greed.generate_thugs()[4]
-        card_1 = greed.Card(greed.CardType.ACTION, 'Test Card 1', 2)
-        card_2 = greed.Card(greed.CardType.THUG, 'Test Card 1', 2, icons=greed.Icons(guns=3))
-        game = greed.Game((player_1, player_2))
-        game.round = 3
-        game.draft_decks[0].append(card_2)
-        game.draft_decks[1].append(card_1)
-        game.start_round()
-        game.draft_decks[0].append(thug_5)
-        game.start_round()
-        self.assertEqual(player_1.tableau.cash, 20000)
+        card_1 = greed.Card(greed.CardType.THUG, 'Test Card 1', 2, icons=greed.Icons(guns=3))
+        player_1.tableau.thugs = (card_1,)
+        game = greed.Game((player_1,))
+        game.current_player = player_1
+        thug_5.when_played(game)
+        assert player_1.tableau.cash == 20000
 
-    def test_tableau_play_thug_6_ability(self):
+    def test_gain_20000(self):
         player_1 = greed.Player('Player 1')
-        player_2 = greed.Player('Player 2')
         thug_6 = greed.generate_thugs()[5]
-        card = greed.Card(greed.CardType.ACTION, 'Test Card 1', 2)
-        game = greed.Game((player_1, player_2))
-        game.draft_decks[0].append(thug_6)
-        game.draft_decks[1].append(card)
-        game.round = 10
-        game.start_round()
-        self.assertEqual(player_1.tableau.cash, 20000)
+        game = greed.Game((player_1,))
+        game.current_player = player_1
+        thug_6.when_played(game)
+        assert player_1.tableau.cash == 20000
+
+    def test_lose_25000(self):
+        player_1 = greed.Player('Player 1')
+        thug_6 = greed.generate_thugs()[5]
+        game = greed.Game((player_1,))
+        game.current_player = player_1
         player_1.tableau.cash = 25000
-        game.start_round()
-        self.assertEqual(player_1.tableau.cash, 0)
+        thug_6.end_of_game(game)
+        assert player_1.tableau.cash == 0
 
-    def test_tableau_play_thug_7_ability(self):
+    def test_gain_10000_per_alcohol(self):
         player_1 = greed.Player('Player 1')
-        player_2 = greed.Player('Player 2')
         thug_7 = greed.generate_thugs()[6]
-        card_1 = greed.Card(greed.CardType.ACTION, 'Test Card 1', 2)
-        card_2 = greed.Card(greed.CardType.HOLDING, 'Test Card 1', 2, icons=greed.Icons(alcohol=3))
-        game = greed.Game((player_1, player_2))
-        game.round = 3
-        game.draft_decks[0].append(card_2)
-        game.draft_decks[1].append(card_1)
-        game.start_round()
-        game.draft_decks[0].append(thug_7)
-        game.start_round()
-        self.assertEqual(player_1.tableau.cash, 30000)
+        card_1 = greed.Card(greed.CardType.HOLDING, 'Test Card 1', 2, icons=greed.Icons(alcohol=3))
+        player_1.tableau.holdings = (card_1,)
+        game = greed.Game((player_1,))
+        game.current_player = player_1
+        thug_7.when_played(game)
+        assert player_1.tableau.cash == 30000
 
-    def test_tableau_play_thug_8_ability(self):
+    def test_place_an_extra_marker_on_holding(self):
         player_1 = greed.Player('Player 1')
-        player_2 = greed.Player('Player 2')
-        thug_7 = greed.generate_thugs()[7]
-
-        game = greed.Game((player_1, player_2))
-        game.round = 3
-        game.draft_decks[0].append(thug_7)
-        game.start_round()
-        self.assertIn(thug_7, game.discard_deck)
-        card_1 = greed.Card(greed.CardType.THUG, 'Test Card 1', 1)
-        card_2 = greed.Card(greed.CardType.THUG, 'Test Card 2', 2)
-        player_1.tableau.thugs += (card_1,)
-        player_1.tableau.thugs += (card_2,)
-        game.draft_decks[0].append(thug_7)
-        game.start_round()
-        card_3 = greed.Card(greed.CardType.HOLDING, 'Test Card 3', 3, icons=greed.Icons(alcohol=3))
-        game.draft_decks[0].append(card_3)
-        game.start_round()
+        game = greed.Game((player_1,))
+        game.current_player = player_1
+        thug_8 = greed.generate_thugs()[7]
+        thug_8.when_played(game)
+        card_1 = greed.Card(greed.CardType.HOLDING, 'Test Card 3', 3, icons=greed.Icons(alcohol=3))
+        player_1.tableau.play_card(card_1)
         self.assertEqual(player_1.tableau.holdings[0].markers, 4)
 
+    def test_play_reveal_a_new_thug(self):
+        player_1 = greed.Player('Player 1')
+        thug_9 = greed.generate_thugs()[8]
+        game = greed.Game((player_1,))
+        game.current_player = player_1
+        thug_9.when_played(game)
+        assert len(player_1.tableau.thugs) == 1
 
 if __name__ == '__main__':
     unittest.main()
