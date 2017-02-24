@@ -135,13 +135,14 @@ class TestGreed(unittest.TestCase):
         game.current_player = player_1
         thug_8 = greed.generate_thugs()[7]
         thug_8.when_played(game)
-        card_1 = greed.Card(greed.CardType.HOLDING, 'Test Card 3', 3, icons=greed.Icons(alcohol=3))
+        card_1 = greed.Card(greed.CardType.HOLDING, 'Test Card 1', 3, icons=greed.Icons(alcohol=3))
         player_1.tableau.play_card(card_1)
         assert player_1.tableau.holdings[0].markers == 4
         game.discard_card(thug_8)
         card_2 = greed.Card(greed.CardType.HOLDING, 'Test Card 2', 3, icons=greed.Icons(alcohol=3))
         player_1.tableau.play_card(card_2)
         assert player_1.tableau.holdings[1].markers == 6
+
 
     def test_play_reveal_a_new_thug(self):
         player_1 = greed.Player('Player 1')
@@ -155,6 +156,28 @@ class TestGreed(unittest.TestCase):
         thug_9.when_played(game)
         assert player_1.tableau.thugs[-1] is card_1
 
+    def test_play_copy_a_thug(self):
+        player_1 = greed.Player('Player 1')
+        thug_4 = greed.generate_thugs()[3]
+        player_1.tableau.thugs = (thug_4,)
+        thug_10 = greed.generate_thugs()[9]
+        game = greed.Game((player_1,))
+        game.current_player = player_1
+        thug_10.when_played(game)
+        assert len(player_1.tableau.thugs) == 2
+        assert player_1.tableau.cash == 10000
+
+    def gain_5000_per_marker_on_holding_with_the_most(self):
+        player_1 = greed.Player('Player 1')
+        thug_11 = greed.generate_thugs()[10]
+        card_1 = greed.Card(greed.CardType.HOLDING, 'Test Card 1', 2, icons=greed.Icons(alcohol=3))
+        card_2 = greed.Card(greed.CardType.HOLDING, 'Test Card 2', 2, icons=greed.Icons(alcohol=3))
+        card_1.markers = 5
+        player_1.tableau.holdings = (card_1, card_2)
+        game = greed.Game((player_1,))
+        game.current_player = player_1
+        thug_11.when_played(game)
+        assert player_1.tableau.cash == 25000
 
 if __name__ == '__main__':
     unittest.main()

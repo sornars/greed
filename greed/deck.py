@@ -1,3 +1,4 @@
+import copy
 import types
 
 from .card import Card, CardType, Cost, Icons
@@ -94,7 +95,7 @@ def generate_thugs():
         CardType.THUG,
         '"Generous" Jenny Jones',
         24,
-        'Gain $20000. At the end of the game lose $25000',
+        'Gain $20,000. At the end of the game lose $25,000',
         when_played=gain_20000,
         end_of_game=lose_25000,
         icons=Icons(guns=1)
@@ -109,7 +110,7 @@ def generate_thugs():
         CardType.THUG,
         'Mickey Istari',
         25,
-        'Gain $10000 for each {Alcohol} you have.',
+        'Gain $10,000 for each {Alcohol} you have.',
         when_played=gain_10000_per_alcohol,
         icons=Icons(cars=1)
     ))
@@ -161,6 +162,39 @@ def generate_thugs():
         'Play it, ignoring COSTS and NEEDS. '
         'Discard all other cards that you revealed from the deck.',
         when_played=reveal_a_new_thug
+    ))
+
+    def copy_a_thug(game):
+        chosen_thug = game.current_player.tableau.select_thug()
+        thug_copy = copy.deepcopy(chosen_thug)
+        game.current_player.tableau.play_card(thug_copy, ignore_costs=True, ignore_needs=True)
+        thug_copy.when_played(game)
+
+    thugs.append(Card(
+        CardType.THUG,
+        'Ed "Rubberface" Teach',
+        54,
+        'This THUG becomes a copy of one of your other THUGS; do its rules.',
+        needs=Icons(thugs=1),
+        when_played=copy_a_thug
+    ))
+
+    def gain_5000_per_marker_on_holding_with_the_most(game):
+        most_markers = 0
+        for player in game.players:
+            for holding in player.tableau.holdings:
+                if holding.markers > most_markers:
+                    most_markers = holding.markers
+
+        game.current_player.tableau.cash += (5000 * most_markers)
+
+    thugs.append(Card(
+        CardType.THUG,
+        '"Peeping" Tom "Thumb"',
+        56,
+        'Gain $5,000 for each counter the HOLDING with the most has.',
+        costs=Cost(holdings=1),
+        when_played=gain_5000_per_marker_on_holding_with_the_most
     ))
 
     return thugs
