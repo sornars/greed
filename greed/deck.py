@@ -197,4 +197,40 @@ def generate_thugs():
         when_played=gain_5000_per_marker_on_holding_with_the_most
     ))
 
+    def gain_15000_per_thug_played(game):
+        current_player = game.current_player
+        orig_play_card = current_player.tableau.play_card
+
+        def gain_15000_per_thug(tableau, card, discarded_cards=None, ignore_costs=False, ignore_needs=False):
+            discard_card = orig_play_card(card, discarded_cards=None, ignore_costs=False, ignore_needs=False)
+            if card.card_type is CardType.THUG:
+                tableau.cash += 15000
+            return discard_card
+
+        current_player.tableau.play_card = types.MethodType(gain_15000_per_thug, current_player.tableau)
+
+    def disable_gain_15000_per_thug_played(game):
+        current_player = game.current_player
+        orig_play_card = current_player.tableau.play_card
+
+        def disable_gain_15000_per_thug(tableau, card, discarded_cards=None, ignore_costs=False, ignore_needs=False):
+            discard_card = orig_play_card(card, discarded_cards=None, ignore_costs=False, ignore_needs=False)
+            if card.card_type is CardType.THUG:
+                tableau.cash -= 15000
+            return discard_card
+
+        current_player.tableau.play_card = types.MethodType(disable_gain_15000_per_thug, current_player.tableau)
+
+
+    thugs.append(Card(
+        CardType.THUG,
+        '"Friendly" Gus Caspar',
+        61,
+        'When you play another THUG, gain $15,000.',
+        needs=Icons(thugs=2),
+        icons=Icons(keys=2),
+        when_played=gain_15000_per_thug_played,
+        on_discard=disable_gain_15000_per_thug_played
+    ))
+
     return thugs

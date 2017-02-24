@@ -143,7 +143,6 @@ class TestGreed(unittest.TestCase):
         player_1.tableau.play_card(card_2)
         assert player_1.tableau.holdings[1].markers == 6
 
-
     def test_play_reveal_a_new_thug(self):
         player_1 = greed.Player('Player 1')
         thug_9 = greed.generate_thugs()[8]
@@ -178,6 +177,20 @@ class TestGreed(unittest.TestCase):
         game.current_player = player_1
         thug_11.when_played(game)
         assert player_1.tableau.cash == 25000
+
+    def test_gain_15000_per_thug_played(self):
+        player_1 = greed.Player('Player 1')
+        game = greed.Game((player_1,))
+        game.current_player = player_1
+        thug_12 = greed.generate_thugs()[11]
+        thug_12.when_played(game)
+        card_1 = greed.Card(greed.CardType.THUG, 'Test Card 1', 3)
+        player_1.tableau.play_card(card_1)
+        assert player_1.tableau.cash == 15000
+        game.discard_card(thug_12)
+        card_2 = greed.Card(greed.CardType.THUG, 'Test Card 2', 3)
+        player_1.tableau.play_card(card_2)
+        assert player_1.tableau.cash == 15000
 
 if __name__ == '__main__':
     unittest.main()
