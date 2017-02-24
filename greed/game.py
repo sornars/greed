@@ -30,10 +30,15 @@ class Game:
             played_cards.sort(key=lambda x: x[1].priority)
             for player, played_card in played_cards:
                 self.current_player = player
-                discard_card = player.tableau.play_card(played_card)
+                discarded_cards = []
+                discard_card = player.tableau.play_card(played_card, discarded_cards)
                 played_card.when_played(self)
                 if discard_card:
-                    self.discard_deck.append(played_card)
+                    discarded_cards.append(played_card)
+
+                for discarded_card in discarded_cards:
+                    self.discard_card(discarded_card)
+
 
             played_cards = []
             for player in self.players:
@@ -49,6 +54,10 @@ class Game:
 
         if self.round == 12:
             self.end_game()
+
+    def discard_card(self, card):
+        card.on_discard(self)
+        self.discard_deck.append(card)
 
     def end_game(self):
         # TODO: Implement end of game scoring

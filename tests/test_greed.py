@@ -137,7 +137,11 @@ class TestGreed(unittest.TestCase):
         thug_8.when_played(game)
         card_1 = greed.Card(greed.CardType.HOLDING, 'Test Card 3', 3, icons=greed.Icons(alcohol=3))
         player_1.tableau.play_card(card_1)
-        self.assertEqual(player_1.tableau.holdings[0].markers, 4)
+        assert player_1.tableau.holdings[0].markers == 4
+        game.discard_card(thug_8)
+        card_2 = greed.Card(greed.CardType.HOLDING, 'Test Card 2', 3, icons=greed.Icons(alcohol=3))
+        player_1.tableau.play_card(card_2)
+        assert player_1.tableau.holdings[1].markers == 6
 
     def test_play_reveal_a_new_thug(self):
         player_1 = greed.Player('Player 1')

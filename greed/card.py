@@ -2,7 +2,7 @@ import enum
 
 class Card:
     def __init__(self, card_type, name, priority, rules='', costs=None, needs=None,
-                 icons=None, when_played=None, each_turn=None, end_of_game=None):
+                 icons=None, when_played=None, each_turn=None, on_discard=None, end_of_game=None):
         # TODO: when_played and passive are reduntant
         if card_type not in CardType:
             raise ValueError('Invalid card_type')
@@ -15,6 +15,7 @@ class Card:
         self.icons = Icons() if icons is None else icons
         self.when_played = (lambda x: None) if when_played is None else when_played
         self.each_turn = (lambda x: None) if each_turn is None else each_turn
+        self.on_discard = (lambda x: None) if on_discard is None else on_discard
         self.end_of_game = (lambda x: None) if end_of_game is None else end_of_game
         self.markers = 0
 

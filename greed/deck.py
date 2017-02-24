@@ -116,7 +116,6 @@ def generate_thugs():
 
     def place_an_extra_marker_on_holding(game):
         current_player = game.current_player
-
         orig_place_markers = current_player.tableau.place_markers
 
         def place_extra_marker(tableau, card):
@@ -125,12 +124,23 @@ def generate_thugs():
 
         current_player.tableau.place_markers = types.MethodType(place_extra_marker, current_player.tableau)
 
+    def disable_place_an_extra_marker_on_holding(game):
+        current_player = game.current_player
+        orig_place_markers = current_player.tableau.place_markers
+
+        def disable_place_extra_marker(tableau, card):
+            card.markers -= 1
+            return orig_place_markers(card)
+
+        current_player.tableau.place_markers = types.MethodType(disable_place_extra_marker, current_player.tableau)
+
     thugs.append(Card(
         CardType.THUG,
         'Wolfgang Buttercup',
         42,
         'When you play a HOLDING, place an extra counter on it.',
         when_played=place_an_extra_marker_on_holding,
+        on_discard=disable_place_an_extra_marker_on_holding,
         needs=Icons(thugs=2),
         icons=Icons(cars=2)
     ))

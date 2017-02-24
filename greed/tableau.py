@@ -32,10 +32,11 @@ class Tableau:
 
         return icons
 
-    def play_card(self, card, ignore_costs=False, ignore_needs=False):
+    def play_card(self, card, discarded_cards=None, ignore_costs=False, ignore_needs=False):
+        discarded_cards = [] if discarded_cards is None else discarded_cards
         discard_card = True
-        if self._satisfied_needs(card, ignore_needs) and self._pay_cost(card, ignore_costs):
-            discard_card = False
+        if (self._satisfied_needs(card, ignore_needs) and
+                self._pay_cost(card, discarded_cards, ignore_costs)):
             self.place_markers(card)
             if card.card_type is CardType.THUG:
                 self.thugs += (card,)
@@ -55,15 +56,15 @@ class Tableau:
         # TODO: Implement actual selection
         return card.costs[0]
 
-    def choose_thug(self):
+    def select_thug(self):
         # TODO: Implement actual selection
-        return self.thugs[:-1]
+        return self.thugs[-1]
 
-    def choose_holding(self):
+    def select_holding(self):
         # TODO: Implement actual selection
-        return self.holdings[:-1]
+        return self.holdings[-1]
 
-    def _pay_cost(self, card, ignore_costs):
+    def _pay_cost(self, card, discarded_cards, ignore_costs):
         cost_paid = False
         if ignore_costs:
             cost_paid = True
@@ -74,9 +75,15 @@ class Tableau:
                     cost.holdings <= len(self.holdings)):
                 self.cash = self.cash - cost.cash
                 for _ in range(0, cost.thugs):
-                    self.thugs = self.choose_thug()
+                    chosen_thug = self.select_thug()
+                    self.thugs = tuple(thug for thug in self.thugs if thug != chosen_thug)
+                    discarded_cards.append(chosen_thug)
                 for _ in range(0, cost.holdings):
-                    self.holdings = self.choose_holding()
+                    chosen_holding = self.select_holding()
+                    self.holdings = tuple(
+                        holding for holding in self.holdings if holding != chosen_holding
+                    )
+                    discarded_cards.append(chosen_holding)
                 cost_paid = True
 
         return cost_paid
