@@ -233,4 +233,16 @@ def generate_thugs():
         on_discard=disable_gain_15000_per_thug_played
     ))
 
+    def gain_20000_when_lost(game):
+        game.current_player.tableau.cash += 20000
+
+    thugs.append(Card(
+        CardType.THUG,
+        '"Halloween" Jack Paris',
+        62,
+        'When you lose this THUG, gain $20,000.',
+        icons=Icons(keys=1),
+        on_discard=gain_20000_when_lost
+    ))
+
     return thugs

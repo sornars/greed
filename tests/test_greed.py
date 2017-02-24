@@ -192,5 +192,13 @@ class TestGreed(unittest.TestCase):
         player_1.tableau.play_card(card_2)
         assert player_1.tableau.cash == 15000
 
+    def test_gain_20000_when_lost(self):
+        player_1 = greed.Player('Player 1')
+        game = greed.Game((player_1,))
+        game.current_player = player_1
+        thug_13 = greed.generate_thugs()[12]
+        game.discard_card(thug_13)
+        assert player_1.tableau.cash == 20000
+
 if __name__ == '__main__':
     unittest.main()
