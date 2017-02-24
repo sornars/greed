@@ -13,13 +13,21 @@ def generate_thugs():
         current_player_index = game.players.index(current_player)
         current_round = game.round
         left_player = game.players[current_player_index - 1]
-        def gain_equal_money(tableau, property_name, value):
-            if (game.round == current_round and
-                    property_name == 'cash' and
-                    tableau.cash < value):
-                current_player.tableau.cash += value - tableau.cash
 
-        left_player.tableau.notify_players.append(gain_equal_money)
+        def orig_cash_setter(tableau, value):
+            return value
+
+        if 'cash' in left_player.tableau.patched_setters:
+            orig_cash_setter = left_player.tableau.patched_setters['cash']
+
+        def patched_cash_setter(tableau, value):
+            delta = value - tableau.cash
+            if game.round == current_round and delta > 0:
+                current_player.tableau.cash += delta
+            return orig_cash_setter(tableau, value)
+
+        left_player.tableau.patched_setters['cash'] = patched_cash_setter
+
 
     thugs.append(Card(
         CardType.THUG,

@@ -1,21 +1,22 @@
 from .card import CardType, Icons
 
 class Tableau:
-    def __init__(self, cash=0, thugs=None, holdings=None, hand=None):
-        self.notify_players = []
-        self.cash = cash
+    def __init__(self, cash=0, thugs=None, holdings=None, hand=None, patched_setters=None):
+        self.patched_setters = {} if patched_setters is None else patched_setters
+        self._cash = cash
         self.thugs = () if thugs is None else thugs
         self.holdings = () if holdings is None else holdings
         self.hand = [] if hand is None else hand
 
-    def __setattr__(self, name, value):
-        # TODO: This could be very inefficient
-        if name != 'notify_players':
-            for callback in self.notify_players:
-                callback(self, name, value)
+    @property
+    def cash(self):
+        return self._cash
 
-        super().__setattr__(name, value)
-
+    @cash.setter
+    def cash(self, value):
+        if 'cash' in self.patched_setters:
+            self._cash = self.patched_setters['cash'](self, value)
+        self._cash = value
 
     def calculate_icons(self):
         """Calculate the number of icons in the Tableau"""
