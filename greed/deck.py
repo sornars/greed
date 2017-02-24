@@ -1,3 +1,5 @@
+import types
+
 from .card import Card, CardType, Cost, Icons
 
 def generate_standard_deck():
@@ -114,11 +116,14 @@ def generate_thugs():
 
     def place_an_extra_marker_on_holding(game):
         current_player = game.current_player
-        def place_extra_marker(tableau, property_name, value):
-            if property_name == 'holdings':
-                value[-1].markers += 1
 
-        current_player.tableau.notify_players.append(place_extra_marker)
+        orig_place_markers = current_player.tableau.place_markers
+
+        def place_extra_marker(tableau, card):
+            card.markers += 1
+            return orig_place_markers(card)
+
+        current_player.tableau.place_markers = types.MethodType(place_extra_marker, current_player.tableau)
 
     thugs.append(Card(
         CardType.THUG,
