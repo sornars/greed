@@ -102,3 +102,17 @@ class GenerousJennieJones(Card):
     def end_of_game(self, game, tableau):
         tableau.cash -= 25000
 
+class MickeyIstari(Card):
+    def __init__(self):
+        super().__init__(
+            card_type=CardType.THUG,
+            priority=25,
+            name='Mickey Istari',
+            rules_text='Gain $10,000 for each ALOCHOL you have.',
+            icons=Icons(cars=1)
+        )
+
+    def when_played(self, game, tableau):
+        alcohol = tableau.calculate_icons().alcohol
+        tableau.cash += 10000 * alcohol
+

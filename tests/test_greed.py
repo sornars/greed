@@ -232,3 +232,12 @@ def test_game_end_round_calls_end_of_game(mock_input, mock_end_of_game):
     game.current_round = 12
     game.end_round()
     mock_end_of_game.assert_called()
+
+def test_mickeyistari_when_played():
+    mi = greed.deck.MickeyIstari()
+    player_1 = greed.Tableau('Test Player 1')
+    card = greed.Card(greed.card.CardType.HOLDING, 1, 'Test Card', icons=greed.card.Icons(alcohol=3))
+    player_1.holdings.append(card)
+    game = greed.Game((player_1,))
+    mi.when_played(game, player_1)
+    assert player_1.cash == 30000
