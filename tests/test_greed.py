@@ -142,3 +142,39 @@ def test_tableau_play_card_discards_costs(mock_input):
     card_2 = greed.Card(greed.card.CardType.HOLDING, 'Test Card', 1, costs=[cost])
     player_1.play_card(game, card_2)
     assert len(game.discard_deck) == 1
+
+def test_game_end_round_rotates_draft_decks():
+    player_1 = greed.Tableau('Test Player 1')
+    player_2 = greed.Tableau('Test Player 2')
+    game = greed.Game((player_1, player_2))
+    game.draft_decks = [1, 2]
+    game.end_round()
+    assert game.draft_decks == [2,1]
+
+@patch('builtins.input', return_value='0')
+def test_tableau_play_card_discards_card_if_needs_or_cost_not_met(mock_input):
+    player_1 = greed.Tableau('Test Player 1')
+    game = greed.Game((player_1,))
+    card_1 = greed.Card(greed.card.CardType.HOLDING, 'Test Card 1', 1, needs=greed.card.Icons(keys=1))
+    card_2 = greed.Card(greed.card.CardType.HOLDING, 'Test Card 2', 1, costs=[greed.card.Cost(holdings=1)])
+    player_1.play_card(game, card_1)
+    player_1.play_card(game, card_2)
+    assert len(game.discard_deck) == 2
+    assert len(player_1.holdings) == 0
+
+@patch('builtins.input', return_value='0')
+def test_tableau_player_card_discards_actions(mock_input):
+    player_1 = greed.Tableau('Test Player 1')
+    game = greed.Game((player_1,))
+    card = greed.Card(greed.card.CardType.ACTION, 'Test Card', 1)
+    player_1.play_card(game, card)
+    assert len(game.discard_deck) == 1
+
+def test_biscuitsomalley_each_turn():
+    bom = greed.deck.BiscuitsOMalley()
+    player_1 = greed.Tableau('Test Player 1')
+    game = greed.Game((player_1,))
+    bom.each_turn(game, player_1)
+    assert player_1.cash == 10000
+    bom.each_turn(game, player_1)
+    assert player_1.cash == 10000

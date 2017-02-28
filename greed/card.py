@@ -15,6 +15,9 @@ class Card:
     def when_played(self, game, tableau):
         pass
 
+    def each_turn(self, game, tableau):
+        pass
+
     def on_discard(self, game, tableau):
         pass
 

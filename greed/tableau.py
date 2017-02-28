@@ -61,6 +61,9 @@ class Tableau:
                 self.holdings.append(card)
             else:
                 game.discard_card(self, card)
+        else:
+            # Card discarded without effect
+            game.discard_deck.append(card)
 
     def calculate_icons(self):
         icons = Icons(thugs=len(self.thugs), holdings=len(self.holdings))

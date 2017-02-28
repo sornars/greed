@@ -35,6 +35,20 @@ class HarveyBrainsRatcliffe(Card):
 
         left_player.patched_setters['cash'] = patched_cash_setter
 
+class BiscuitsOMalley(Card):
+    def __init__(self):
+        super().__init__(
+            card_type=CardType.THUG,
+            priority=6,
+            name='"Biscuits" O\'Malley',
+            rules_text='Each Turn: If you have no $, gain $10,000.',
+            icons=Icons(cars=1)
+        )
+
+    def each_turn(self, game, tableau):
+        if tableau.cash == 0:
+            tableau.cash += 10000
+
 
 
 

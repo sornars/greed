@@ -19,6 +19,15 @@ class Game:
         for player, card in played_cards:
             player.play_card(self, card)
 
+        each_turn_cards = [(player, card) for player in self.players for card in player.thugs + player.holdings]
+        each_turn_cards.sort(key=lambda x: x[1].priority)
+        for player, card in each_turn_cards:
+            card.each_turn(self, player)
+
+
+    def end_round(self):
+        self.draft_decks = self.draft_decks[-1:] + self.draft_decks[:-1]
+
     def discard_card(self, tableau, card):
         card.on_discard(self, tableau)
         self.discard_deck.append(card)
