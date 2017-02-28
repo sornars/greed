@@ -388,4 +388,17 @@ class PeteRepeatFell(Card):
 
         game.discard_card = types.MethodType(return_action_to_hand_next_turn, game)
 
+class NataschaTheSquirrelRubin(Card):
+    def __init__(self):
+        super().__init__(
+            card_type=CardType.THUG,
+            priority=69,
+            name='Natascha "The Squirrel" Rubin',
+            rules_text='Each Turn: Gain $5,000.',
+            needs=Icons(holdings=2)
+        )
+
+    def each_turn(self, game, tableau):
+        tableau.cash += 5000
+
 

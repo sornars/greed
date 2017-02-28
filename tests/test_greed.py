@@ -411,5 +411,10 @@ def test_peterepeatfell_when_played(mock_input):
     player_1.play_card(game, card_2)
     assert len(game.discard_deck) == 1
 
-
+def test_nataschathesquirrelrubin_each_turn():
+    ntsr = greed.deck.NataschaTheSquirrelRubin()
+    player_1 = greed.Tableau('Test Player 1')
+    game = greed.Game((player_1,))
+    ntsr.each_turn(game, player_1)
+    assert player_1.cash == 5000
 
