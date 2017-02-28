@@ -1,6 +1,6 @@
 import random
 
-from .card import Card, CardType, Icons
+from .card import Card, CardType, Cost, Icons
 
 def create_draw_deck():
     # TODO: Implement actual list of cards
@@ -48,6 +48,16 @@ class BiscuitsOMalley(Card):
     def each_turn(self, game, tableau):
         if tableau.cash == 0:
             tableau.cash += 10000
+
+class KingRichardTheThird(Card):
+    def __init__(self):
+        super().__init__(
+            card_type=CardType.THUG,
+            priority=21,
+            name='"King" Richard the Third',
+            costs=[Cost(thugs=1), Cost(holdings=1), Cost(cash=10000)],
+            icons=Icons(guns=1, cars=1, keys=1)
+        )
 
 
 
