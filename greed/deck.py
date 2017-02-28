@@ -189,3 +189,22 @@ class EdRubberfaceTeach(Card):
         self.on_discard = copied_card.on_discard
         self.end_of_game = copied_card.end_of_game
         self.when_played(game, tableau)
+
+class PeepingTomThumb(Card):
+    def __init__(self):
+        super().__init__(
+            card_type=CardType.THUG,
+            priority=56,
+            name='"Peeping" Tom "Thumb"',
+            rules_text='Gain $5,000 for each counter the HOLDING with the most has.',
+            costs=[Cost(holdings=1)],
+            icons=Icons(guns=2)
+        )
+
+    def when_played(self, game, tableau):
+        most_markers = 0
+        for player in game.players:
+            for holding in player.holdings:
+                if holding.markers > most_markers:
+                    most_markers = holding.markers
+        tableau.cash += 5000 * most_markers

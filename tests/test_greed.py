@@ -287,4 +287,17 @@ def test_edrubberfaceteach_when_played(mock_input):
     ert.when_played(game, player_1)
     assert len(player_1.thugs) == 1
     assert player_1.cash == 10000
-    print(ert)
+
+def test_peepingtomthumb_when_played():
+    ptt = greed.deck.PeepingTomThumb()
+    player_1 = greed.Tableau('Test Player 1')
+    player_2 = greed.Tableau('Test Player 2')
+    game = greed.Game((player_1, player_2))
+    card_1 = greed.Card(greed.card.CardType.HOLDING, 1, 'Test Card')
+    card_1.markers = 3
+    card_2 = greed.Card(greed.card.CardType.HOLDING, 1, 'Test Card')
+    card_2.markers = 5
+    player_1.holdings.append(card_1)
+    player_2.holdings.append(card_2)
+    ptt.when_played(game, player_1)
+    assert player_1.cash == 25000
