@@ -1,26 +1,22 @@
 import enum
 
 class Card:
-    def __init__(self, card_type, name, priority, rules='', costs=None, needs=None,
-                 icons=None, when_played=None, each_turn=None, on_discard=None, end_of_game=None):
-        # TODO: when_played and passive are reduntant
+    def __init__(self, card_type, priority, name, rules_text='', costs=None, needs=None, icons=None):
         if card_type not in CardType:
             raise ValueError('Invalid card_type')
         self.card_type = card_type
-        self.name = name
         self.priority = priority
-        self.rules = rules
-        self.costs = [Cost()] if costs is None else costs
-        self.needs = Icons() if needs is None else needs
-        self.icons = Icons() if icons is None else icons
-        self.when_played = (lambda x: None) if when_played is None else when_played
-        self.each_turn = (lambda x: None) if each_turn is None else each_turn
-        self.on_discard = (lambda x: None) if on_discard is None else on_discard
-        self.end_of_game = (lambda x: None) if end_of_game is None else end_of_game
-        self.markers = 0
+        self.name = name
+        self.rules_text = rules_text
+        self.costs = costs if costs else [Cost()]
+        self.needs = needs if needs else Icons()
+        self.icons = icons if icons else Icons()
 
-    def __repr__(self):
-        return self.name
+    def when_played(self, game, tableau):
+        pass
+
+    def on_discard(self, game, tableau):
+        pass
 
 class CardType(enum.Enum):
     ACTION = 1
@@ -40,7 +36,6 @@ class Cost:
             'thugs': self.thugs,
             'holdings': self.holdings
         })
-
 
 class Icons:
     def __init__(self, guns=0, cars=0, keys=0, alcohol=0, hearts=0, wrenches=0, thugs=0, holdings=0):
@@ -86,5 +81,3 @@ class Icons:
             'thugs': self.thugs,
             'holdings': self.holdings
         })
-
-
