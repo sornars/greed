@@ -294,3 +294,20 @@ class RottenJohnnySimmons(Card):
             orig_play_card(game, card, ignore_costs, ignore_needs)
 
         tableau.play_card = types.MethodType(ignore_needs_next_turn, tableau)
+
+class RandomScrubPatterson(Card):
+    def __init__(self):
+        super().__init__(
+            card_type=CardType.THUG,
+            priority=65,
+            name='"Random" Scrub Patterson',
+            rules_text='Draw a card from the deck for each KEY you have,'
+                       ' putting them in your hand.',
+            icons=Icons(keys=1)
+        )
+
+    def when_played(self, game, tableau):
+        keys = tableau.calculate_icons().keys + self.icons.keys
+        for card in range(keys):
+            drawn_card = game.draw_deck.pop()
+            tableau.hand.append(drawn_card)

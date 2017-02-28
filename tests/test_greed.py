@@ -354,3 +354,11 @@ def test_rottenjohnnysimmons_when_played(mock_input):
     player_1.play_card(game, card_2)
     assert len(player_1.thugs) == 1
 
+def test_randomscrubpatterson_when_played():
+    rsp = greed.deck.RandomScrubPatterson()
+    player_1 = greed.Tableau('Test Player 1')
+    game = greed.Game((player_1,))
+    card = greed.Card(greed.card.CardType.THUG, 1, 'Test Card 1', icons=greed.card.Icons(keys=3))
+    player_1.thugs.append(card)
+    rsp.when_played(game, player_1)
+    assert len(player_1.hand) == 4
