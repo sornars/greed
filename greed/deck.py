@@ -259,7 +259,7 @@ class ViciousSydVarney(Card):
             card_type=CardType.THUG,
             priority=63,
             name='"Vicious" Syd Varney',
-            rules_text='Next turn, you ignore costs.',
+            rules_text='Next turn, you ignore COSTS.',
             icons=Icons(guns=1)
         )
 
@@ -274,4 +274,23 @@ class ViciousSydVarney(Card):
 
         tableau.play_card = types.MethodType(ignore_costs_next_turn, tableau)
 
+class RottenJohnnySimmons(Card):
+    def __init__(self):
+        super().__init__(
+            card_type=CardType.THUG,
+            priority=64,
+            name='"Rotten" Johnny Simmons',
+            rules_text='Next turn, you ignore NEEDS.',
+            icons=Icons(cars=1)
+        )
 
+    def when_played(self, game, tableau):
+        orig_play_card = tableau.play_card
+        next_round = game.current_round + 1
+        def ignore_needs_next_turn(tableau, game, card, ignore_costs=False, ignore_needs=False):
+            ignore_needs = ignore_needs
+            if game.current_round == next_round:
+                ignore_needs = True
+            orig_play_card(game, card, ignore_costs, ignore_needs)
+
+        tableau.play_card = types.MethodType(ignore_needs_next_turn, tableau)

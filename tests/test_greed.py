@@ -339,3 +339,18 @@ def test_vicioussydvarney_when_played(mock_input):
     player_1.play_card(game, card_2)
     assert player_1.cash == 5000
 
+@patch('builtins.input', return_value='0')
+def test_rottenjohnnysimmons_when_played(mock_input):
+    rjs = greed.deck.RottenJohnnySimmons()
+    player_1 = greed.Tableau('Test Player 1')
+    game = greed.Game((player_1,))
+    rjs.when_played(game, player_1)
+    game.current_round += 1
+    card_1 = greed.Card(greed.card.CardType.THUG, 1, 'Test Card 1', needs=greed.card.Icons(thugs=1))
+    player_1.play_card(game, card_1)
+    assert len(player_1.thugs) == 1
+    game.current_round += 1
+    card_2 = greed.Card(greed.card.CardType.THUG, 1, 'Test Card 1', needs=greed.card.Icons(thugs=2))
+    player_1.play_card(game, card_2)
+    assert len(player_1.thugs) == 1
+
