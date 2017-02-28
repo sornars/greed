@@ -431,3 +431,19 @@ def test_nothingbeatsrockbenson_when_played_and_on_discard(mock_input):
     nbrb.on_discard(game, player_1)
     player_1.play_card(game, card_2)
     assert player_1.cash == 5000
+
+@patch('builtins.input', return_value='0')
+def test_eugenethebutchermidge_when_played_and_on_discard(mock_input):
+    etbm = greed.deck.EugeneTheButcherMidge()
+    player_1 = greed.Tableau('Test Player 1')
+    card_1 = greed.Card(greed.card.CardType.ACTION, 1, 'Test Card 1', icons=greed.card.Icons(guns=3))
+    card_2 = greed.Card(greed.card.CardType.ACTION, 2, 'Test Card 2')
+    player_1.thugs.append(card_1)
+    game = greed.Game((player_1,))
+    etbm.when_played(game, player_1)
+    player_1.play_card(game, card_2)
+    assert player_1.cash == 15000
+    card_3 = greed.Card(greed.card.CardType.ACTION, 3, 'Test Card 3')
+    etbm.on_discard(game, player_1)
+    player_1.play_card(game, card_3)
+    assert player_1.cash == 15000
