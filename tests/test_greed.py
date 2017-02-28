@@ -178,3 +178,19 @@ def test_biscuitsomalley_each_turn():
     assert player_1.cash == 10000
     bom.each_turn(game, player_1)
     assert player_1.cash == 10000
+
+def test_dickieflushdiamond_when_played():
+    dfd = greed.deck.DickieFlushDiamond()
+    player_1 = greed.Tableau('Test Player 1')
+    game = greed.Game((player_1,))
+    dfd.when_played(game, player_1)
+    assert player_1.cash == 10000
+
+@patch.object(greed.card.Card, 'each_turn')
+@patch('builtins.input', return_value='0')
+def test_game_start_round_calls_each_turn_for_played_cards(mock_input, mock_each_turn):
+    player_1 = greed.Tableau('Test Player 1')
+    game = greed.Game((player_1,))
+    game.start_round()
+    mock_each_turn.assert_called_once()
+

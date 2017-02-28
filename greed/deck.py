@@ -59,6 +59,18 @@ class KingRichardTheThird(Card):
             icons=Icons(guns=1, cars=1, keys=1)
         )
 
+class DickieFlushDiamond(Card):
+    def __init__(self):
+        super().__init__(
+            card_type=CardType.THUG,
+            priority=6,
+            name='Dickie "Flush" Diamond',
+            rules_text='Gain $10,000.',
+            icons=Icons(guns=1)
+        )
+
+    def when_played(self, game, tableau):
+        tableau.cash += 10000
 
 
 
