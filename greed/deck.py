@@ -343,3 +343,25 @@ class StingyStanMcDowell(Card):
             return orig_pay_cost(game, increased_costs)
 
         tableau.pay_cost = types.MethodType(disable_reduce_costs_by_5000, tableau)
+
+class LouieSavoirOFarrell(Card):
+    def __init__(self):
+        super().__init__(
+            card_type=CardType.THUG,
+            priority=67,
+            name='Louie "Savoir" O\'Farrell',
+            rules_text='Next turn, after all played cards resolve, play n extra card.',
+            icons=Icons(cars=1, keys=1)
+        )
+
+    def when_played(self, game, tableau):
+        orig_end_round = game.end_round
+        next_round = game.current_round + 1
+        def play_extra_card_next_turn(game):
+            if game.current_round == next_round:
+                tableau.play_card(game, tableau.select_option(tableau.hand))
+            return orig_end_round()
+
+        game.end_round = types.MethodType(play_extra_card_next_turn, game)
+
+

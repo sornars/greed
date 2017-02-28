@@ -86,20 +86,23 @@ class Tableau:
         card.markers += total_markers
 
     def select_option(self, options):
-        selected_option = None
-        while selected_option is None:
-            for index, option in enumerate(options):
-                print(index, option)
-            try:
-                selected_option_index = int(input('Please select an option'))
-            except ValueError:
-                selected_option_index = -1
-            if selected_option_index in range(len(options)):
-                selected_option = options.pop(selected_option_index)
-            else:
-                print('Please select a valid option')
+        if options:
+            selected_option = None
+            while selected_option is None:
+                for index, option in enumerate(options):
+                    print(index, option)
+                try:
+                    selected_option_index = int(input('Please select an option: '))
+                except ValueError:
+                    selected_option_index = -1
+                if selected_option_index in range(len(options)):
+                    selected_option = options.pop(selected_option_index)
+                else:
+                    print('Please select a valid option')
 
-        return selected_option
+            return selected_option
+        else:
+            raise ValueError('Empty options not allowed')
 
     def __repr__(self):
         return str({

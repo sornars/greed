@@ -375,3 +375,22 @@ def test_stingystanmcdowell_when_played(mock_input):
     ssm.on_discard(game, player_1)
     player_1.pay_cost(game, [greed.card.Cost(cash=10000)])
     assert player_1.cash == 0
+
+@patch('builtins.input', return_value='0')
+def test_louiesavoirofarrell_when_played(mock_input):
+    lso = greed.deck.LouieSavoirOFarrell()
+    player_1 = greed.Tableau('Test Player 1')
+    game = greed.Game((player_1,))
+    lso.when_played(game, player_1)
+    card = greed.Card(greed.card.CardType.THUG, 1, 'Test Card')
+    player_1.hand.append(card)
+    game.current_round += 1
+    game.end_round()
+    assert len(player_1.thugs) == 1
+    game.current_round += 1
+    game.end_round()
+
+def test_tableau_select_options_raise_valueerror_with_no_options():
+    player_1 = greed.Tableau('Test Player 1')
+    with pytest.raises(ValueError):
+        player_1.select_option([])
