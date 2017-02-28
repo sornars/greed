@@ -188,7 +188,7 @@ def test_dickieflushdiamond_when_played():
 
 @patch.object(greed.card.Card, 'each_turn')
 @patch('builtins.input', return_value='0')
-def test_game_start_round_calls_each_turn_for_played_cards(mock_input, mock_each_turn):
+def test_game_start_round_calls_each_turn(mock_input, mock_each_turn):
     player_1 = greed.Tableau('Test Player 1')
     card = greed.Card(greed.card.CardType.THUG, 1, 'Test Card')
     player_1.thugs.append(card)
@@ -207,4 +207,28 @@ def test_edcheeseclothmcguinty_when_played():
     ecm.when_played(game, player_1)
     assert player_1.cash == 25000
 
+def test_generousjenniejones_when_played():
+    gjj = greed.deck.GenerousJennieJones()
+    player_1 = greed.Tableau('Test Player 1')
+    game = greed.Game((player_1,))
+    gjj.when_played(game, player_1)
+    assert player_1.cash == 20000
 
+def test_generousjenniejones_end_of_game():
+    gjj = greed.deck.GenerousJennieJones()
+    player_1 = greed.Tableau('Test Player 1')
+    player_1.cash = 25000
+    game = greed.Game((player_1,))
+    gjj.end_of_game(game, player_1)
+    assert player_1.cash == 0
+
+@patch.object(greed.card.Card, 'end_of_game')
+@patch('builtins.input', return_value='0')
+def test_game_end_round_calls_end_of_game(mock_input, mock_end_of_game):
+    player_1 = greed.Tableau('Test Player 1')
+    card = greed.Card(greed.card.CardType.THUG, 1, 'Test Card')
+    player_1.thugs.append(card)
+    game = greed.Game((player_1,))
+    game.current_round = 12
+    game.end_round()
+    mock_end_of_game.assert_called()

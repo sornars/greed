@@ -21,6 +21,9 @@ class Card:
     def on_discard(self, game, tableau):
         pass
 
+    def end_of_game(self, game, tableau):
+        pass
+
 class CardType(enum.Enum):
     ACTION = 1
     THUG = 2

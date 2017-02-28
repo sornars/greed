@@ -24,9 +24,13 @@ class Game:
         for player, card in each_turn_cards:
             card.each_turn(self, player)
 
-
     def end_round(self):
         self.draft_decks = self.draft_decks[-1:] + self.draft_decks[:-1]
+        if self.current_round == 12:
+            end_of_game_cards = [(player, card) for player in self.players for card in player.thugs + player.holdings]
+            end_of_game_cards.sort(key=lambda x: x[1].priority)
+            for player, card in end_of_game_cards:
+                card.end_of_game(self, player)
 
     def discard_card(self, tableau, card):
         card.on_discard(self, tableau)

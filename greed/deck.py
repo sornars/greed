@@ -86,5 +86,19 @@ class EdCheeseclotheMcGuinty(Card):
         guns = tableau.calculate_icons().guns + self.icons.guns
         tableau.cash += 5000 * guns
 
+class GenerousJennieJones(Card):
+    def __init__(self):
+        super().__init__(
+            card_type=CardType.THUG,
+            priority=24,
+            name='"Generous" Jennie Jones',
+            rules_text='Gain $20,000. At the end of the game lose $25,000.',
+            icons=Icons(guns=1)
+        )
 
+    def when_played(self, game, tableau):
+        tableau.cash += 20000
+
+    def end_of_game(self, game, tableau):
+        tableau.cash -= 25000
 
