@@ -197,7 +197,7 @@ def test_game_start_round_calls_each_turn(mock_input, mock_each_turn):
     mock_each_turn.assert_called()
 
 def test_edcheeseclothmcguinty_when_played():
-    ecm = greed.deck.EdCheeseclotheMcGuinty()
+    ecm = greed.deck.EdCheeseclothMcGuinty()
     player_1 = greed.Tableau('Test Player 1')
     game = greed.Game((player_1,))
     ecm.when_played(game, player_1)
@@ -241,3 +241,26 @@ def test_mickeyistari_when_played():
     game = greed.Game((player_1,))
     mi.when_played(game, player_1)
     assert player_1.cash == 30000
+
+def test_wolfgangbuttercup_when_played_and_on_discard():
+    wb = greed.deck.WolfgangButtercup()
+    player_1 = greed.Tableau('Test Player 1')
+    card_1 = greed.Card(greed.card.CardType.HOLDING, 1, 'Test Card', icons=greed.card.Icons(alcohol=3))
+    game = greed.Game((player_1,))
+    wb.when_played(game, player_1)
+    player_1.place_markers(card_1)
+    assert card_1.markers == 4
+    card_2 = greed.Card(greed.card.CardType.HOLDING, 1, 'Test Card', icons=greed.card.Icons(alcohol=3))
+    wb.on_discard(game, player_1)
+    player_1.place_markers(card_2)
+    assert card_2.markers == 3
+
+def test_tableau_place_markers():
+    player_1 = greed.Tableau('Test Player 1')
+    card_1 = greed.Card(greed.card.CardType.HOLDING, 1, 'Test Card', icons=greed.card.Icons(alcohol=3))
+    player_1.place_markers(card_1)
+    assert card_1.markers == 3
+    player_1.holdings.append(card_1)
+    card_2 = greed.Card(greed.card.CardType.HOLDING, 1, 'Test Card', icons=greed.card.Icons(alcohol=3))
+    player_1.place_markers(card_2)
+    assert card_2.markers == 6

@@ -76,7 +76,7 @@ class Tableau:
     def place_markers(self, card):
         icons = self.calculate_icons() + card.icons
         total_markers = icons.alcohol + icons.hearts + icons.wrenches
-        card.markers = total_markers
+        card.markers += total_markers
 
     def select_option(self, options):
         selected_option = None

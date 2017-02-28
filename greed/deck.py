@@ -1,6 +1,8 @@
 import random
+import types
 
 from .card import Card, CardType, Cost, Icons
+from .tableau import Tableau
 
 def create_draw_deck():
     # TODO: Implement actual list of cards
@@ -72,7 +74,7 @@ class DickieFlushDiamond(Card):
     def when_played(self, game, tableau):
         tableau.cash += 10000
 
-class EdCheeseclotheMcGuinty(Card):
+class EdCheeseclothMcGuinty(Card):
     def __init__(self):
         super().__init__(
             card_type=CardType.THUG,
@@ -116,3 +118,30 @@ class MickeyIstari(Card):
         alcohol = tableau.calculate_icons().alcohol
         tableau.cash += 10000 * alcohol
 
+class WolfgangButtercup(Card):
+    def __init__(self):
+        super().__init__(
+            card_type=CardType.THUG,
+            priority=42,
+            name='Wolfgang Buttercup',
+            rules_text='When you play a HOLDING, place an extra counter on it.',
+            icons=Icons(cars=2)
+        )
+
+    def when_played(self, game, tableau):
+        orig_place_markers = tableau.place_markers
+
+        def place_extra_marker(tableau, card):
+            card.markers += 1
+            return orig_place_markers(card)
+
+        tableau.place_markers = types.MethodType(place_extra_marker, tableau)
+
+    def on_discard(self, game, tableau):
+        orig_place_markers = tableau.place_markers
+
+        def disable_place_extra_marker(tableau, card):
+            card.markers -= 1
+            return orig_place_markers(card)
+
+        tableau.place_markers = types.MethodType(disable_place_extra_marker, tableau)
