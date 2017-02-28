@@ -311,3 +311,35 @@ class RandomScrubPatterson(Card):
         for card in range(keys):
             drawn_card = game.draw_deck.pop()
             tableau.hand.append(drawn_card)
+
+class StingyStanMcDowell(Card):
+    def __init__(self):
+        super().__init__(
+            card_type=CardType.THUG,
+            priority=66,
+            name='"Stingy" Stan McDowell',
+            rules_text='All COSTS for you are reduced by $5,000.',
+            icons=Icons(cars=1)
+        )
+
+    def when_played(self, game, tableau):
+        orig_pay_cost = tableau.pay_cost
+        def reduce_costs_by_5000(tableau, game, costs):
+            reduced_costs = [Cost(cost.cash, cost.thugs, cost.holdings) for cost in costs]
+            for cost in reduced_costs:
+                if cost.cash >= 5000:
+                    cost.cash -= 5000
+            return orig_pay_cost(game, reduced_costs)
+
+        tableau.pay_cost = types.MethodType(reduce_costs_by_5000, tableau)
+
+    def on_discard(self, game, tableau):
+        orig_pay_cost = tableau.pay_cost
+        def disable_reduce_costs_by_5000(tableau, game, costs):
+            increased_costs = [Cost(cost.cash, cost.thugs, cost.holdings) for cost in costs]
+            for cost in increased_costs:
+                if cost.cash >= 5000:
+                    cost.cash += 5000
+            return orig_pay_cost(game, increased_costs)
+
+        tableau.pay_cost = types.MethodType(disable_reduce_costs_by_5000, tableau)

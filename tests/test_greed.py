@@ -362,3 +362,16 @@ def test_randomscrubpatterson_when_played():
     player_1.thugs.append(card)
     rsp.when_played(game, player_1)
     assert len(player_1.hand) == 4
+
+@patch('builtins.input', return_value='0')
+def test_stingystanmcdowell_when_played(mock_input):
+    ssm = greed.deck.StingyStanMcDowell()
+    player_1 = greed.Tableau('Test Player 1')
+    player_1.cash = 15000
+    game = greed.Game((player_1,))
+    ssm.when_played(game, player_1)
+    player_1.pay_cost(game, [greed.card.Cost(cash=10000)])
+    assert player_1.cash == 10000
+    ssm.on_discard(game, player_1)
+    player_1.pay_cost(game, [greed.card.Cost(cash=10000)])
+    assert player_1.cash == 0
