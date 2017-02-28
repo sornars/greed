@@ -57,8 +57,8 @@ class Tableau:
             if card.card_type is CardType.THUG:
                 self.thugs.append(card)
             elif card.card_type is CardType.HOLDING:
-                self.place_markers(card)
                 self.holdings.append(card)
+                self.place_markers(card)
             else:
                 game.discard_card(self, card)
         else:

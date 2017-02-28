@@ -190,7 +190,21 @@ def test_dickieflushdiamond_when_played():
 @patch('builtins.input', return_value='0')
 def test_game_start_round_calls_each_turn_for_played_cards(mock_input, mock_each_turn):
     player_1 = greed.Tableau('Test Player 1')
+    card = greed.Card(greed.card.CardType.THUG, 1, 'Test Card')
+    player_1.thugs.append(card)
     game = greed.Game((player_1,))
     game.start_round()
-    mock_each_turn.assert_called_once()
+    mock_each_turn.assert_called()
+
+def test_edcheeseclothmcguinty_when_played():
+    ecm = greed.deck.EdCheeseclotheMcGuinty()
+    player_1 = greed.Tableau('Test Player 1')
+    game = greed.Game((player_1,))
+    ecm.when_played(game, player_1)
+    assert player_1.cash == 5000
+    card = greed.Card(greed.card.CardType.THUG, 1, 'Test Card', icons=greed.card.Icons(guns=3))
+    player_1.thugs.append(card)
+    ecm.when_played(game, player_1)
+    assert player_1.cash == 25000
+
 

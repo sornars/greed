@@ -63,7 +63,7 @@ class DickieFlushDiamond(Card):
     def __init__(self):
         super().__init__(
             card_type=CardType.THUG,
-            priority=6,
+            priority=22,
             name='Dickie "Flush" Diamond',
             rules_text='Gain $10,000.',
             icons=Icons(guns=1)
@@ -71,6 +71,20 @@ class DickieFlushDiamond(Card):
 
     def when_played(self, game, tableau):
         tableau.cash += 10000
+
+class EdCheeseclotheMcGuinty(Card):
+    def __init__(self):
+        super().__init__(
+            card_type=CardType.THUG,
+            priority=23,
+            name='Ed "CheeseCloth" McGuinty',
+            rules_text='Gain $5,000 per GUN you have.',
+            icons=Icons(guns=1, keys=1)
+        )
+
+    def when_played(self, game, tableau):
+        guns = tableau.calculate_icons().guns + self.icons.guns
+        tableau.cash += 5000 * guns
 
 
 
