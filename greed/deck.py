@@ -145,3 +145,23 @@ class WolfgangButtercup(Card):
             return orig_place_markers(card)
 
         tableau.place_markers = types.MethodType(disable_place_extra_marker, tableau)
+
+class PolycephalusPatriciaJones(Card):
+    def __init__(self):
+        super().__init__(
+            card_type=CardType.THUG,
+            priority=53,
+            name='"Polycephalus" Patricia Jones',
+            rules_text='Turn over cards from the deck until you find a THUG. '
+                       'Play it, ignoring COSTS and NEEDS. '
+                       'Discard all other cards that you revealed from the deck.',
+            icons=Icons(cars=2)
+        )
+
+    def when_played(self, game, tableau):
+        drawn_card = game.draw_deck.pop()
+        while drawn_card.card_type is not CardType.THUG:
+            game.discard_deck.append(drawn_card)
+            drawn_card = game.draw_deck.pop()
+
+        tableau.play_card(game, drawn_card, ignore_costs=True, ignore_needs=True)

@@ -264,3 +264,16 @@ def test_tableau_place_markers():
     card_2 = greed.Card(greed.card.CardType.HOLDING, 1, 'Test Card', icons=greed.card.Icons(alcohol=3))
     player_1.place_markers(card_2)
     assert card_2.markers == 6
+
+def test_polycephaluspatriciajones_when_played():
+    ppj = greed.deck.PolycephalusPatriciaJones()
+    player_1 = greed.Tableau('Test Player 1')
+    game = greed.Game((player_1,))
+    card_1 = greed.Card(greed.card.CardType.HOLDING, 1, 'Test Card')
+    card_2 = greed.Card(greed.card.CardType.HOLDING, 1, 'Test Card')
+    card_3 = greed.Card(greed.card.CardType.THUG, 1, 'Test Card')
+    game.draw_deck = [card_3, card_2, card_1]
+    ppj.when_played(game, player_1)
+    assert len(player_1.thugs) == 1
+    assert len(game.discard_deck) == 2
+

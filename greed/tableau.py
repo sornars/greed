@@ -47,11 +47,15 @@ class Tableau:
         tableau_icons = self.calculate_icons()
         return True if needs <= tableau_icons else False
 
-    def play_card(self, game, card):
-        cost_paid, discarded_thugs, discarded_holdings = self.pay_cost(game, card.costs)
-        for discarded_card in discarded_thugs + discarded_holdings:
-            game.discard_card(self, discarded_card)
-        needs_met = self.check_needs(card.needs)
+    def play_card(self, game, card, ignore_costs=False, ignore_needs=False):
+        cost_paid = ignore_costs
+        needs_met = ignore_needs
+        if cost_paid is False:
+            cost_paid, discarded_thugs, discarded_holdings = self.pay_cost(game, card.costs)
+            for discarded_card in discarded_thugs + discarded_holdings:
+                game.discard_card(self, discarded_card)
+        if needs_met is False:
+            needs_met = self.check_needs(card.needs)
         if cost_paid and needs_met:
             card.when_played(game, self)
             if card.card_type is CardType.THUG:
