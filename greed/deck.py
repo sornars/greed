@@ -125,6 +125,7 @@ class WolfgangButtercup(Card):
             priority=42,
             name='Wolfgang Buttercup',
             rules_text='When you play a HOLDING, place an extra counter on it.',
+            needs=Icons(thugs=2),
             icons=Icons(cars=2)
         )
 
@@ -165,3 +166,26 @@ class PolycephalusPatriciaJones(Card):
             drawn_card = game.draw_deck.pop()
 
         tableau.play_card(game, drawn_card, ignore_costs=True, ignore_needs=True)
+
+class EdRubberfaceTeach(Card):
+    def __init__(self):
+        super().__init__(
+            card_type=CardType.THUG,
+            priority=54,
+            name='Ed "Rubberface" Teach',
+            rules_text='This THUG becomes a copy of one of your other THUGS; do its rules.',
+            needs=Icons(thugs=1)
+        )
+
+    def when_played(self, game, tableau):
+        # pylint: disable=E0202
+        selected_thug = tableau.select_option(tableau.thugs)
+        tableau.thugs.append(selected_thug)
+        copied_card = type(selected_thug)()
+        self.rules_text = copied_card.rules_text
+        self.icons = copied_card.icons
+        self.when_played = copied_card.when_played
+        self.each_turn = copied_card.each_turn
+        self.on_discard = copied_card.on_discard
+        self.end_of_game = copied_card.end_of_game
+        self.when_played(game, tableau)

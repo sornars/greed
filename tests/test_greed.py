@@ -277,3 +277,14 @@ def test_polycephaluspatriciajones_when_played():
     assert len(player_1.thugs) == 1
     assert len(game.discard_deck) == 2
 
+@patch('builtins.input', return_value='0')
+def test_edrubberfaceteach_when_played(mock_input):
+    ert = greed.deck.EdRubberfaceTeach()
+    dfd = greed.deck.DickieFlushDiamond()
+    player_1 = greed.Tableau('Test Player 1')
+    player_1.thugs.append(dfd)
+    game = greed.Game((player_1,))
+    ert.when_played(game, player_1)
+    assert len(player_1.thugs) == 1
+    assert player_1.cash == 10000
+    print(ert)
