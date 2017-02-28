@@ -364,4 +364,28 @@ class LouieSavoirOFarrell(Card):
 
         game.end_round = types.MethodType(play_extra_card_next_turn, game)
 
+class PeteRepeatFell(Card):
+    def __init__(self):
+        super().__init__(
+            card_type=CardType.THUG,
+            priority=68,
+            name='Pete "Repeat" Fell',
+            rules_text='Next turn, when you play an ACTION, return it to your hand afterwards.',
+            icons=Icons(keys=1)
+        )
+
+    def when_played(self, game, tableau):
+        orig_discard_card = game.discard_card
+        next_round = game.current_round + 1
+        current_player = tableau
+        def return_action_to_hand_next_turn(game, tableau, card):
+            orig_discard_card_results = orig_discard_card(tableau, card)
+            if (game.current_round == next_round and
+                    tableau == current_player and
+                    card.card_type is CardType.ACTION):
+                tableau.hand.append(game.discard_deck.pop())
+            return orig_discard_card_results
+
+        game.discard_card = types.MethodType(return_action_to_hand_next_turn, game)
+
 

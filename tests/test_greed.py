@@ -394,3 +394,22 @@ def test_tableau_select_options_raise_valueerror_with_no_options():
     player_1 = greed.Tableau('Test Player 1')
     with pytest.raises(ValueError):
         player_1.select_option([])
+
+@patch('builtins.input', return_value='0')
+def test_peterepeatfell_when_played(mock_input):
+    prf = greed.deck.PeteRepeatFell()
+    player_1 = greed.Tableau('Test Player 1')
+    game = greed.Game((player_1,))
+    prf.when_played(game, player_1)
+    game.current_round += 1
+    card_1 = greed.Card(greed.card.CardType.ACTION, 1, 'Test Card 1')
+    player_1.play_card(game, card_1)
+    assert len(game.discard_deck) == 0
+    assert card_1 in player_1.hand
+    game.current_round += 1
+    card_2 = greed.Card(greed.card.CardType.ACTION, 1, 'Test Card 2')
+    player_1.play_card(game, card_2)
+    assert len(game.discard_deck) == 1
+
+
+
