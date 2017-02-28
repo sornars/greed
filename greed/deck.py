@@ -252,3 +252,26 @@ class HalloweenJackParis(Card):
 
     def on_discard(self, game, tableau):
         tableau.cash += 20000
+
+class ViciousSydVarney(Card):
+    def __init__(self):
+        super().__init__(
+            card_type=CardType.THUG,
+            priority=63,
+            name='"Vicious" Syd Varney',
+            rules_text='Next turn, you ignore costs.',
+            icons=Icons(guns=1)
+        )
+
+    def when_played(self, game, tableau):
+        orig_play_card = tableau.play_card
+        next_round = game.current_round + 1
+        def ignore_costs_next_turn(tableau, game, card, ignore_costs=False, ignore_needs=False):
+            ignore_costs = ignore_costs
+            if game.current_round == next_round:
+                ignore_costs = True
+            orig_play_card(game, card, ignore_costs, ignore_needs)
+
+        tableau.play_card = types.MethodType(ignore_costs_next_turn, tableau)
+
+

@@ -316,9 +316,26 @@ def test_friendlyguscaspar_when_played_and_on_discard(mock_input):
     player_1.play_card(game, card_2)
     assert player_1.cash == 15000
 
-def test_halloweenjackparis():
+def test_halloweenjackparis_on_discard():
     hjp = greed.deck.HalloweenJackParis()
     player_1 = greed.Tableau('Test Player 1')
     game = greed.Game((player_1,))
     hjp.on_discard(game, player_1)
     assert player_1.cash == 20000
+
+@patch('builtins.input', return_value='0')
+def test_vicioussydvarney_when_played(mock_input):
+    vsv = greed.deck.ViciousSydVarney()
+    player_1 = greed.Tableau('Test Player 1')
+    game = greed.Game((player_1,))
+    vsv.when_played(game, player_1)
+    player_1.cash += 10000
+    game.current_round += 1
+    card_1 = greed.Card(greed.card.CardType.THUG, 1, 'Test Card 1', costs=[greed.card.Cost(cash=5000)])
+    player_1.play_card(game, card_1)
+    assert player_1.cash == 10000
+    game.current_round += 1
+    card_2 = greed.Card(greed.card.CardType.THUG, 1, 'Test Card 1', costs=[greed.card.Cost(cash=5000)])
+    player_1.play_card(game, card_2)
+    assert player_1.cash == 5000
+
