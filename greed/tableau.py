@@ -50,6 +50,7 @@ class Tableau:
     def play_card(self, game, card, ignore_costs=False, ignore_needs=False):
         cost_paid = ignore_costs
         needs_met = ignore_needs
+        card_played = False
         if cost_paid is False:
             cost_paid, discarded_thugs, discarded_holdings = self.pay_cost(game, card.costs)
             for discarded_card in discarded_thugs + discarded_holdings:
@@ -57,6 +58,7 @@ class Tableau:
         if needs_met is False:
             needs_met = self.check_needs(card.needs)
         if cost_paid and needs_met:
+            card_played = True
             card.when_played(game, self)
             if card.card_type is CardType.THUG:
                 self.thugs.append(card)
@@ -68,6 +70,7 @@ class Tableau:
         else:
             # Card discarded without effect
             game.discard_deck.append(card)
+        return card_played
 
     def calculate_icons(self):
         icons = Icons(thugs=len(self.thugs), holdings=len(self.holdings))

@@ -208,3 +208,36 @@ class PeepingTomThumb(Card):
                 if holding.markers > most_markers:
                     most_markers = holding.markers
         tableau.cash += 5000 * most_markers
+
+class FriendlyGusCaspar(Card):
+    def __init__(self):
+        super().__init__(
+            card_type=CardType.THUG,
+            priority=61,
+            name='"Friendly" Gus Caspar',
+            rules_text='When you play another THUG, gain $15,000.',
+            needs=Icons(guns=1, cars=1),
+            icons=Icons(keys=2)
+        )
+
+    def when_played(self, game, tableau):
+        orig_play_card = tableau.play_card
+        def gain_15000_when_thug_played(tableau, game, card, ignore_costs=False, ignore_needs=False):
+            card_played = orig_play_card(game, card, ignore_costs=False, ignore_needs=False)
+            if card.card_type is CardType.THUG and card_played:
+                tableau.cash += 15000
+            return card_played
+
+        tableau.play_card = types.MethodType(gain_15000_when_thug_played, tableau)
+
+
+
+    def on_discard(self, game, tableau):
+        orig_play_card = tableau.play_card
+        def disable_gain_15000_when_thug_played(tableau, game, card, ignore_costs=False, ignore_needs=False):
+            card_played = orig_play_card(game, card, ignore_costs=False, ignore_needs=False)
+            if card.card_type is CardType.THUG and card_played:
+                tableau.cash -= 15000
+            return card_played
+
+        tableau.play_card = types.MethodType(disable_gain_15000_when_thug_played, tableau)

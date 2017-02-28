@@ -301,3 +301,17 @@ def test_peepingtomthumb_when_played():
     player_2.holdings.append(card_2)
     ptt.when_played(game, player_1)
     assert player_1.cash == 25000
+
+@patch('builtins.input', return_value='0')
+def test_friendlyguscaspar_when_played_and_on_discard(mock_input):
+    fgc = greed.deck.FriendlyGusCaspar()
+    player_1 = greed.Tableau('Test Player 1')
+    card_1 = greed.Card(greed.card.CardType.THUG, 1, 'Test Card 1')
+    game = greed.Game((player_1,))
+    fgc.when_played(game, player_1)
+    player_1.play_card(game, card_1)
+    assert player_1.cash == 15000
+    card_2 = greed.Card(greed.card.CardType.THUG, 1, 'Test Card 2')
+    fgc.on_discard(game, player_1)
+    player_1.play_card(game, card_2)
+    assert player_1.cash == 15000
