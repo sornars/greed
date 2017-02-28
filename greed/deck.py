@@ -401,4 +401,32 @@ class NataschaTheSquirrelRubin(Card):
     def each_turn(self, game, tableau):
         tableau.cash += 5000
 
+class NothingbeatsRockBenson(Card):
+    def __init__(self):
+        super().__init__(
+            card_type=CardType.THUG,
+            priority=70,
+            name='"Nothing beats" Rock Benson',
+            rules_text='When you play an ACTION, gain $5,000 afterwards.',
+            icons=Icons(guns=1)
+        )
 
+    def when_played(self, game, tableau):
+        orig_play_card = tableau.play_card
+        def gain_5000_when_action_played(tableau, game, card, ignore_costs=False, ignore_needs=False):
+            card_played = orig_play_card(game, card, ignore_costs=False, ignore_needs=False)
+            if card.card_type is CardType.ACTION and card_played:
+                tableau.cash += 5000
+            return card_played
+
+        tableau.play_card = types.MethodType(gain_5000_when_action_played, tableau)
+
+    def on_discard(self, game, tableau):
+        orig_play_card = tableau.play_card
+        def disable_gain_5000_when_action_played(tableau, game, card, ignore_costs=False, ignore_needs=False):
+            card_played = orig_play_card(game, card, ignore_costs=False, ignore_needs=False)
+            if card.card_type is CardType.ACTION and card_played:
+                tableau.cash -= 5000
+            return card_played
+
+        tableau.play_card = types.MethodType(disable_gain_5000_when_action_played, tableau)

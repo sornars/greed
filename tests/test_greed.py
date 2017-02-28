@@ -418,3 +418,16 @@ def test_nataschathesquirrelrubin_each_turn():
     ntsr.each_turn(game, player_1)
     assert player_1.cash == 5000
 
+@patch('builtins.input', return_value='0')
+def test_nothingbeatsrockbenson_when_played_and_on_discard(mock_input):
+    nbrb = greed.deck.NothingbeatsRockBenson()
+    player_1 = greed.Tableau('Test Player 1')
+    card_1 = greed.Card(greed.card.CardType.ACTION, 1, 'Test Card 1')
+    game = greed.Game((player_1,))
+    nbrb.when_played(game, player_1)
+    player_1.play_card(game, card_1)
+    assert player_1.cash == 5000
+    card_2 = greed.Card(greed.card.CardType.ACTION, 1, 'Test Card 2')
+    nbrb.on_discard(game, player_1)
+    player_1.play_card(game, card_2)
+    assert player_1.cash == 5000
