@@ -230,8 +230,6 @@ class FriendlyGusCaspar(Card):
 
         tableau.play_card = types.MethodType(gain_15000_when_thug_played, tableau)
 
-
-
     def on_discard(self, game, tableau):
         orig_play_card = tableau.play_card
         def disable_gain_15000_when_thug_played(tableau, game, card, ignore_costs=False, ignore_needs=False):
@@ -241,3 +239,16 @@ class FriendlyGusCaspar(Card):
             return card_played
 
         tableau.play_card = types.MethodType(disable_gain_15000_when_thug_played, tableau)
+
+class HalloweenJackParis(Card):
+    def __init__(self):
+        super().__init__(
+            card_type=CardType.THUG,
+            priority=62,
+            name='"Halloween" Jack Paris',
+            rules_text='When you lose this THUG, gain $20,000.',
+            icons=Icons(keys=1)
+        )
+
+    def on_discard(self, game, tableau):
+        tableau.cash += 20000

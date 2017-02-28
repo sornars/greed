@@ -315,3 +315,10 @@ def test_friendlyguscaspar_when_played_and_on_discard(mock_input):
     fgc.on_discard(game, player_1)
     player_1.play_card(game, card_2)
     assert player_1.cash == 15000
+
+def test_halloweenjackparis():
+    hjp = greed.deck.HalloweenJackParis()
+    player_1 = greed.Tableau('Test Player 1')
+    game = greed.Game((player_1,))
+    hjp.on_discard(game, player_1)
+    assert player_1.cash == 20000
