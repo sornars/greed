@@ -803,3 +803,35 @@ class ThievesHouse(Card):
             needs=Icons(keys=2),
             icons=Icons(wrenches=1, alcohol=1)
         )
+
+class Loanshark(Card):
+    def __init__(self):
+        super().__init__(
+            card_type=CardType.HOLDING,
+            priority=44,
+            name='Loanshark',
+            rules_text='Gain $20,000. When you play a HOLDING, remove a marker from it.'
+        )
+
+    def when_played(self, game, tableau):
+        tableau.cash += 20000
+        orig_place_markers = tableau.place_markers
+
+        def remove_marker(tableau, card):
+            orig_place_markers_result = orig_place_markers(card)
+            if orig_place_markers_result >= 1:
+                card.markers -= 1
+            return orig_place_markers_result
+
+        tableau.place_markers = types.MethodType(remove_marker, tableau)
+
+    def on_discard(self, game, tableau):
+        orig_place_markers = tableau.place_markers
+
+        def disable_remove_marker(tableau, card):
+            orig_place_markers_result = orig_place_markers(card)
+            if orig_place_markers_result >= 1:
+                card.markers += 1
+            return orig_place_markers_result
+
+        tableau.place_markers = types.MethodType(disable_remove_marker, tableau)

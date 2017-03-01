@@ -93,6 +93,7 @@ class Tableau:
     def place_markers(self, card):
         total_markers = self._calculate_markers(card)
         card.markers += total_markers
+        return total_markers
 
     def select_option(self, options):
         if options:

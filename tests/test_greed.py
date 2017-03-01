@@ -631,3 +631,17 @@ def test_sexysadies_each_turn():
     ss.markers = 3
     ss.each_turn(game, player_1)
     assert player_1.cash == 5000
+
+def test_loanshark_when_played():
+    ls = greed.deck.Loanshark()
+    player_1 = greed.Tableau('Test Player 1')
+    game = greed.Game((player_1,))
+    ls.when_played(game, player_1)
+    assert player_1.cash == 20000
+    card_1 = greed.Card(greed.card.CardType.HOLDING, 1, 'Test Card 1', icons=greed.card.Icons(hearts=1))
+    player_1.place_markers(card_1)
+    assert card_1.markers == 0
+    card_2 = greed.Card(greed.card.CardType.HOLDING, 2, 'Test Card 2', icons=greed.card.Icons(hearts=1))
+    ls.on_discard(game, player_1)
+    player_1.place_markers(card_2)
+    assert card_2.markers == 1
