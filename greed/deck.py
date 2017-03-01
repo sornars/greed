@@ -835,3 +835,29 @@ class Loanshark(Card):
             return orig_place_markers_result
 
         tableau.place_markers = types.MethodType(disable_remove_marker, tableau)
+
+class DaisysCookies(Card):
+    def __init__(self):
+        super().__init__(
+            card_type=CardType.HOLDING,
+            priority=9,
+            name='Daisy\'s Cookies',
+            costs=[Cost(cash=10000)],
+            icons=Icons(wrenches=1, hearts=1)
+        )
+
+class PoorHouse(Card):
+    def __init__(self):
+        super().__init__(
+            card_type=CardType.HOLDING,
+            priority=16,
+            name='Poor House',
+            rules_text='Each turn: If you have at most 2 HOLDINGS and '
+                       'at most 2 THUGS, gain $5,000.',
+            costs=[Cost(cash=10000)],
+            icons=Icons(wrenches=1)
+        )
+
+    def each_turn(self, game, tableau):
+        if len(tableau.holdings) <= 2 and len(tableau.thugs) <= 2:
+            tableau.cash += 5000

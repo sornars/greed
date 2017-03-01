@@ -645,3 +645,22 @@ def test_loanshark_when_played():
     ls.on_discard(game, player_1)
     player_1.place_markers(card_2)
     assert card_2.markers == 1
+
+def test_poorhouse_each_turn():
+    ph = greed.deck.PoorHouse()
+    player_1 = greed.Tableau('Test Player 1')
+    game = greed.Game((player_1,))
+    ph.each_turn(game, player_1)
+    assert player_1.cash == 5000
+    card_1 = greed.Card(greed.card.CardType.HOLDING, 1, 'Test Card 1')
+    card_2 = greed.Card(greed.card.CardType.THUG, 1, 'Test Card 1')
+    player_1.holdings.append(card_1)
+    player_1.holdings.append(card_1)
+    player_1.thugs.append(card_2)
+    player_1.thugs.append(card_2)
+    ph.each_turn(game, player_1)
+    assert player_1.cash == 10000
+    player_1.holdings.append(card_1)
+    ph.each_turn(game, player_1)
+    assert player_1.cash == 10000
+
