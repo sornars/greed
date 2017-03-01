@@ -55,6 +55,26 @@ class Icons:
         self.thugs = thugs
         self.holdings = holdings
 
+    def __eq__(self, other):
+        return (True if self.guns == other.guns and
+                self.cars == other.cars and
+                self.keys == other.keys and
+                self.alcohol == other.alcohol and
+                self.hearts == other.hearts and
+                self.wrenches == other.wrenches and
+                self.thugs == other.thugs and
+                self.holdings == other.holdings else False)
+
+    def __lt__(self, other):
+        return (True if self.guns < other.guns and
+                self.cars < other.cars and
+                self.keys < other.keys and
+                self.alcohol < other.alcohol and
+                self.hearts < other.hearts and
+                self.wrenches < other.wrenches and
+                self.thugs < other.thugs and
+                self.holdings < other.holdings else False)
+
     def __le__(self, other):
         return (True if self.guns <= other.guns and
                 self.cars <= other.cars and

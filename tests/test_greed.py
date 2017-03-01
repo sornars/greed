@@ -447,3 +447,14 @@ def test_eugenethebutchermidge_when_played_and_on_discard(mock_input):
     etbm.on_discard(game, player_1)
     player_1.play_card(game, card_3)
     assert player_1.cash == 15000
+
+@patch('builtins.input', return_value='0')
+def test_tednapoleonbonham_when_played(mock_input):
+    tnb = greed.deck.TedNapoleonBonham()
+    player_1 = greed.Tableau('Test Player 1')
+    game = greed.Game((player_1,))
+    tnb.when_played(game, player_1)
+    game.start_round()
+    assert tnb.icons == greed.card.Icons(guns=1, cars=1, keys=1)
+    game.start_round()
+    assert tnb.icons == greed.card.Icons(cars=1)
