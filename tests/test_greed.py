@@ -495,3 +495,21 @@ def test_jackcrackerjohnson_when_played():
     assert player_2.cash == 10000
     assert player_3.cash == 0
 
+def test_dollsoncall_each_turn():
+    doc = greed.deck.DollsOnCall()
+    player_1 = greed.Tableau('Test Player 1')
+    card_1 = greed.Card(greed.card.CardType.HOLDING, 1, 'Test Card 1')
+    player_1.holdings.append(card_1)
+    player_2 = greed.Tableau('Test Player 2')
+    card_2 = greed.Card(greed.card.CardType.HOLDING, 2, 'Test Card 2')
+    card_3 = greed.Card(greed.card.CardType.HOLDING, 3, 'Test Card 3')
+    player_2.holdings.append(card_2)
+    game = greed.Game((player_1, player_2))
+    doc.each_turn(game, player_1)
+    assert player_1.cash == 0
+    assert player_2.cash == 0
+    player_2.holdings.append(card_3)
+    doc.each_turn(game, player_1)
+    assert player_1.cash == 0
+    assert player_2.cash == 5000
+

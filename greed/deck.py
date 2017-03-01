@@ -6,7 +6,38 @@ from .tableau import Tableau
 
 def create_draw_deck():
     # TODO: Implement actual list of cards
-    return [Card(random.choice(list(CardType)), i, 'Test Card {0}'.format(i)) for i in range(80)]
+    draw_deck = [Card(random.choice(list(CardType)), i, 'Test Card {0}'.format(i)) for i in range(55)] + generate_thugs()
+    random.shuffle(draw_deck)
+    return draw_deck
+
+def generate_thugs():
+    return [
+        HarveyBrainsRatcliffe(),
+        BiscuitsOMalley(),
+        KingRichardTheThird(),
+        DickieFlushDiamond(),
+        EdCheeseclothMcGuinty(),
+        GenerousJennieJones(),
+        MickeyIstari(),
+        WolfgangButtercup(),
+        PolycephalusPatriciaJones(),
+        EdRubberfaceTeach(),
+        PeepingTomThumb(),
+        FriendlyGusCaspar(),
+        HalloweenJackParis(),
+        ViciousSydVarney(),
+        RottenJohnnySimmons(),
+        RandomScrubPatterson(),
+        StingyStanMcDowell(),
+        LouieSavoirOFarrell(),
+        PeteRepeatFell(),
+        NataschaTheSquirrelRubin(),
+        NothingbeatsRockBenson(),
+        EugeneTheButcherMidge(),
+        TedNapoleonBonham(),
+        BobbyCourduroyBrown(),
+        JackCrackerThompson()
+    ]
 
 class HarveyBrainsRatcliffe(Card):
     def __init__(self):
@@ -522,3 +553,21 @@ class JackCrackerThompson(Card):
                     player.cash = new_value
                 else:
                     player.cash = 0
+
+class DollsOnCall(Card):
+    def __init__(self):
+        super().__init__(
+            card_type=CardType.HOLDING,
+            priority=10,
+            name='Dolls On Call',
+            rules_text='Each Turn: If one player has the most HOLDINGS, that player gain $5,000.',
+            icons=Icons(hearts=1)
+        )
+
+    def each_turn(self, game, tableau):
+        max_holdings_count = max([len(player.holdings) for player in game.players])
+        max_holdings = [player for player in game.players if len(player.holdings) == max_holdings_count]
+        if len(max_holdings) == 1:
+            max_holdings[0].cash += 5000
+
+
