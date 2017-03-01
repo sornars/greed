@@ -458,3 +458,17 @@ def test_tednapoleonbonham_when_played(mock_input):
     assert tnb.icons == greed.card.Icons(guns=1, cars=1, keys=1)
     game.start_round()
     assert tnb.icons == greed.card.Icons(cars=1)
+
+def test_bobbycourduroybrown_when_played():
+    bcb = greed.deck.BobbyCourduroyBrown()
+    player_1 = greed.Tableau('Test Player 1')
+    player_1.cash = 15000
+    player_2 = greed.Tableau('Test Player 2')
+    player_2.cash = 15000
+    player_3 = greed.Tableau('Test Player 3')
+    player_3.cash = 5000
+    game = greed.Game((player_1, player_2, player_3))
+    bcb.when_played(game, player_1)
+    assert player_1.cash == 15000
+    assert player_2.cash == 5000
+    assert player_3.cash == 0

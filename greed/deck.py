@@ -476,7 +476,7 @@ class TedNapoleonBonham(Card):
         orig_start_round = game.start_round
         current_round = game.current_round
         def gain_gun_and_key_icons_next_turn(game):
-            # Round incremened in start_round
+            # Round incremented in start_round
             if game.current_round == current_round:
                 self.icons = Icons(guns=1, cars=1, keys=1)
             else:
@@ -484,3 +484,22 @@ class TedNapoleonBonham(Card):
             return orig_start_round()
 
         game.start_round = types.MethodType(gain_gun_and_key_icons_next_turn, game)
+
+class BobbyCourduroyBrown(Card):
+    def __init__(self):
+        super().__init__(
+            card_type=CardType.THUG,
+            priority=76,
+            name='Bobby "Courduroy" Brown',
+            rules_text='Each opponent lose $10,000.',
+            icons=Icons(guns=1)
+        )
+
+    def when_played(self, game, tableau):
+        for player in game.players:
+            if player != tableau:
+                new_value = player.cash - 10000
+                if new_value > 0:
+                    player.cash = new_value
+                else:
+                    player.cash = 0
