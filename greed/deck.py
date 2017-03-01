@@ -588,3 +588,16 @@ class TommysCashNAmmo(Card):
                 for holding in player.holdings:
                     if holding.markers >= 1:
                         holding.markers -= 1
+
+class Hideout(Card):
+    def __init__(self):
+        super().__init__(
+            card_type=CardType.HOLDING,
+            priority=55,
+            name='Hideout',
+            rules_text='Do all of the rules of all of your THUGS played in previous turns.',
+        )
+
+    def when_played(self, game, tableau):
+        for thug in tableau.thugs:
+            thug.when_played(game, tableau)

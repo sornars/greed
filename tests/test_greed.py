@@ -530,3 +530,13 @@ def test_tommyscashnammo_when_played():
     assert card_1.markers == 3
     assert card_2.markers == 2
     assert card_3.markers == 0
+
+@patch.object(greed.card.Card, 'when_played')
+def test_hideout_when_played(mock_when_played):
+    h = greed.deck.Hideout()
+    player_1 = greed.Tableau('Test Player 1')
+    card_1 = greed.Card(greed.card.CardType.THUG, 1, 'Test Card 1')
+    player_1.thugs.append(card_1)
+    game = greed.Game((player_1,))
+    h.when_played(game, player_1)
+    mock_when_played.assert_called_once()
