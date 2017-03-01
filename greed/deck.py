@@ -793,3 +793,13 @@ class SexySadies(Card):
     def each_turn(self, game, tableau):
         if self.markers >= 3:
             tableau.cash += 5000
+
+class ThievesHouse(Card):
+    def __init__(self):
+        super().__init__(
+            card_type=CardType.HOLDING,
+            priority=51,
+            name='Thieves\' House',
+            needs=Icons(keys=2),
+            icons=Icons(wrenches=1, alcohol=1)
+        )
