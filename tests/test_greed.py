@@ -664,3 +664,24 @@ def test_poorhouse_each_turn():
     ph.each_turn(game, player_1)
     assert player_1.cash == 10000
 
+def test_jennyswaterfrontdive_each_turn():
+    jwd = greed.deck.JennysWaterfrontDive()
+    player_1 = greed.Tableau('Test Player 1')
+    player_2 = greed.Tableau('Test Player 1')
+    game = greed.Game((player_1, player_2))
+    jwd.each_turn(game, player_1)
+    assert player_1.cash == 10000
+    card_1 = greed.Card(greed.card.CardType.HOLDING, 1, 'Test Card 1', icons=greed.card.Icons(wrenches=1))
+    player_2.holdings.append(card_1)
+    jwd.each_turn(game, player_1)
+    assert player_1.cash == 20000
+    card_2 = greed.Card(greed.card.CardType.HOLDING, 1, 'Test Card 1', icons=greed.card.Icons(hearts=1))
+    player_2.holdings.append(card_2)
+    jwd.each_turn(game, player_1)
+    assert player_1.cash == 20000
+    player_2.holdings.pop()
+    card_3 = greed.Card(greed.card.CardType.HOLDING, 1, 'Test Card 1', icons=greed.card.Icons(alcohol=1))
+    player_2.holdings.append(card_2)
+    jwd.each_turn(game, player_1)
+    assert player_1.cash == 20000
+

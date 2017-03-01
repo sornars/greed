@@ -861,3 +861,22 @@ class PoorHouse(Card):
     def each_turn(self, game, tableau):
         if len(tableau.holdings) <= 2 and len(tableau.thugs) <= 2:
             tableau.cash += 5000
+
+class JennysWaterfrontDive(Card):
+    def __init__(self):
+        super().__init__(
+            card_type=CardType.HOLDING,
+            priority=46,
+            name='Jenny\'s Waterfront Dive',
+            rules_text='Each turn: If there are no ALCOHOL or HEART HOLDINGS in play, gain $10,000.'
+        )
+
+    def each_turn(self, game, tableau):
+        active = True
+        for player in game.players:
+            icons = player.calculate_icons()
+            if icons.alcohol > 0 or icons.hearts > 0:
+                active = False
+
+        if active:
+            tableau.cash += 10000
