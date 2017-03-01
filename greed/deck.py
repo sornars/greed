@@ -761,8 +761,18 @@ class MorticiasAbsintheParlor(Card):
     def __init__(self):
         super().__init__(
             card_type=CardType.HOLDING,
-            priority=48,
+            priority=14,
             name='Morticia\'s Absinthe Parlor',
             costs=[Cost(cash=10000)],
             icons=Icons(alcohol=1, hearts=1)
+        )
+
+class Chinatown(Card):
+    def __init__(self):
+        super().__init__(
+            card_type=CardType.HOLDING,
+            priority=8,
+            name='Chinatown',
+            costs=[Cost(cash=10000)],
+            icons=Icons(wrenches=1, alcohol=1)
         )
