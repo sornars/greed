@@ -601,3 +601,20 @@ class Hideout(Card):
     def when_played(self, game, tableau):
         for thug in tableau.thugs:
             thug.when_played(game, tableau)
+
+class TrotskysBurlesque(Card):
+    def __init__(self):
+        super().__init__(
+            card_type=CardType.HOLDING,
+            priority=19,
+            name='Trotsky\'s Burlesque',
+            rules_text='Each Turn: If one player has the most HEARTS, that player gains $5,000.',
+            costs=[Cost(cash=15000)],
+            icons=Icons(hearts=1)
+        )
+
+    def each_turn(self, game, tableau):
+        max_hearts_count = max([player.calculate_icons().hearts for player in game.players])
+        max_hearts = [player for player in game.players if player.calculate_icons().hearts == max_hearts_count]
+        if len(max_hearts) == 1:
+            max_hearts[0].cash += 5000
