@@ -25,6 +25,7 @@ class Tableau:
 
     def pay_cost(self, game, card):
         cost = self.select_option(card.costs)
+        card.costs.append(cost)
         cost_paid = False
         discarded_thugs = []
         discarded_holdings = []

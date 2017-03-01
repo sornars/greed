@@ -880,3 +880,34 @@ class JennysWaterfrontDive(Card):
 
         if active:
             tableau.cash += 10000
+
+class SandysSnookerNSchanpps(Card):
+    def __init__(self):
+        super().__init__(
+            card_type=CardType.HOLDING,
+            priority=17,
+            name='Sandy\'s Snooker \'N\' Schnapps',
+            rules_text='When you plan an ACTION, place a marker on this afterwards.',
+            costs=[Cost(cash=20000)],
+            icons=Icons(alcohol=1)
+        )
+
+    def when_played(self, game, tableau):
+        orig_play_card = tableau.play_card
+        def gain_marker_when_action_played(tableau, game, card, ignore_costs=False, ignore_needs=False):
+            card_played = orig_play_card(game, card, ignore_costs=False, ignore_needs=False)
+            if card.card_type is CardType.ACTION and card_played:
+                self.markers += 1
+            return card_played
+
+        tableau.play_card = types.MethodType(gain_marker_when_action_played, tableau)
+
+    def on_discard(self, game, tableau):
+        orig_play_card = tableau.play_card
+        def disable_gain_marker_when_action_played(tableau, game, card, ignore_costs=False, ignore_needs=False):
+            card_played = orig_play_card(game, card, ignore_costs=False, ignore_needs=False)
+            if card.card_type is CardType.ACTION and card_played:
+                self.markers -= 1
+            return card_played
+
+        tableau.play_card = types.MethodType(disable_gain_marker_when_action_played, tableau)

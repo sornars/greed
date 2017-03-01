@@ -681,7 +681,19 @@ def test_jennyswaterfrontdive_each_turn():
     assert player_1.cash == 20000
     player_2.holdings.pop()
     card_3 = greed.Card(greed.card.CardType.HOLDING, 1, 'Test Card 1', icons=greed.card.Icons(alcohol=1))
-    player_2.holdings.append(card_2)
+    player_1.holdings.append(card_3)
     jwd.each_turn(game, player_1)
     assert player_1.cash == 20000
 
+@patch('builtins.input', return_value='0')
+def test_sandyssnookernschnapps_when_played(mock_input):
+    ssns = greed.deck.SandysSnookerNSchanpps()
+    player_1 = greed.Tableau('Test Player 1')
+    game = greed.Game((player_1,))
+    ssns.when_played(game, player_1)
+    card = greed.Card(greed.card.CardType.ACTION, 1, 'Test Card 1')
+    player_1.play_card(game, card)
+    assert ssns.markers == 1
+    ssns.on_discard(game, player_1)
+    player_1.play_card(game, card)
+    assert ssns.markers == 1
