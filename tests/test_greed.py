@@ -595,3 +595,10 @@ def test_zoningoffice_when_played_and_on_discard(mock_input):
     assert len(player_1.holdings) == 2
     assert player_1.cash == 0
 
+def test_bookiejoint_end_of_game():
+    bj = greed.deck.BookieJoint()
+    player_1 = greed.Tableau('Test Player 1')
+    game = greed.Game((player_1,))
+    bj.markers = 3
+    bj.end_of_game(game, player_1)
+    assert player_1.cash == 15000

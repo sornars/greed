@@ -708,3 +708,17 @@ class ZoningOffice(Card):
             return orig_pay_cost(game, new_card)
 
         tableau.pay_cost = types.MethodType(disable_reduce_holding_costs_by_5000_and_gain_5000_per_holding, tableau)
+
+class BookieJoint(Card):
+    def __init__(self):
+        super().__init__(
+            card_type=CardType.HOLDING,
+            priority=7,
+            name='Bookie Joint',
+            rules_text='At the end of the game, gain an extra $5,000 for each marker on this.',
+            costs=[Cost(cash=10000)],
+            icons=Icons(wrenches=1)
+        )
+
+    def end_of_game(self, game, tableau):
+        tableau.cash += 5000 * self.markers
