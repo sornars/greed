@@ -697,3 +697,13 @@ def test_sandyssnookernschnapps_when_played(mock_input):
     ssns.on_discard(game, player_1)
     player_1.play_card(game, card)
     assert ssns.markers == 1
+
+def test_six_corners():
+    sc = greed.deck.SixCorners()
+    player_1 = greed.Tableau('Test Player 1')
+    game = greed.Game((player_1,))
+    card = greed.Card(greed.card.CardType.HOLDING, 1, 'Test Card 1')
+    player_1.holdings.append(card)
+    sc.when_played(game, player_1)
+    assert card.markers == 1
+    assert sc.markers == 1

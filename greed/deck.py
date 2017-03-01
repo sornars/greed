@@ -911,3 +911,29 @@ class SandysSnookerNSchanpps(Card):
             return card_played
 
         tableau.play_card = types.MethodType(disable_gain_marker_when_action_played, tableau)
+
+class KrazyKatClub(Card):
+    def __init__(self):
+        super().__init__(
+            card_type=CardType.HOLDING,
+            priority=47,
+            name='Krazy Kat Club',
+            needs=[Icons(guns=2)],
+            icons=Icons(alcohol=1, hearts=1)
+        )
+
+class SixCorners(Card):
+    def __init__(self):
+        super().__init__(
+            card_type=CardType.HOLDING,
+            priority=50,
+            name='Six Corners',
+            rules_text='Place a marker on each of your HOLDINGS with no icons'
+                       ' (ALCOHOL, HEART, WRENCH).',
+        )
+
+    def when_played(self, game, tableau):
+        for holding in tableau.holdings:
+            if holding.icons == Icons():
+                holding.markers += 1
+        self.markers += 1
