@@ -618,3 +618,17 @@ class TrotskysBurlesque(Card):
         max_hearts = [player for player in game.players if player.calculate_icons().hearts == max_hearts_count]
         if len(max_hearts) == 1:
             max_hearts[0].cash += 5000
+
+class JoesGinJoint(Card):
+    def __init__(self):
+        super().__init__(
+            card_type=CardType.HOLDING,
+            priority=11,
+            name='Joe\'s Gin Joint',
+            rules_text='Place 2 extra markers on this.',
+            costs=[Cost(cash=15000)],
+            icons=Icons(alcohol=1)
+        )
+
+    def when_played(self, game, tableau):
+        self.markers += 2

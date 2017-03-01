@@ -552,3 +552,10 @@ def test_trotskysburlesque_each_turn():
     game = greed.Game((player_1, player_2))
     tb.each_turn(game, player_1)
     assert player_1.cash == 5000
+
+def test_joesginjoint_when_played():
+    jgj = greed.deck.JoesGinJoint()
+    player_1 = greed.Tableau('Test Player 1')
+    game = greed.Game((player_1,))
+    jgj.when_played(game, player_1)
+    assert jgj.markers == 2
