@@ -612,3 +612,12 @@ def test_headquarters_when_played():
     player_1.holdings.append(card)
     hq.when_played(game, player_1)
     assert hq.markers == 3
+
+def test_paddyspub_when_played():
+    pp = greed.deck.PaddysPub()
+    player_1 = greed.Tableau('Test Player 1')
+    game = greed.Game((player_1,))
+    card = greed.Card(greed.card.CardType.THUG, 1, 'Test Card 1', icons=greed.card.Icons(cars=3))
+    player_1.thugs.append(card)
+    pp.when_played(game, player_1)
+    assert pp.markers == 3

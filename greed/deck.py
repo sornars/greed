@@ -744,3 +744,15 @@ class Headquarters(Card):
 
     def when_played(self, game, tableau):
         self.markers += len(tableau.holdings) + 1
+
+class PaddysPub(Card):
+    def __init__(self):
+        super().__init__(
+            card_type=CardType.HOLDING,
+            priority=15,
+            name='Paddy\'s Pub',
+            needs=Icons(alcohol=1)
+        )
+
+    def when_played(self, game, tableau):
+        self.markers += tableau.calculate_icons().cars
