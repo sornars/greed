@@ -23,8 +23,8 @@ class Tableau:
         draft_card = self.select_option(draft_deck)
         self.hand.append(draft_card)
 
-    def pay_cost(self, game, costs):
-        cost = self.select_option(costs)
+    def pay_cost(self, game, card):
+        cost = self.select_option(card.costs)
         cost_paid = False
         discarded_thugs = []
         discarded_holdings = []
@@ -52,7 +52,7 @@ class Tableau:
         needs_met = ignore_needs
         card_played = False
         if cost_paid is False:
-            cost_paid, discarded_thugs, discarded_holdings = self.pay_cost(game, card.costs)
+            cost_paid, discarded_thugs, discarded_holdings = self.pay_cost(game, card)
             for discarded_card in discarded_thugs + discarded_holdings:
                 game.discard_card(self, discarded_card)
         if needs_met is False:

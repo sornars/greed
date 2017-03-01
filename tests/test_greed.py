@@ -81,8 +81,8 @@ def test_harveybrainsratcliffe_when_played():
 def test_tableau_pay_cost_subtracts_cost(mock_input):
     player_1 = greed.Tableau('Test Player 1', 10000)
     game = greed.Game((player_1,))
-    cost = greed.card.Cost(5000)
-    player_1.pay_cost(game, [cost])
+    card = greed.Card(greed.card.CardType.THUG, 1, 'Test Card 1', costs=[greed.card.Cost(5000)])
+    player_1.pay_cost(game, card)
     assert player_1.cash == 5000
 
 def test_tableau_check_needs_returns_true_or_false():
@@ -116,20 +116,20 @@ def test_tableau_play_card_extends_holdings(mock_input):
 def test_tableau_pay_cost_removes_thugs(mock_input):
     player_1 = greed.Tableau('Test Player 1')
     game = greed.Game((player_1,))
-    card = greed.Card(greed.card.CardType.THUG, 'Test Card', 1)
-    player_1.thugs.append(card)
-    cost = greed.card.Cost(thugs=1)
-    player_1.pay_cost(game, [cost])
+    card_1 = greed.Card(greed.card.CardType.THUG, 'Test Card 1', 1)
+    player_1.thugs.append(card_1)
+    card_2 = greed.Card(greed.card.CardType.THUG, 'Test Card 2', 2, costs=[greed.card.Cost(thugs=1)])
+    player_1.pay_cost(game, card_2)
     assert len(player_1.thugs) == 0
 
 @patch('builtins.input', return_value='0')
 def test_tableau_pay_cost_removes_holdings(mock_input):
     player_1 = greed.Tableau('Test Player 1')
     game = greed.Game((player_1,))
-    card = greed.Card(greed.card.CardType.HOLDING, 'Test Card', 1)
-    player_1.holdings.append(card)
-    cost = greed.card.Cost(holdings=1)
-    player_1.pay_cost(game, [cost])
+    card_1 = greed.Card(greed.card.CardType.HOLDING, 'Test Card 1', 1)
+    player_1.holdings.append(card_1)
+    card_2 = greed.Card(greed.card.CardType.THUG, 'Test Card 2', 2, costs=[greed.card.Cost(holdings=1)])
+    player_1.pay_cost(game, card_2)
     assert len(player_1.holdings) == 0
 
 @patch('builtins.input', return_value='0')
@@ -370,10 +370,11 @@ def test_stingystanmcdowell_when_played(mock_input):
     player_1.cash = 15000
     game = greed.Game((player_1,))
     ssm.when_played(game, player_1)
-    player_1.pay_cost(game, [greed.card.Cost(cash=10000)])
+    card = greed.Card(greed.card.CardType.THUG, 1, 'Test Card 1', costs=[greed.card.Cost(cash=10000)])
+    player_1.pay_cost(game, card)
     assert player_1.cash == 10000
     ssm.on_discard(game, player_1)
-    player_1.pay_cost(game, [greed.card.Cost(cash=10000)])
+    player_1.pay_cost(game, card)
     assert player_1.cash == 0
 
 @patch('builtins.input', return_value='0')
@@ -576,3 +577,21 @@ def test_junkyard_when_played_and_end_of_game():
     assert j.markers == 0
     j.end_of_game(game, player_1)
     assert j.markers == 1
+
+@patch('builtins.input', return_value='0')
+def test_zoningoffice_when_played_and_on_discard(mock_input):
+    zo = greed.deck.ZoningOffice()
+    player_1 = greed.Tableau('Test Player 1')
+    player_1.cash += 10000
+    game = greed.Game((player_1,))
+    zo.when_played(game, player_1)
+    card_1 = greed.Card(greed.card.CardType.HOLDING, 1, 'Test Card 1', costs=[greed.card.Cost(cash=10000)])
+    player_1.play_card(game, card_1)
+    assert len(player_1.holdings) == 1
+    assert player_1.cash == 10000
+    zo.on_discard(game, player_1)
+    card_2 = greed.Card(greed.card.CardType.HOLDING, 2, 'Test Card 2', costs=[greed.card.Cost(cash=10000)])
+    player_1.play_card(game, card_2)
+    assert len(player_1.holdings) == 2
+    assert player_1.cash == 0
+

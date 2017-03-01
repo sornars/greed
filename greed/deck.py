@@ -355,23 +355,25 @@ class StingyStanMcDowell(Card):
 
     def when_played(self, game, tableau):
         orig_pay_cost = tableau.pay_cost
-        def reduce_costs_by_5000(tableau, game, costs):
-            reduced_costs = [Cost(cost.cash, cost.thugs, cost.holdings) for cost in costs]
+        def reduce_costs_by_5000(tableau, game, card):
+            reduced_costs = [Cost(cost.cash, cost.thugs, cost.holdings) for cost in card.costs]
             for cost in reduced_costs:
                 if cost.cash >= 5000:
                     cost.cash -= 5000
-            return orig_pay_cost(game, reduced_costs)
+            new_card = Card(card.card_type, card.priority, card.name, costs=reduced_costs)
+            return orig_pay_cost(game, new_card)
 
         tableau.pay_cost = types.MethodType(reduce_costs_by_5000, tableau)
 
     def on_discard(self, game, tableau):
         orig_pay_cost = tableau.pay_cost
-        def disable_reduce_costs_by_5000(tableau, game, costs):
-            increased_costs = [Cost(cost.cash, cost.thugs, cost.holdings) for cost in costs]
+        def disable_reduce_costs_by_5000(tableau, game, card):
+            increased_costs = [Cost(cost.cash, cost.thugs, cost.holdings) for cost in card.costs]
             for cost in increased_costs:
                 if cost.cash >= 5000:
                     cost.cash += 5000
-            return orig_pay_cost(game, increased_costs)
+            new_card = Card(card.card_type, card.priority, card.name, costs=increased_costs)
+            return orig_pay_cost(game, new_card)
 
         tableau.pay_cost = types.MethodType(disable_reduce_costs_by_5000, tableau)
 
@@ -665,3 +667,44 @@ class Junkyard(Card):
     def end_of_game(self, game, tableau):
         total_markers = tableau._calculate_markers(self)
         self.markers += total_markers
+
+class ZoningOffice(Card):
+    def __init__(self):
+        super().__init__(
+            card_type=CardType.HOLDING,
+            priority=52,
+            name='Zoning Office',
+            rules_text='When you play another HOLDING, gain $5,000.'
+                       'HOLDINGS cost you $5,000 less.'
+        )
+
+    def when_played(self, game, tableau):
+        orig_pay_cost = tableau.pay_cost
+        def reduce_holding_costs_by_5000_and_gain_5000_per_holding(tableau, game, card):
+            new_card = card
+            if card.card_type is CardType.HOLDING:
+                reduced_costs = [Cost(cost.cash, cost.thugs, cost.holdings) for cost in card.costs]
+                for cost in reduced_costs:
+                    if cost.cash >= 5000:
+                        cost.cash -= 5000
+                tableau.cash += 5000
+                new_card = Card(card.card_type, card.priority, card.name, costs=reduced_costs)
+
+            return orig_pay_cost(game, new_card)
+
+        tableau.pay_cost = types.MethodType(reduce_holding_costs_by_5000_and_gain_5000_per_holding, tableau)
+
+    def on_discard(self, game, tableau):
+        orig_pay_cost = tableau.pay_cost
+        def disable_reduce_holding_costs_by_5000_and_gain_5000_per_holding(tableau, game, card):
+            new_card = card
+            if card.card_type is CardType.HOLDING:
+                increased_costs = [Cost(cost.cash, cost.thugs, cost.holdings) for cost in card.costs]
+                for cost in increased_costs:
+                    if cost.cash >= 5000:
+                        cost.cash += 5000
+                tableau.cash -= 5000
+                new_card = Card(card.card_type, card.priority, card.name, costs=increased_costs)
+            return orig_pay_cost(game, new_card)
+
+        tableau.pay_cost = types.MethodType(disable_reduce_holding_costs_by_5000_and_gain_5000_per_holding, tableau)
