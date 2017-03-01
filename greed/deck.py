@@ -561,6 +561,7 @@ class DollsOnCall(Card):
             priority=10,
             name='Dolls On Call',
             rules_text='Each Turn: If one player has the most HOLDINGS, that player gain $5,000.',
+            costs=[Cost(cash=15000)],
             icons=Icons(hearts=1)
         )
 
@@ -570,4 +571,20 @@ class DollsOnCall(Card):
         if len(max_holdings) == 1:
             max_holdings[0].cash += 5000
 
+class TommysCashNAmmo(Card):
+    def __init__(self):
+        super().__init__(
+            card_type=CardType.HOLDING,
+            priority=58,
+            name='Tommy\'s Cash \'N\' Ammo',
+            rules_text='Each opponent removes a marker from each of their HOLDINGS.',
+            costs=[Cost(holdings=1)],
+            icons=Icons(wrenches=1)
+        )
 
+    def when_played(self, game, tableau):
+        for player in game.players:
+            if player != tableau:
+                for holding in player.holdings:
+                    if holding.markers >= 1:
+                        holding.markers -= 1

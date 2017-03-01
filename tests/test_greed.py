@@ -513,3 +513,20 @@ def test_dollsoncall_each_turn():
     assert player_1.cash == 0
     assert player_2.cash == 5000
 
+def test_tommyscashnammo_when_played():
+    tcna = greed.deck.TommysCashNAmmo()
+    player_1 = greed.Tableau('Test Player 1')
+    card_1 = greed.Card(greed.card.CardType.HOLDING, 1, 'Test Card 1')
+    card_1.markers = 3
+    player_2 = greed.Tableau('Test Player 2')
+    card_2 = greed.Card(greed.card.CardType.HOLDING, 2, 'Test Card 2')
+    card_2.markers = 3
+    card_3 = greed.Card(greed.card.CardType.HOLDING, 3, 'Test Card 3')
+    card_3.markers = 0
+    player_2.holdings.append(card_2)
+    player_2.holdings.append(card_3)
+    game = greed.Game((player_1, player_2))
+    tcna.when_played(game, player_1)
+    assert card_1.markers == 3
+    assert card_2.markers == 2
+    assert card_3.markers == 0
