@@ -566,3 +566,13 @@ def test_theritz_when_played():
     game = greed.Game((player_1,))
     tr.when_played(game, player_1)
     assert tr.markers == 5
+
+def test_junkyard_when_played_and_end_of_game():
+    j = greed.deck.Junkyard()
+    player_1 = greed.Tableau('Test Player 1')
+    game = greed.Game((player_1,))
+    j.when_played(game, player_1)
+    player_1.place_markers(j)
+    assert j.markers == 0
+    j.end_of_game(game, player_1)
+    assert j.markers == 1

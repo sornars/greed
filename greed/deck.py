@@ -646,3 +646,22 @@ class TheRitz(Card):
 
     def when_played(self, game, tableau):
         self.markers += 5
+
+class Junkyard(Card):
+    def __init__(self):
+        super().__init__(
+            card_type=CardType.HOLDING,
+            priority=12,
+            name='Junkyard',
+            rules_text='This gets its normal markers at the end of the game rather than when played.',
+            costs=[Cost(cash=10000)],
+            icons=Icons(wrenches=1)
+        )
+
+    def when_played(self, game, tableau):
+        total_markers = tableau._calculate_markers(self)
+        self.markers = total_markers * -1
+
+    def end_of_game(self, game, tableau):
+        total_markers = tableau._calculate_markers(self)
+        self.markers += total_markers
