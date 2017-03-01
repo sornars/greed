@@ -722,3 +722,25 @@ class BookieJoint(Card):
 
     def end_of_game(self, game, tableau):
         tableau.cash += 5000 * self.markers
+
+class MassageParlour(Card):
+    def __init__(self):
+        super().__init__(
+            card_type=CardType.HOLDING,
+            priority=48,
+            name='Massage Parlour',
+            needs=Icons(cars=2),
+            icons=Icons(hearts=1, wrenches=1)
+        )
+
+class Headquarters(Card):
+    def __init__(self):
+        super().__init__(
+            card_type=CardType.HOLDING,
+            priority=37,
+            name='Headquarters',
+            needs=Icons(guns=1, keys=1)
+        )
+
+    def when_played(self, game, tableau):
+        self.markers += len(tableau.holdings) + 1

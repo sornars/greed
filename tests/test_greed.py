@@ -602,3 +602,13 @@ def test_bookiejoint_end_of_game():
     bj.markers = 3
     bj.end_of_game(game, player_1)
     assert player_1.cash == 15000
+
+def test_headquarters_when_played():
+    hq = greed.deck.Headquarters()
+    player_1 = greed.Tableau('Test Player 1')
+    game = greed.Game((player_1,))
+    card = greed.Card(greed.card.CardType.HOLDING, 1, 'Test Card 1')
+    player_1.holdings.append(card)
+    player_1.holdings.append(card)
+    hq.when_played(game, player_1)
+    assert hq.markers == 3
