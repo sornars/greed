@@ -686,7 +686,7 @@ def test_jennyswaterfrontdive_each_turn():
     assert player_1.cash == 20000
 
 @patch('builtins.input', return_value='0')
-def test_sandyssnookernschnapps_when_played(mock_input):
+def test_sandyssnookernschnapps_when_played_and_on_discard(mock_input):
     ssns = greed.deck.SandysSnookerNSchanpps()
     player_1 = greed.Tableau('Test Player 1')
     game = greed.Game((player_1,))
@@ -698,7 +698,7 @@ def test_sandyssnookernschnapps_when_played(mock_input):
     player_1.play_card(game, card)
     assert ssns.markers == 1
 
-def test_six_corners():
+def test_six_corners_when_played():
     sc = greed.deck.SixCorners()
     player_1 = greed.Tableau('Test Player 1')
     game = greed.Game((player_1,))
@@ -707,3 +707,19 @@ def test_six_corners():
     sc.when_played(game, player_1)
     assert card.markers == 1
     assert sc.markers == 1
+
+def test_lamontesescortservice_end_of_game():
+    les = greed.deck.LamontesEscortService()
+    player_1 = greed.Tableau('Test Player 1')
+    player_2 = greed.Tableau('Test Player 2')
+    game = greed.Game((player_1, player_2))
+    card = greed.Card(greed.card.CardType.THUG, 1, 'Test Card 1')
+    player_1.thugs.append(card)
+    player_2.thugs.append(card)
+    les.end_of_game(game, player_1)
+    assert player_1.cash == 0
+    assert player_2.cash == 0
+    player_1.thugs.append(card)
+    les.end_of_game(game, player_1)
+    assert player_1.cash == 20000
+    assert player_2.cash == 0

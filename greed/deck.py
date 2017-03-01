@@ -937,3 +937,22 @@ class SixCorners(Card):
             if holding.icons == Icons():
                 holding.markers += 1
         self.markers += 1
+
+class LamontesEscortService(Card):
+    def __init__(self):
+        super().__init__(
+            card_type=CardType.HOLDING,
+            priority=13,
+            name='Lamonte\'s Escort Service',
+            rules_text='At the end of the game, '
+                       'if you are the one player with the most THUGS, '
+                       'gain $20,000.',
+            costs=[Cost(cash=5000)],
+            icons=Icons(hearts=1)
+        )
+
+    def end_of_game(self, game, tableau):
+        max_thugs_count = max([len(player.thugs) for player in game.players])
+        max_thugs = [player for player in game.players if len(player.thugs) == max_thugs_count]
+        if len(max_thugs) == 1 and max_thugs[0] == tableau:
+            max_thugs[0].cash += 20000
