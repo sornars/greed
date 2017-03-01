@@ -621,3 +621,13 @@ def test_paddyspub_when_played():
     player_1.thugs.append(card)
     pp.when_played(game, player_1)
     assert pp.markers == 3
+
+def test_sexysadies_each_turn():
+    ss = greed.deck.SexySadies()
+    player_1 = greed.Tableau('Test Player 1')
+    game = greed.Game((player_1,))
+    ss.each_turn(game, player_1)
+    assert player_1.cash == 0
+    ss.markers = 3
+    ss.each_turn(game, player_1)
+    assert player_1.cash == 5000

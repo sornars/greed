@@ -739,6 +739,7 @@ class Headquarters(Card):
             card_type=CardType.HOLDING,
             priority=37,
             name='Headquarters',
+            rules_text='Place a marker on this for each HOLDING you have.',
             needs=Icons(guns=1, keys=1)
         )
 
@@ -751,6 +752,7 @@ class PaddysPub(Card):
             card_type=CardType.HOLDING,
             priority=15,
             name='Paddy\'s Pub',
+            rules_text='Place an extra marker on this for each CAR you have.',
             needs=Icons(alcohol=1)
         )
 
@@ -776,3 +778,18 @@ class Chinatown(Card):
             costs=[Cost(cash=10000)],
             icons=Icons(wrenches=1, alcohol=1)
         )
+
+class SexySadies(Card):
+    def __init__(self):
+        super().__init__(
+            card_type=CardType.HOLDING,
+            priority=49,
+            name='Sexy Sadie\'s',
+            rules_text='Each turn: If this HOLDING has at least 3 markers on it, gain $5,000.',
+            needs=Icons(cars=1),
+            icons=Icons(hearts=1)
+        )
+
+    def each_turn(self, game, tableau):
+        if self.markers >= 3:
+            tableau.cash += 5000
