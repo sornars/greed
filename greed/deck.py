@@ -503,3 +503,22 @@ class BobbyCourduroyBrown(Card):
                     player.cash = new_value
                 else:
                     player.cash = 0
+
+class JackCrackerThompson(Card):
+    def __init__(self):
+        super().__init__(
+            card_type=CardType.THUG,
+            priority=76,
+            name='Jack "Cracker" Thompson',
+            rules_text='Each other player loses $5,000 for each HOLDING that player has.',
+            icons=Icons(keys=1)
+        )
+
+    def when_played(self, game, tableau):
+        for player in game.players:
+            if player != tableau:
+                new_value = player.cash - (5000 * len(player.holdings))
+                if new_value > 0:
+                    player.cash = new_value
+                else:
+                    player.cash = 0

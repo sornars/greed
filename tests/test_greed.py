@@ -436,7 +436,7 @@ def test_nothingbeatsrockbenson_when_played_and_on_discard(mock_input):
 def test_eugenethebutchermidge_when_played_and_on_discard(mock_input):
     etbm = greed.deck.EugeneTheButcherMidge()
     player_1 = greed.Tableau('Test Player 1')
-    card_1 = greed.Card(greed.card.CardType.ACTION, 1, 'Test Card 1', icons=greed.card.Icons(guns=3))
+    card_1 = greed.Card(greed.card.CardType.THUG, 1, 'Test Card 1', icons=greed.card.Icons(guns=3))
     card_2 = greed.Card(greed.card.CardType.ACTION, 2, 'Test Card 2')
     player_1.thugs.append(card_1)
     game = greed.Game((player_1,))
@@ -472,3 +472,26 @@ def test_bobbycourduroybrown_when_played():
     assert player_1.cash == 15000
     assert player_2.cash == 5000
     assert player_3.cash == 0
+
+def test_jackcrackerjohnson_when_played():
+    jct = greed.deck.JackCrackerThompson()
+    player_1 = greed.Tableau('Test Player 1')
+    player_1.cash = 15000
+    card_1 = greed.Card(greed.card.CardType.HOLDING, 1, 'Test Card 1')
+    player_1.holdings.append(card_1)
+    player_2 = greed.Tableau('Test Player 2')
+    player_2.cash = 15000
+    card_2 = greed.Card(greed.card.CardType.HOLDING, 2, 'Test Card 2')
+    player_2.holdings.append(card_2)
+    player_3 = greed.Tableau('Test Player 3')
+    player_3.cash = 5000
+    card_3 = greed.Card(greed.card.CardType.HOLDING, 3, 'Test Card 3')
+    card_4 = greed.Card(greed.card.CardType.HOLDING, 4, 'Test Card 4')
+    player_3.holdings.append(card_3)
+    player_3.holdings.append(card_4)
+    game = greed.Game((player_1, player_2, player_3))
+    jct.when_played(game, player_1)
+    assert player_1.cash == 15000
+    assert player_2.cash == 10000
+    assert player_3.cash == 0
+
