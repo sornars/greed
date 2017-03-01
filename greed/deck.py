@@ -632,3 +632,17 @@ class JoesGinJoint(Card):
 
     def when_played(self, game, tableau):
         self.markers += 2
+
+class TheRitz(Card):
+    def __init__(self):
+        super().__init__(
+            card_type=CardType.HOLDING,
+            priority=18,
+            name='The Ritz',
+            rules_text='Place 5 extra markers on this.',
+            costs=[Cost(cash=30000)],
+            icons=Icons(alcohol=1)
+        )
+
+    def when_played(self, game, tableau):
+        self.markers += 5

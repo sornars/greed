@@ -559,3 +559,10 @@ def test_joesginjoint_when_played():
     game = greed.Game((player_1,))
     jgj.when_played(game, player_1)
     assert jgj.markers == 2
+
+def test_theritz_when_played():
+    tr = greed.deck.TheRitz()
+    player_1 = greed.Tableau('Test Player 1')
+    game = greed.Game((player_1,))
+    tr.when_played(game, player_1)
+    assert tr.markers == 5
