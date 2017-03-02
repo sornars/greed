@@ -383,7 +383,7 @@ class LouieSavoirOFarrell(Card):
             card_type=CardType.THUG,
             priority=67,
             name='Louie "Savoir" O\'Farrell',
-            rules_text='Next turn, after all played cards resolve, play n extra card.',
+            rules_text='Next turn, after all played cards resolve, play an extra card.',
             icons=Icons(cars=1, keys=1)
         )
 
@@ -956,3 +956,36 @@ class LamontesEscortService(Card):
         max_thugs = [player for player in game.players if len(player.thugs) == max_thugs_count]
         if len(max_thugs) == 1 and max_thugs[0] == tableau:
             max_thugs[0].cash += 20000
+
+class InsuranceOffice(Card):
+    def __init__(self):
+        super().__init__(
+            card_type=CardType.HOLDING,
+            priority=45,
+            name='Insurance Office',
+            rules_text='When you lose a THUG or another HOLDING, '
+                       'place 2 markers on this. '
+                       'You can\'t lose markers from this HOLDING.'
+        )
+
+    @Card.markers.setter
+    def markers(self, value):
+        if self._markers < value:
+            self._markers = value
+
+    def when_played(self, game, tableau):
+        orig_discard_thug = tableau.discard_thug
+
+        def add_2_markers_when_thug_discarded(tableau, game):
+            self.markers += 2
+            return orig_discard_thug(game)
+
+        tableau.discard_thug = types.MethodType(add_2_markers_when_thug_discarded, tableau)
+
+        orig_discard_holding = tableau.discard_holding
+
+        def add_2_markers_when_holding_discarded(tableau, game):
+            self.markers += 2
+            return orig_discard_holding(game)
+
+        tableau.discard_holding = types.MethodType(add_2_markers_when_holding_discarded, tableau)

@@ -11,7 +11,15 @@ class Card:
         self.costs = costs if costs else [Cost()]
         self.needs = needs if needs else Icons()
         self.icons = icons if icons else Icons()
-        self.markers = 0
+        self._markers = 0
+
+    @property
+    def markers(self):
+        return self._markers
+
+    @markers.setter
+    def markers(self, value):
+        self._markers = value
 
     def when_played(self, game, tableau):
         pass

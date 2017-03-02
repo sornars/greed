@@ -4,7 +4,7 @@ class Tableau:
     def __init__(self, player_name, cash=0, thugs=None, holdings=None, hand=None):
         self.patched_setters = {}
         self.player_name = player_name
-        self.cash = cash
+        self._cash = cash
         self.thugs = thugs if thugs else []
         self.holdings = holdings if holdings else []
         self.hand = hand if hand else []
@@ -23,6 +23,16 @@ class Tableau:
         draft_card = self.select_option(draft_deck)
         self.hand.append(draft_card)
 
+    def discard_thug(self, game):
+        discarded_thug = self.select_option(self.thugs)
+        discarded_thug.on_discard(game, self)
+        return discarded_thug
+
+    def discard_holding(self, game):
+        discarded_holding = self.select_option(self.holdings)
+        discarded_holding.on_discard(game, self)
+        return discarded_holding
+
     def pay_cost(self, game, card):
         cost = self.select_option(card.costs)
         card.costs.append(cost)
@@ -34,12 +44,10 @@ class Tableau:
             cost.holdings <= len(self.holdings)):
             self.cash -= cost.cash
             for thug in range(cost.thugs):
-                discarded_thug = self.select_option(self.thugs)
-                discarded_thug.on_discard(game, self)
+                discarded_thug = self.discard_thug(game)
                 discarded_thugs.append(discarded_thug)
             for holding in range(cost.holdings):
-                discarded_holding = self.select_option(self.holdings)
-                discarded_holding.on_discard(game, self)
+                discarded_holding = self.discard_holding(game)
                 discarded_holdings.append(discarded_holding)
             cost_paid = True
         return cost_paid, discarded_thugs, discarded_holdings

@@ -723,3 +723,22 @@ def test_lamontesescortservice_end_of_game():
     les.end_of_game(game, player_1)
     assert player_1.cash == 20000
     assert player_2.cash == 0
+
+@patch('builtins.input', return_value='0')
+def test_insuranceoffice_when_played(mock_input):
+    io = greed.deck.InsuranceOffice()
+    player_1 = greed.Tableau('Test Player 1')
+    game = greed.Game((player_1,))
+    card_1 = greed.Card(greed.card.CardType.THUG, 1, 'Test Card 1')
+    card_2 = greed.Card(greed.card.CardType.HOLDING, 2, 'Test Card 2')
+    player_1.thugs.append(card_1)
+    player_1.holdings.append(card_2)
+    io.when_played(game, player_1)
+    player_1.discard_thug(game)
+    assert io.markers == 2
+    player_1.discard_holding(game)
+    assert io.markers == 4
+    io.markers -= 1
+    assert io.markers == 4
+    io.markers += 1
+    assert io.markers == 5
