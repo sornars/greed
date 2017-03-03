@@ -567,7 +567,7 @@ class JackCrackerThompson(Card):
     def when_played(self, game, tableau):
         for player in game.players:
             if player != tableau:
-                new_value = player.cash - (5000 * len(player.holdings))
+                new_value = player.cash - (5000 * player.calculate_icons().holdings)
                 if new_value > 0:
                     player.cash = new_value
                 else:
@@ -585,8 +585,8 @@ class DollsOnCall(Card):
         )
 
     def each_turn(self, game, tableau):
-        max_holdings_count = max([len(player.holdings) for player in game.players])
-        max_holdings = [player for player in game.players if len(player.holdings) == max_holdings_count]
+        max_holdings_count = max([player.calculate_icons().holdings for player in game.players])
+        max_holdings = [player for player in game.players if player.calculate_icons().holdings == max_holdings_count]
         if len(max_holdings) == 1:
             max_holdings[0].cash += 5000
 
@@ -761,7 +761,7 @@ class Headquarters(Card):
         )
 
     def when_played(self, game, tableau):
-        self.markers += len(tableau.holdings) + 1
+        self.markers += tableau.calculate_icons().holdings + 1
 
 class PaddysPub(Card):
     def __init__(self):
@@ -876,7 +876,7 @@ class PoorHouse(Card):
         )
 
     def each_turn(self, game, tableau):
-        if len(tableau.holdings) <= 2 and len(tableau.thugs) <= 2:
+        if tableau.calculate_icons().holdings <= 2 and tableau.calculate_icons().thugs <= 2:
             tableau.cash += 5000
 
 class JennysWaterfrontDive(Card):
@@ -965,8 +965,8 @@ class LamontesEscortService(Card):
         )
 
     def end_of_game(self, game, tableau):
-        max_thugs_count = max([len(player.thugs) for player in game.players])
-        max_thugs = [player for player in game.players if len(player.thugs) == max_thugs_count]
+        max_thugs_count = max([player.calculate_icons().thugs for player in game.players])
+        max_thugs = [player for player in game.players if player.calculate_icons().thugs == max_thugs_count]
         if len(max_thugs) == 1 and max_thugs[0] == tableau:
             max_thugs[0].cash += 20000
 
@@ -1028,3 +1028,17 @@ class Shakedown(Card):
                 return orig_play_thug(game, card)
 
             player.play_thug = types.MethodType(gain_10000_when_thug_played_this_turn, player)
+
+class Arson(Card):
+    def __init__(self):
+        super().__init__(
+            card_type=CardType.ACTION,
+            priority=75,
+            name='Arson',
+            rules_text='Each opponent loses $10,000 for each THUG you have.'
+        )
+
+    def when_played(self, game, tableau):
+        for player in game.players:
+            if player != tableau:
+                player.cash -= 10000 * tableau.calculate_icons().thugs

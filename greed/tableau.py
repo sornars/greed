@@ -18,6 +18,8 @@ class Tableau:
         if 'cash' in self.patched_setters:
             self.patched_setters['cash'](self.cash, value)
         self._cash = value
+        if self._cash < 0:
+            self._cash = 0
 
     def draft_card(self, draft_deck):
         draft_card = self.select_option(draft_deck)

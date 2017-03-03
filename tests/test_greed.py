@@ -746,9 +746,9 @@ def test_insuranceoffice_when_played(mock_input):
 def test_shakedown_when_played():
     s = greed.deck.Shakedown()
     player_1 = greed.Tableau('Test Player 1')
-    player_2 = greed.Tableau('Test Player 1')
-    player_3 = greed.Tableau('Test Player 1')
-    player_4 = greed.Tableau('Test Player 1')
+    player_2 = greed.Tableau('Test Player 2')
+    player_3 = greed.Tableau('Test Player 3')
+    player_4 = greed.Tableau('Test Player 4')
     game = greed.Game((player_1, player_2, player_3, player_4))
     s.when_played(game, player_1)
     assert player_1.cash == 10000
@@ -759,3 +759,22 @@ def test_shakedown_when_played():
     assert player_1.cash == 20000
     player_4.play_thug(game, card_1)
     assert player_1.cash == 30000
+
+def test_tableau_cash_cannot_be_negative():
+    player_1 = greed.Tableau('Test Player 1')
+    player_1.cash = -1
+    assert player_1.cash == 0
+
+def test_arson_when_played():
+    a = greed.deck.Arson()
+    player_1 = greed.Tableau('Test Player 1')
+    player_1.cash = 25000
+    player_2 = greed.Tableau('Test Player 2')
+    player_2.cash = 25000
+    game = greed.Game((player_1, player_2))
+    card_1 = greed.Card(greed.card.CardType.THUG, 1, 'Test Card 1')
+    player_1.thugs.append(card_1)
+    player_1.thugs.append(card_1)
+    a.when_played(game, player_1)
+    assert player_1.cash == 25000
+    assert player_2.cash == 5000
