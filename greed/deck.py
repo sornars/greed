@@ -191,7 +191,6 @@ class WolfgangButtercup(Card):
 
     def when_played(self, game, tableau):
         orig_place_markers = tableau.place_markers
-
         def place_extra_marker(tableau, card):
             card.markers += 1
             return orig_place_markers(card)
@@ -200,10 +199,10 @@ class WolfgangButtercup(Card):
 
     def on_discard(self, game, tableau):
         orig_place_markers = tableau.place_markers
-
         def disable_place_extra_marker(tableau, card):
+            orig_place_markers_result = orig_place_markers(card)
             card.markers -= 1
-            return orig_place_markers(card)
+            return orig_place_markers_result
 
         tableau.place_markers = types.MethodType(disable_place_extra_marker, tableau)
 
@@ -672,18 +671,30 @@ class Junkyard(Card):
             card_type=CardType.HOLDING,
             priority=12,
             name='Junkyard',
-            rules_text='This gets its normal markers at the end of the game rather than when played.',
+            rules_text='This gets its normal markers at the end of the game '
+                       'rather than when played.',
             costs=[Cost(cash=10000)],
             icons=Icons(wrenches=1)
         )
 
     def when_played(self, game, tableau):
-        total_markers = tableau._calculate_markers(self)
-        self.markers = total_markers * -1
+        normal_markers = tableau._calculate_markers(self)
+        orig_place_markers = tableau.place_markers
+        def remove_normal_markers(tableau, card):
+            orig_place_markers_result = orig_place_markers(card)
+            if card == self:
+                card.markers -= normal_markers
+
+            return orig_place_markers_result
+
+        tableau.place_markers = types.MethodType(remove_normal_markers, tableau)
+
+    def each_turn_(self, game, tableau):
+        self.markers = self.markers
 
     def end_of_game(self, game, tableau):
-        total_markers = tableau._calculate_markers(self)
-        self.markers += total_markers
+        normal_markers = tableau._calculate_markers(self)
+        self.markers += normal_markers
 
 class ZoningOffice(Card):
     def __init__(self):
@@ -1073,7 +1084,7 @@ class StreetWalkers(Card):
     def __init__(self):
         super().__init__(
             card_type=CardType.ACTION,
-            priority=30,
+            priority=39,
             name='Street walkers!',
             rules_text='Place a marker on each of your HOLDINGS.',
             needs=Icons(hearts=1)
@@ -1082,3 +1093,19 @@ class StreetWalkers(Card):
     def when_played(self, game, tableau):
         for holding in tableau.holdings:
             holding.markers += 1
+
+class Raid(Card):
+    def __init__(self):
+        super().__init__(
+            card_type=CardType.ACTION,
+            priority=59,
+            name='Raid!',
+            rules_text='Each opponent removes a marker from each of their HOLDINGS.',
+            needs=Icons(guns=1)
+        )
+
+    def when_played(self, game, tableau):
+        for player in game.players:
+            if player != tableau:
+                for holding in player.holdings:
+                    holding.markers -= 1

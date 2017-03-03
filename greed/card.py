@@ -20,6 +20,8 @@ class Card:
     @markers.setter
     def markers(self, value):
         self._markers = value
+        if self._markers < 0:
+            self._markers = 0
 
     def when_played(self, game, tableau):
         pass

@@ -808,3 +808,19 @@ def test_streetwalkers_when_played():
     sw.when_played(game, player_1)
     assert card_1.markers == 1
     assert card_2.markers == 1
+
+def test_card_markers_cannot_be_negative():
+    card = greed.Card(greed.card.CardType.HOLDING, 1, 'Test Card 1')
+    card.markers = -1
+    assert card.markers == 0
+
+def test_raid_when_played():
+    r = greed.deck.Raid()
+    player_1 = greed.Tableau('Test Player 1')
+    player_2 = greed.Tableau('Test Player 2')
+    card = greed.Card(greed.card.CardType.HOLDING, 1, 'Test Card 1')
+    card.markers = 5
+    player_2.holdings.append(card)
+    game = greed.Game((player_1, player_2))
+    r.when_played(game, player_1)
+    assert card.markers == 4
