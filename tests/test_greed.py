@@ -778,3 +778,14 @@ def test_arson_when_played():
     a.when_played(game, player_1)
     assert player_1.cash == 25000
     assert player_2.cash == 5000
+
+def test_sting_when_played():
+    s = greed.deck.Sting()
+    player_1 = greed.Tableau('Test Player 1')
+    game = greed.Game((player_1,))
+    card_1 = greed.Card(greed.card.CardType.THUG, 1, 'Test Card 1', icons=greed.card.Icons(cars=3))
+    card_2 = greed.Card(greed.card.CardType.HOLDING, 1, 'Test Card 1', icons=greed.card.Icons(hearts=3))
+    player_1.thugs.append(card_1)
+    player_1.thugs.append(card_2)
+    s.when_played(game, player_1)
+    assert player_1.cash == 60000

@@ -1042,3 +1042,16 @@ class Arson(Card):
         for player in game.players:
             if player != tableau:
                 player.cash -= 10000 * tableau.calculate_icons().thugs
+
+class Sting(Card):
+    def __init__(self):
+        super().__init__(
+            card_type=CardType.ACTION,
+            priority=33,
+            name='Sting!',
+            rules_text='Gain $10,000 for each CAR you have and $10,000 for each HEART you have.'
+        )
+
+    def when_played(self, game, tableau):
+        total_icons = tableau.calculate_icons()
+        tableau.cash += 10000 * (total_icons.cars + total_icons.hearts)
