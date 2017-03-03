@@ -742,3 +742,20 @@ def test_insuranceoffice_when_played(mock_input):
     assert io.markers == 4
     io.markers += 1
     assert io.markers == 5
+
+def test_shakedown_when_played():
+    s = greed.deck.Shakedown()
+    player_1 = greed.Tableau('Test Player 1')
+    player_2 = greed.Tableau('Test Player 1')
+    player_3 = greed.Tableau('Test Player 1')
+    player_4 = greed.Tableau('Test Player 1')
+    game = greed.Game((player_1, player_2, player_3, player_4))
+    s.when_played(game, player_1)
+    assert player_1.cash == 10000
+    card_1 = greed.Card(greed.card.CardType.THUG, 1, 'Test Card 1')
+    player_2.play_thug(game, card_1)
+    assert player_1.cash == 20000
+    player_3.play_thug(game, card_1)
+    assert player_1.cash == 20000
+    player_4.play_thug(game, card_1)
+    assert player_1.cash == 30000

@@ -56,10 +56,19 @@ class Tableau:
         tableau_icons = self.calculate_icons()
         return True if needs <= tableau_icons else False
 
+    def play_thug(self, game, card):
+        self.thugs.append(card)
+
+    def play_holding(self, game, card):
+        self.holdings.append(card)
+        self.place_markers(card)
+
+    def play_action(self, game, card):
+        game.discard_card(self, card)
+
     def play_card(self, game, card, ignore_costs=False, ignore_needs=False):
         cost_paid = ignore_costs
         needs_met = ignore_needs
-        card_played = False
         if cost_paid is False:
             cost_paid, discarded_thugs, discarded_holdings = self.pay_cost(game, card)
             for discarded_card in discarded_thugs + discarded_holdings:
@@ -67,19 +76,16 @@ class Tableau:
         if needs_met is False:
             needs_met = self.check_needs(card.needs)
         if cost_paid and needs_met:
-            card_played = True
             card.when_played(game, self)
             if card.card_type is CardType.THUG:
-                self.thugs.append(card)
+                self.play_thug(game, card)
             elif card.card_type is CardType.HOLDING:
-                self.holdings.append(card)
-                self.place_markers(card)
-            else:
-                game.discard_card(self, card)
+                self.play_holding(game, card)
+            elif card.card_type is CardType.ACTION:
+                self.play_action(game, card)
         else:
             # Card discarded without effect
             game.discard_deck.append(card)
-        return card_played
 
     def calculate_icons(self):
         icons = Icons(thugs=len(self.thugs), holdings=len(self.holdings))

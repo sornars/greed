@@ -6,7 +6,7 @@ from .tableau import Tableau
 
 def create_draw_deck():
     # TODO: Implement actual list of cards
-    draw_deck = [Card(random.choice(list(CardType)), i, 'Test Card {0}'.format(i)) for i in range(55)] + generate_thugs()
+    draw_deck = [Card(random.choice(list(CardType)), i, 'Test Card {0}'.format(i)) for i in range(30)] + generate_thugs() + generate_holdings()
     random.shuffle(draw_deck)
     return draw_deck
 
@@ -37,6 +37,35 @@ def generate_thugs():
         TedNapoleonBonham(),
         BobbyCourduroyBrown(),
         JackCrackerThompson()
+    ]
+
+def generate_holdings():
+    return [
+        DollsOnCall(),
+        TommysCashNAmmo(),
+        Hideout(),
+        TrotskysBurlesque(),
+        JoesGinJoint(),
+        TheRitz(),
+        Junkyard(),
+        ZoningOffice(),
+        BookieJoint(),
+        MassageParlor(),
+        Headquarters(),
+        PaddysPub(),
+        MorticiasAbsintheParlor(),
+        Chinatown(),
+        SexySadies(),
+        ThievesHouse(),
+        Loanshark(),
+        DaisysCookies(),
+        PoorHouse(),
+        JennysWaterfrontDive(),
+        SandysSnookerNSchanpps(),
+        KrazyKatClub(),
+        SixCorners(),
+        LamontesEscortService(),
+        InsuranceOffice()
     ]
 
 class HarveyBrainsRatcliffe(Card):
@@ -252,24 +281,20 @@ class FriendlyGusCaspar(Card):
         )
 
     def when_played(self, game, tableau):
-        orig_play_card = tableau.play_card
-        def gain_15000_when_thug_played(tableau, game, card, ignore_costs=False, ignore_needs=False):
-            card_played = orig_play_card(game, card, ignore_costs=False, ignore_needs=False)
-            if card.card_type is CardType.THUG and card_played:
-                tableau.cash += 15000
-            return card_played
+        orig_play_thug = tableau.play_thug
+        def gain_15000_when_thug_played(tableau, game, card):
+            tableau.cash += 15000
+            return orig_play_thug(game, card)
 
-        tableau.play_card = types.MethodType(gain_15000_when_thug_played, tableau)
+        tableau.play_thug = types.MethodType(gain_15000_when_thug_played, tableau)
 
     def on_discard(self, game, tableau):
-        orig_play_card = tableau.play_card
-        def disable_gain_15000_when_thug_played(tableau, game, card, ignore_costs=False, ignore_needs=False):
-            card_played = orig_play_card(game, card, ignore_costs=False, ignore_needs=False)
-            if card.card_type is CardType.THUG and card_played:
-                tableau.cash -= 15000
-            return card_played
+        orig_play_thug = tableau.play_thug
+        def disable_gain_15000_when_thug_played(tableau, game, card):
+            tableau.cash -= 15000
+            return orig_play_thug(game, card)
 
-        tableau.play_card = types.MethodType(disable_gain_15000_when_thug_played, tableau)
+        tableau.play_thug = types.MethodType(disable_gain_15000_when_thug_played, tableau)
 
 class HalloweenJackParis(Card):
     def __init__(self):
@@ -445,24 +470,20 @@ class NothingbeatsRockBenson(Card):
         )
 
     def when_played(self, game, tableau):
-        orig_play_card = tableau.play_card
-        def gain_5000_when_action_played(tableau, game, card, ignore_costs=False, ignore_needs=False):
-            card_played = orig_play_card(game, card, ignore_costs=False, ignore_needs=False)
-            if card.card_type is CardType.ACTION and card_played:
-                tableau.cash += 5000
-            return card_played
+        orig_play_action = tableau.play_action
+        def gain_5000_when_action_played(tableau, game, card):
+            tableau.cash += 5000
+            return orig_play_action(game, card)
 
-        tableau.play_card = types.MethodType(gain_5000_when_action_played, tableau)
+        tableau.play_action = types.MethodType(gain_5000_when_action_played, tableau)
 
     def on_discard(self, game, tableau):
-        orig_play_card = tableau.play_card
-        def disable_gain_5000_when_action_played(tableau, game, card, ignore_costs=False, ignore_needs=False):
-            card_played = orig_play_card(game, card, ignore_costs=False, ignore_needs=False)
-            if card.card_type is CardType.ACTION and card_played:
-                tableau.cash -= 5000
-            return card_played
+        orig_play_action = tableau.play_action
+        def disable_gain_5000_when_action_played(tableau, game, card):
+            tableau.cash -= 5000
+            return orig_play_action(game, card)
 
-        tableau.play_card = types.MethodType(disable_gain_5000_when_action_played, tableau)
+        tableau.play_action = types.MethodType(disable_gain_5000_when_action_played, tableau)
 
 class EugeneTheButcherMidge(Card):
     def __init__(self):
@@ -476,24 +497,20 @@ class EugeneTheButcherMidge(Card):
         )
 
     def when_played(self, game, tableau):
-        orig_play_card = tableau.play_card
-        def gain_5000_per_gun_when_action_played(tableau, game, card, ignore_costs=False, ignore_needs=False):
-            card_played = orig_play_card(game, card, ignore_costs=False, ignore_needs=False)
-            if card.card_type is CardType.ACTION and card_played:
-                tableau.cash += 5000 * tableau.calculate_icons().guns
-            return card_played
+        orig_play_action = tableau.play_action
+        def gain_5000_per_gun_when_action_played(tableau, game, card):
+            tableau.cash += 5000 * tableau.calculate_icons().guns
+            return orig_play_action(game, card)
 
-        tableau.play_card = types.MethodType(gain_5000_per_gun_when_action_played, tableau)
+        tableau.play_action = types.MethodType(gain_5000_per_gun_when_action_played, tableau)
 
     def on_discard(self, game, tableau):
-        orig_play_card = tableau.play_card
-        def disable_gain_5000_per_gun_when_action_played(tableau, game, card, ignore_costs=False, ignore_needs=False):
-            card_played = orig_play_card(game, card, ignore_costs=False, ignore_needs=False)
-            if card.card_type is CardType.ACTION and card_played:
-                tableau.cash -= 5000 * tableau.calculate_icons().guns
-            return card_played
+        orig_play_action = tableau.play_action
+        def disable_gain_5000_per_gun_when_action_played(tableau, game, card):
+            tableau.cash -= 5000 * tableau.calculate_icons().guns
+            return orig_play_action(game, card)
 
-        tableau.play_card = types.MethodType(disable_gain_5000_per_gun_when_action_played, tableau)
+        tableau.play_action = types.MethodType(disable_gain_5000_per_gun_when_action_played, tableau)
 
 class TedNapoleonBonham(Card):
     def __init__(self):
@@ -893,24 +910,20 @@ class SandysSnookerNSchanpps(Card):
         )
 
     def when_played(self, game, tableau):
-        orig_play_card = tableau.play_card
-        def gain_marker_when_action_played(tableau, game, card, ignore_costs=False, ignore_needs=False):
-            card_played = orig_play_card(game, card, ignore_costs=False, ignore_needs=False)
-            if card.card_type is CardType.ACTION and card_played:
-                self.markers += 1
-            return card_played
+        orig_play_action = tableau.play_action
+        def gain_marker_when_action_played(tableau, game, card):
+            self.markers += 1
+            return orig_play_action(game, card)
 
-        tableau.play_card = types.MethodType(gain_marker_when_action_played, tableau)
+        tableau.play_action = types.MethodType(gain_marker_when_action_played, tableau)
 
     def on_discard(self, game, tableau):
-        orig_play_card = tableau.play_card
-        def disable_gain_marker_when_action_played(tableau, game, card, ignore_costs=False, ignore_needs=False):
-            card_played = orig_play_card(game, card, ignore_costs=False, ignore_needs=False)
-            if card.card_type is CardType.ACTION and card_played:
-                self.markers -= 1
-            return card_played
+        orig_play_action = tableau.play_action
+        def disable_gain_marker_when_action_played(tableau, game, card):
+            self.markers -= 1
+            return orig_play_action(game, card)
 
-        tableau.play_card = types.MethodType(disable_gain_marker_when_action_played, tableau)
+        tableau.play_action = types.MethodType(disable_gain_marker_when_action_played, tableau)
 
 class KrazyKatClub(Card):
     def __init__(self):
@@ -989,3 +1002,29 @@ class InsuranceOffice(Card):
             return orig_discard_holding(game)
 
         tableau.discard_holding = types.MethodType(add_2_markers_when_holding_discarded, tableau)
+
+class Shakedown(Card):
+    def __init__(self):
+        super().__init__(
+            card_type=CardType.ACTION,
+            priority=3,
+            name='Shakedown',
+            rules_text='Gain $10,000. When an adjactent player plays a THUG this turn, gain $10,000.'
+        )
+
+    def when_played(self, game, tableau):
+        tableau.cash += 10000
+        current_player = tableau
+        current_round = game.current_round
+        current_player_index = game.players.index(tableau)
+        left_player = [game.players[current_player_index - 1]] if len(game.players) >= 2 else []
+        right_player = [game.players[current_player_index + 1]] if len(game.players) > 2 else []
+        adjacent_players = left_player + right_player
+        for player in adjacent_players:
+            orig_play_thug = player.play_thug
+            def gain_10000_when_thug_played_this_turn(tableau, game, card):
+                if game.current_round == current_round:
+                    current_player.cash += 10000
+                return orig_play_thug(game, card)
+
+            player.play_thug = types.MethodType(gain_10000_when_thug_played_this_turn, player)
