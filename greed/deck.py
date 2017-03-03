@@ -1008,7 +1008,7 @@ class Shakedown(Card):
         super().__init__(
             card_type=CardType.ACTION,
             priority=3,
-            name='Shakedown',
+            name='Shakedown!',
             rules_text='Gain $10,000. When an adjactent player plays a THUG this turn, gain $10,000.'
         )
 
@@ -1034,7 +1034,7 @@ class Arson(Card):
         super().__init__(
             card_type=CardType.ACTION,
             priority=75,
-            name='Arson',
+            name='Arson!',
             rules_text='Each opponent loses $10,000 for each THUG you have.'
         )
 
@@ -1055,3 +1055,16 @@ class Sting(Card):
     def when_played(self, game, tableau):
         total_icons = tableau.calculate_icons()
         tableau.cash += 10000 * (total_icons.cars + total_icons.hearts)
+
+class MuseumHeist(Card):
+    def __init__(self):
+        super().__init__(
+            card_type=CardType.ACTION,
+            priority=30,
+            name='Museum heist!',
+            rules_text='Gain $25,000.',
+            needs=Icons(guns=1, cars=1, keys=1)
+        )
+
+    def when_played(self, game, tableau):
+        tableau.cash += 25000

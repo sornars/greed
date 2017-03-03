@@ -789,3 +789,10 @@ def test_sting_when_played():
     player_1.thugs.append(card_2)
     s.when_played(game, player_1)
     assert player_1.cash == 60000
+
+def test_museumheist_when_played():
+    mh = greed.deck.MuseumHeist()
+    player_1 = greed.Tableau('Test Player 1')
+    game = greed.Game((player_1,))
+    mh.when_played(game, player_1)
+    assert player_1.cash == 25000
