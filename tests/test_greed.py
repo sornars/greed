@@ -786,7 +786,7 @@ def test_sting_when_played():
     card_1 = greed.Card(greed.card.CardType.THUG, 1, 'Test Card 1', icons=greed.card.Icons(cars=3))
     card_2 = greed.Card(greed.card.CardType.HOLDING, 1, 'Test Card 1', icons=greed.card.Icons(hearts=3))
     player_1.thugs.append(card_1)
-    player_1.thugs.append(card_2)
+    player_1.holdings.append(card_2)
     s.when_played(game, player_1)
     assert player_1.cash == 60000
 
@@ -796,3 +796,15 @@ def test_museumheist_when_played():
     game = greed.Game((player_1,))
     mh.when_played(game, player_1)
     assert player_1.cash == 25000
+
+def test_streetwalkers_when_played():
+    sw = greed.deck.StreetWalkers()
+    player_1 = greed.Tableau('Test Player 1')
+    card_1 = greed.Card(greed.card.CardType.HOLDING, 1, 'Test Card 1')
+    card_2= greed.Card(greed.card.CardType.HOLDING, 1, 'Test Card 2')
+    player_1.holdings.append(card_1)
+    player_1.holdings.append(card_2)
+    game = greed.Game((player_1,))
+    sw.when_played(game, player_1)
+    assert card_1.markers == 1
+    assert card_2.markers == 1

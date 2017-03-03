@@ -1068,3 +1068,17 @@ class MuseumHeist(Card):
 
     def when_played(self, game, tableau):
         tableau.cash += 25000
+
+class StreetWalkers(Card):
+    def __init__(self):
+        super().__init__(
+            card_type=CardType.ACTION,
+            priority=30,
+            name='Street walkers!',
+            rules_text='Place a marker on each of your HOLDINGS.',
+            needs=Icons(hearts=1)
+        )
+
+    def when_played(self, game, tableau):
+        for holding in tableau.holdings:
+            holding.markers += 1
