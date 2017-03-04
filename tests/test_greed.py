@@ -852,3 +852,23 @@ def test_protectionracket_when_played():
     player_1.holdings.append(card)
     pr.when_played(game, player_1)
     assert player_1.cash == 10000
+
+@patch('builtins.input', return_value='0')
+def test_insurancescam_when_played(mock_input):
+    iscam = greed.deck.InsuranceScam()
+    player_1 = greed.Tableau('Test Player 1')
+    card_1 = greed.Card(greed.card.CardType.HOLDING, 1, 'Test Card 1')
+    card_1.markers = 3
+    player_1.holdings.append(card_1)
+    player_2 = greed.Tableau('Test Player 2')
+    card_2 = greed.Card(greed.card.CardType.HOLDING, 1, 'Test Card 1')
+    player_2.holdings.append(card_2)
+    game = greed.Game((player_1, player_2))
+    iscam.when_played(game, player_1)
+    assert player_1.cash == 15000
+    game.current_round += 1
+    game.end_round()
+    assert player_1.calculate_icons().holdings == 0
+    assert player_2.calculate_icons().holdings == 0
+
+

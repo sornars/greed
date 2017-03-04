@@ -1141,3 +1141,28 @@ class ProtectionRacket(Card):
         max_holdings = [player for player in game.players if player.calculate_icons().holdings == max_holdings_count]
         if len(max_holdings) == 1:
             tableau.cash += 5000 * max_holdings_count
+
+class InsuranceScam(Card):
+    def __init__(self):
+        super().__init__(
+            card_type=CardType.ACTION,
+            priority=5,
+            name='Insurance Scam!',
+            rules_text='Gain $5,000 for each marker on the HOLDING of yours with the most markers. '
+                       'At the end of next turn, each player (including you) '
+                       'loses a HOLDING they choose.',
+            needs=Icons(keys=1)
+        )
+
+    def when_played(self, game, tableau):
+        tableau.cash += 5000 * max([holding.markers for holding in tableau.holdings] or [0])
+        next_round = game.current_round + 1
+        orig_end_round = game.end_round
+        def lose_holding_end_of_next_turn(game):
+            if game.current_round == next_round:
+                for player in game.players:
+                    player.discard_holding(game)
+            orig_end_round()
+
+        game.end_round = types.MethodType(lose_holding_end_of_next_turn, game)
+
