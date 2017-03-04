@@ -837,3 +837,18 @@ def test_masterplan_when_played():
     player_1.cash += 5000
     assert player_1.cash == 15000
 
+def test_protectionracket_when_played():
+    pr = greed.deck.ProtectionRacket()
+    player_1 = greed.Tableau('Test Player 1')
+    player_2 = greed.Tableau('Test Player 2')
+    game = greed.Game((player_1, player_2))
+    card = greed.Card(greed.card.CardType.HOLDING, 1, 'Test Card 1')
+    pr.when_played(game, player_1)
+    assert player_1.cash == 0
+    player_1.holdings.append(card)
+    player_2.holdings.append(card)
+    pr.when_played(game, player_1)
+    assert player_1.cash == 0
+    player_1.holdings.append(card)
+    pr.when_played(game, player_1)
+    assert player_1.cash == 10000

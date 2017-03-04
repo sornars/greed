@@ -1126,3 +1126,18 @@ class MasterPlan(Card):
             orig_set_cash(cash)
 
         tableau._set_cash = types.MethodType(double_cash_gained_next_turn, tableau)
+
+class ProtectionRacket(Card):
+    def __init__(self):
+        super().__init__(
+            card_type=CardType.ACTION,
+            priority=60,
+            name='Protection Racket!',
+            rules_text='Gain $5,000 for each HOLDING the player with the most HOLDINGS has.'
+        )
+
+    def when_played(self, game, tableau):
+        max_holdings_count = max([player.calculate_icons().holdings for player in game.players])
+        max_holdings = [player for player in game.players if player.calculate_icons().holdings == max_holdings_count]
+        if len(max_holdings) == 1:
+            tableau.cash += 5000 * max_holdings_count
