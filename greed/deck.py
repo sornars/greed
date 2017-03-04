@@ -1244,4 +1244,15 @@ class StealIdeas(Card):
         if len(max_markers) == 1:
             selected_holding.markers += max_markers_count
 
+class InsiderTrading(Card):
+    def __init__(self):
+        super().__init__(
+            card_type=CardType.ACTION,
+            priority=29,
+            name='Insider Trading!',
+            rules_text='Gain $45,000.',
+            needs=Icons(cash=90000)
+        )
 
+    def when_played(self, game, tableau):
+        tableau.cash += 45000

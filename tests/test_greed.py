@@ -48,8 +48,8 @@ def test_icons_le():
     assert not icons_3 <= icons_1
 
 def test_icons_add():
-    icons_1 = greed.card.Icons(0, 1, 0, 1, 0, 1, 0, 1)
-    icons_2 = greed.card.Icons(1, 1, 1, 1, 1, 1, 1, 1)
+    icons_1 = greed.card.Icons(0, 1, 0, 1, 0, 1, 0, 1, 0)
+    icons_2 = greed.card.Icons(1, 1, 1, 1, 1, 1, 1, 1, 1)
     icons_3 = icons_1 + icons_2
     assert icons_3.guns == 1
     assert icons_3.cars == 2
@@ -57,8 +57,9 @@ def test_icons_add():
     assert icons_3.alcohol == 2
     assert icons_3.hearts == 1
     assert icons_3.wrenches == 2
-    assert icons_3.thugs == 1
-    assert icons_3.holdings == 2
+    assert icons_3.cash == 1
+    assert icons_3.thugs == 2
+    assert icons_3.holdings == 1
 
 def test_card_invalid_card_type_raises_valueerror():
     with pytest.raises(ValueError):
@@ -938,3 +939,10 @@ def test_stealideas_when_played(mock_input):
     card_3.markers = 5
     si.when_played(game, player_1)
     assert card_1.markers == 5
+
+def test_insidertrading_when_played():
+    si = greed.deck.InsiderTrading()
+    player_1 = greed.Tableau('Test Player 1')
+    game = greed.Game((player_1,))
+    si.when_played(game, player_1)
+    assert player_1.cash == 45000

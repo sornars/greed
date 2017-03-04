@@ -90,7 +90,7 @@ class Tableau:
             game.discard_deck.append(card)
 
     def calculate_icons(self):
-        icons = Icons(thugs=len(self.thugs), holdings=len(self.holdings))
+        icons = Icons(cash=self.cash, thugs=len(self.thugs), holdings=len(self.holdings))
         for thug in self.thugs:
             icons += thug.icons
         for holding in self.holdings:

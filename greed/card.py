@@ -55,13 +55,14 @@ class Cost:
         })
 
 class Icons:
-    def __init__(self, guns=0, cars=0, keys=0, alcohol=0, hearts=0, wrenches=0, thugs=0, holdings=0):
+    def __init__(self, guns=0, cars=0, keys=0, alcohol=0, hearts=0, wrenches=0, cash=0, thugs=0, holdings=0):
         self.guns = guns
         self.cars = cars
         self.keys = keys
         self.alcohol = alcohol
         self.hearts = hearts
         self.wrenches = wrenches
+        self.cash = cash
         self.thugs = thugs
         self.holdings = holdings
 
@@ -72,6 +73,7 @@ class Icons:
                 self.alcohol == other.alcohol and
                 self.hearts == other.hearts and
                 self.wrenches == other.wrenches and
+                self.cash == other.cash and
                 self.thugs == other.thugs and
                 self.holdings == other.holdings else False)
 
@@ -82,6 +84,7 @@ class Icons:
                 self.alcohol < other.alcohol and
                 self.hearts < other.hearts and
                 self.wrenches < other.wrenches and
+                self.cash < other.cash and
                 self.thugs < other.thugs and
                 self.holdings < other.holdings else False)
 
@@ -92,6 +95,7 @@ class Icons:
                 self.alcohol <= other.alcohol and
                 self.hearts <= other.hearts and
                 self.wrenches <= other.wrenches and
+                self.cash <= other.cash and
                 self.thugs <= other.thugs and
                 self.holdings <= other.holdings else False)
 
@@ -103,6 +107,7 @@ class Icons:
             self.alcohol + other.alcohol,
             self.hearts + other.hearts,
             self.wrenches + other.wrenches,
+            self.cash + other.cash,
             self.thugs + other.thugs,
             self.holdings + other.holdings
         )
@@ -115,6 +120,7 @@ class Icons:
             'alcohol': self.alcohol,
             'hearts': self.hearts,
             'wrenches': self.wrenches,
+            'cash': self.cash,
             'thugs': self.thugs,
             'holdings': self.holdings
         })
