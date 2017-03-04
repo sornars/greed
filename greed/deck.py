@@ -82,20 +82,16 @@ class HarveyBrainsRatcliffe(Card):
     def when_played(self, game, tableau):
         current_round = game.current_round
         left_player = game.players[game.players.index(tableau) - 1]
+        orig_set_cash = left_player._set_cash
 
-        def orig_cash_setter(orig, value):
-            pass
-
-        if 'cash' in left_player.patched_setters:
-            orig_cash_setter = left_player.patched_setters['cash']
-
-        def patched_cash_setter(orig, value):
-            delta = value - orig
-            if game.current_round == current_round and delta > 0:
+        def gain_cash_equal_to_left_player(left_player, cash):
+            if game.current_round == current_round and cash > left_player.cash:
+                delta = cash - tableau.cash
                 tableau.cash += delta
-            orig_cash_setter(orig, value)
+            orig_set_cash(cash)
 
-        left_player.patched_setters['cash'] = patched_cash_setter
+        left_player._set_cash = types.MethodType(gain_cash_equal_to_left_player, left_player)
+
 
 class BiscuitsOMalley(Card):
     def __init__(self):
@@ -1109,3 +1105,24 @@ class Raid(Card):
             if player != tableau:
                 for holding in player.holdings:
                     holding.markers -= 1
+
+class MasterPlan(Card):
+    def __init__(self):
+        super().__init__(
+            card_type=CardType.ACTION,
+            priority=78,
+            name='Master Plan!',
+            rules_text='Next turn, double all $ you gain.'
+        )
+
+    def when_played(self, game, tableau):
+        next_turn = game.current_round + 1
+        orig_set_cash = tableau._set_cash
+
+        def double_cash_gained_next_turn(tableau, cash):
+            if game.current_round == next_turn and cash > tableau.cash:
+                delta = cash - tableau.cash
+                cash = tableau.cash + (2 * delta)
+            orig_set_cash(cash)
+
+        tableau._set_cash = types.MethodType(double_cash_gained_next_turn, tableau)

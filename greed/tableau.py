@@ -2,7 +2,6 @@ from .card import CardType, Icons
 
 class Tableau:
     def __init__(self, player_name, cash=0, thugs=None, holdings=None, hand=None):
-        self.patched_setters = {}
         self.player_name = player_name
         self._cash = cash
         self.thugs = thugs if thugs else []
@@ -15,11 +14,12 @@ class Tableau:
 
     @cash.setter
     def cash(self, value):
-        if 'cash' in self.patched_setters:
-            self.patched_setters['cash'](self.cash, value)
-        self._cash = value
+        self._set_cash(value)
         if self._cash < 0:
             self._cash = 0
+
+    def _set_cash(self, value):
+        self._cash = value
 
     def draft_card(self, draft_deck):
         draft_card = self.select_option(draft_deck)

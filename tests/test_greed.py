@@ -824,3 +824,16 @@ def test_raid_when_played():
     game = greed.Game((player_1, player_2))
     r.when_played(game, player_1)
     assert card.markers == 4
+
+def test_masterplan_when_played():
+    mp = greed.deck.MasterPlan()
+    player_1 = greed.Tableau('Test Player 1')
+    game = greed.Game((player_1,))
+    mp.when_played(game, player_1)
+    game.current_round += 1
+    player_1.cash += 5000
+    assert player_1.cash == 10000
+    game.current_round += 1
+    player_1.cash += 5000
+    assert player_1.cash == 15000
+
