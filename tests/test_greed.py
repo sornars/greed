@@ -868,7 +868,17 @@ def test_insurancescam_when_played(mock_input):
     assert player_1.cash == 15000
     game.current_round += 1
     game.end_round()
-    assert player_1.calculate_icons().holdings == 0
-    assert player_2.calculate_icons().holdings == 0
+    assert len(player_1.holdings) == 0
+    assert len(player_2.holdings) == 0
 
+@patch('builtins.input', return_value='0')
+def test_suicide_mission_when_played(mock_input):
+    sm = greed.deck.SuicideMission()
+    player_1 = greed.Tableau('Test Player 1')
+    card = greed.Card(greed.card.CardType.THUG, 1, 'Test Card 1')
+    player_1.thugs.append(card)
+    game = greed.Game((player_1,))
+    sm.when_played(game, player_1)
+    assert len(player_1.thugs) == 0
+    assert player_1.cash == 25000
 

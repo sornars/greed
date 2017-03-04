@@ -995,7 +995,6 @@ class InsuranceOffice(Card):
 
     def when_played(self, game, tableau):
         orig_discard_thug = tableau.discard_thug
-
         def add_2_markers_when_thug_discarded(tableau, game):
             self.markers += 2
             return orig_discard_thug(game)
@@ -1003,7 +1002,6 @@ class InsuranceOffice(Card):
         tableau.discard_thug = types.MethodType(add_2_markers_when_thug_discarded, tableau)
 
         orig_discard_holding = tableau.discard_holding
-
         def add_2_markers_when_holding_discarded(tableau, game):
             self.markers += 2
             return orig_discard_holding(game)
@@ -1166,3 +1164,16 @@ class InsuranceScam(Card):
 
         game.end_round = types.MethodType(lose_holding_end_of_next_turn, game)
 
+class SuicideMission(Card):
+    def __init__(self):
+        super().__init__(
+            card_type=CardType.ACTION,
+            priority=35,
+            name='Suicide Mission!',
+            rules_text='Gain $25,000.',
+            costs=[Cost(thugs=1)]
+        )
+
+    def when_played(self, game, tableau):
+        tableau.discard_thug(game)
+        tableau.cash += 25000
