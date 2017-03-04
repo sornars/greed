@@ -1256,3 +1256,16 @@ class InsiderTrading(Card):
 
     def when_played(self, game, tableau):
         tableau.cash += 45000
+
+class PickpocketNetwork(Card):
+    def __init__(self):
+        super().__init__(
+            card_type=CardType.ACTION,
+            priority=31,
+            name='Pickpocket network!',
+            rules_text='Gain $10,000 for each KEY you have and $10,000 for each WRENCH you have.'
+        )
+
+    def when_played(self, game, tableau):
+        total_icons = tableau.calculate_icons()
+        tableau.cash += 10000 * (total_icons.keys + total_icons.wrenches)

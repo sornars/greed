@@ -941,8 +941,20 @@ def test_stealideas_when_played(mock_input):
     assert card_1.markers == 5
 
 def test_insidertrading_when_played():
-    si = greed.deck.InsiderTrading()
+    it = greed.deck.InsiderTrading()
     player_1 = greed.Tableau('Test Player 1')
     game = greed.Game((player_1,))
-    si.when_played(game, player_1)
+    it.when_played(game, player_1)
     assert player_1.cash == 45000
+
+
+def test_pickpocketnetwork_when_played():
+    pn = greed.deck.PickpocketNetwork()
+    player_1 = greed.Tableau('Test Player 1')
+    card_1 = greed.Card(greed.card.CardType.THUG, 1, 'Test Card 1', icons=greed.deck.Icons(keys=3))
+    player_1.thugs.append(card_1)
+    card_2 = greed.Card(greed.card.CardType.HOLDING, 2, 'Test Card 2', icons=greed.deck.Icons(wrenches=3))
+    player_1.holdings.append(card_2)
+    game = greed.Game((player_1,))
+    pn.when_played(game, player_1)
+    assert player_1.cash == 60000
