@@ -28,6 +28,9 @@ def test_tableau_select_option_removes_card(mock_input):
     draft_deck = list(range(12))
     player_1.select_option(draft_deck)
     assert len(draft_deck) == 11
+    player_1.select_option(draft_deck, remove_option=False)
+    assert len(draft_deck) == 11
+
 
 @patch('builtins.input', side_effect=['a', '0'])
 def test_tableau_select_option_asks_for_correct_input(mock_input):
@@ -915,3 +918,23 @@ def test_onelastheist_when_played(mock_input):
     game.end_round()
     assert len(player_1.holdings) == 0
     assert len(player_2.holdings) == 0
+
+@patch('builtins.input', return_value='0')
+def test_stealideas_when_played(mock_input):
+    si = greed.deck.StealIdeas()
+    player_1 = greed.Tableau('Test Player 1')
+    card_1 = greed.Card(greed.card.CardType.HOLDING, 1, 'Test Card 1')
+    player_1.holdings.append(card_1)
+    player_2 = greed.Tableau('Test Player 2')
+    card_2 = greed.Card(greed.card.CardType.HOLDING, 2, 'Test Card 2')
+    card_2.markers = 3
+    player_2.holdings.append(card_2)
+    card_3 = greed.Card(greed.card.CardType.HOLDING, 3, 'Test Card 3')
+    card_3.markers = 3
+    player_2.holdings.append(card_3)
+    game = greed.Game((player_1, player_2))
+    si.when_played(game, player_1)
+    assert card_1.markers == 0
+    card_3.markers = 5
+    si.when_played(game, player_1)
+    assert card_1.markers == 5

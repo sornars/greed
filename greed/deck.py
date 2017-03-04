@@ -234,8 +234,7 @@ class EdRubberfaceTeach(Card):
 
     def when_played(self, game, tableau):
         # pylint: disable=E0202
-        selected_thug = tableau.select_option(tableau.thugs)
-        tableau.thugs.append(selected_thug)
+        selected_thug = tableau.select_option(tableau.thugs, remove_option=False)
         copied_card = type(selected_thug)()
         self.rules_text = copied_card.rules_text
         self.icons = copied_card.icons
@@ -1204,7 +1203,7 @@ class OneLastHeist(Card):
     def __init__(self):
         super().__init__(
             card_type=CardType.ACTION,
-            priority=63,
+            priority=73,
             name='One last heist!',
             rules_text='Gain $5,000 for each THUGH the player with the most THUGS has. '
                        'At the end of next turn, each player (including you) '
@@ -1226,3 +1225,23 @@ class OneLastHeist(Card):
             orig_end_round()
 
         game.end_round = types.MethodType(lose_thug_end_of_next_turn, game)
+
+class StealIdeas(Card):
+    def __init__(self):
+        super().__init__(
+            card_type=CardType.ACTION,
+            priority=56,
+            name='Steal Ideas!',
+            rules_text='Place as many markers onto one of your HOLDINGS '
+                       'as are on the HOLDING an opponent has with the most markers.',
+            needs=Icons(wrenches=1)
+        )
+
+    def when_played(self, game, tableau):
+        selected_holding = tableau.select_option(tableau.holdings, remove_option=False)
+        max_markers_count = max([holding.markers for player in game.players for holding in player.holdings if player != tableau])
+        max_markers = [holding for player in game.players for holding in player.holdings if player != tableau and holding.markers == max_markers_count]
+        if len(max_markers) == 1:
+            selected_holding.markers += max_markers_count
+
+

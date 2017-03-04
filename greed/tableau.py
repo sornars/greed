@@ -112,7 +112,7 @@ class Tableau:
         card.markers += total_markers
         return total_markers
 
-    def select_option(self, options):
+    def select_option(self, options, remove_option=True):
         if options:
             selected_option = None
             while selected_option is None:
@@ -123,7 +123,9 @@ class Tableau:
                 except ValueError:
                     selected_option_index = -1
                 if selected_option_index in range(len(options)):
-                    selected_option = options.pop(selected_option_index)
+                    selected_option = options[selected_option_index]
+                    if remove_option:
+                        selected_option = options.pop(selected_option_index)
                 else:
                     print('Please select a valid option')
 
