@@ -975,7 +975,7 @@ class LamontesEscortService(Card):
         max_thugs_count = max([player.calculate_icons().thugs for player in game.players])
         max_thugs = [player for player in game.players if player.calculate_icons().thugs == max_thugs_count]
         if len(max_thugs) == 1 and max_thugs[0] == tableau:
-            max_thugs[0].cash += 20000
+            tableau.cash += 20000
 
 class InsuranceOffice(Card):
     def __init__(self):
@@ -1199,3 +1199,30 @@ class Vandalism(Card):
             orig_end_round()
 
         game.end_round = types.MethodType(each_opponent_lose_holding_end_of_next_turn, game)
+
+class OneLastHeist(Card):
+    def __init__(self):
+        super().__init__(
+            card_type=CardType.ACTION,
+            priority=63,
+            name='One last heist!',
+            rules_text='Gain $5,000 for each THUGH the player with the most THUGS has. '
+                       'At the end of next turn, each player (including you) '
+                       'loses a THUG they choose.',
+            needs=Icons(guns=1)
+        )
+
+    def when_played(self, game, tableau):
+        max_thugs_count = max([player.calculate_icons().thugs for player in game.players] or [0])
+        max_thugs = [player for player in game.players if player.calculate_icons().thugs == max_thugs_count]
+        if len(max_thugs) == 1:
+            tableau.cash += 5000 * max_thugs_count
+        next_round = game.current_round + 1
+        orig_end_round = game.end_round
+        def lose_thug_end_of_next_turn(game):
+            if game.current_round == next_round:
+                for player in game.players:
+                    player.discard_thug(game)
+            orig_end_round()
+
+        game.end_round = types.MethodType(lose_thug_end_of_next_turn, game)
