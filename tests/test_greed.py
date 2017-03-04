@@ -882,3 +882,18 @@ def test_suicide_mission_when_played(mock_input):
     assert len(player_1.thugs) == 0
     assert player_1.cash == 25000
 
+@patch('builtins.input', return_value='0')
+def test_vandalism_when_played(mock_input):
+    v = greed.deck.Vandalism()
+    player_1 = greed.Tableau('Test Player 1')
+    card_1 = greed.Card(greed.card.CardType.HOLDING, 1, 'Test Card 1')
+    player_1.holdings.append(card_1)
+    player_2 = greed.Tableau('Test Player 2')
+    card_2 = greed.Card(greed.card.CardType.HOLDING, 1, 'Test Card 1')
+    player_2.holdings.append(card_2)
+    game = greed.Game((player_1, player_2))
+    v.when_played(game, player_1)
+    game.current_round += 1
+    game.end_round()
+    assert len(player_1.holdings) == 1
+    assert len(player_2.holdings) == 0

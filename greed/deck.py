@@ -1177,3 +1177,25 @@ class SuicideMission(Card):
     def when_played(self, game, tableau):
         tableau.discard_thug(game)
         tableau.cash += 25000
+
+class Vandalism(Card):
+    def __init__(self):
+        super().__init__(
+            card_type=CardType.ACTION,
+            priority=79,
+            name='Vandalism!',
+            rules_text='At the end of next turn, each opponent loses a HOLDING they choose.',
+            needs=Icons(cars=1)
+        )
+
+    def when_played(self, game, tableau):
+        next_round = game.current_round + 1
+        orig_end_round = game.end_round
+        def each_opponent_lose_holding_end_of_next_turn(game):
+            if game.current_round == next_round:
+                for player in game.players:
+                    if player != tableau:
+                        player.discard_holding(game)
+            orig_end_round()
+
+        game.end_round = types.MethodType(each_opponent_lose_holding_end_of_next_turn, game)
