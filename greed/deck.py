@@ -1269,3 +1269,17 @@ class PickpocketNetwork(Card):
     def when_played(self, game, tableau):
         total_icons = tableau.calculate_icons()
         tableau.cash += 10000 * (total_icons.keys + total_icons.wrenches)
+
+class Liquidate(Card):
+    def __init__(self):
+        super().__init__(
+            card_type=CardType.ACTION,
+            priority=4,
+            name='Liquidate!',
+            rules_text='Gain $15,000 for each marker that was on the HOLDING you paid.',
+            costs=[Cost(holdings=1)]
+        )
+
+    def when_played(self, game, tableau):
+        discarded_holding = game.discard_deck[-1]
+        tableau.cash += 15000 * discarded_holding.markers

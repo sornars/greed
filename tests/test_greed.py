@@ -947,7 +947,6 @@ def test_insidertrading_when_played():
     it.when_played(game, player_1)
     assert player_1.cash == 45000
 
-
 def test_pickpocketnetwork_when_played():
     pn = greed.deck.PickpocketNetwork()
     player_1 = greed.Tableau('Test Player 1')
@@ -958,3 +957,14 @@ def test_pickpocketnetwork_when_played():
     game = greed.Game((player_1,))
     pn.when_played(game, player_1)
     assert player_1.cash == 60000
+
+@patch('builtins.input', return_value='0')
+def test_liquidate_when_played(mock_input):
+    l = greed.deck.Liquidate()
+    player_1 = greed.Tableau('Test Player 1')
+    card = greed.Card(greed.card.CardType.HOLDING, 1, 'Test Card 1')
+    card.markers = 5
+    player_1.holdings.append(card)
+    game = greed.Game((player_1,))
+    player_1.play_card(game, l)
+    assert player_1.cash == 75000

@@ -36,8 +36,7 @@ class Tableau:
         return discarded_holding
 
     def pay_cost(self, game, card):
-        cost = self.select_option(card.costs)
-        card.costs.append(cost)
+        cost = self.select_option(card.costs, remove_option=False)
         cost_paid = False
         discarded_thugs = []
         discarded_holdings = []
