@@ -137,6 +137,16 @@ def test_tableau_pay_cost_removes_holdings(mock_input):
     assert len(player_1.holdings) == 0
 
 @patch('builtins.input', return_value='0')
+def test_tableau_pay_cost_removes_cards(mock_input):
+    player_1 = greed.Tableau('Test Player 1')
+    game = greed.Game((player_1,))
+    card_1 = greed.Card(greed.card.CardType.HOLDING, 'Test Card 1', 1)
+    player_1.hand.append(card_1)
+    card_2 = greed.Card(greed.card.CardType.THUG, 'Test Card 2', 2, costs=[greed.card.Cost(cards=1)])
+    player_1.pay_cost(game, card_2)
+    assert len(player_1.hand) == 0
+
+@patch('builtins.input', return_value='0')
 def test_tableau_play_card_discards_costs(mock_input):
     player_1 = greed.Tableau('Test Player 1')
     game = greed.Game((player_1,))
@@ -1055,3 +1065,11 @@ def test_takecareofbusiness_when_played(mock_input):
     game.current_round += 1
     game.end_round()
     assert len(player_2.thugs) == 0
+
+@patch('builtins.input', return_value='0')
+def test_gambit_when_played(mock_input):
+    g = greed.deck.Gambit()
+    player_1 = greed.Tableau('Test Player 1')
+    game = greed.Game((player_1,))
+    g.when_played(game, player_1)
+    assert player_1.cash == 30000

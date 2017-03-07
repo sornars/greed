@@ -32,6 +32,7 @@ class Game:
             for player, card in end_of_game_cards:
                 card.end_of_game(self, player)
 
-    def discard_card(self, tableau, card):
-        card.on_discard(self, tableau)
+    def discard_card(self, tableau, card, on_discard=True):
+        if on_discard:
+            card.on_discard(self, tableau)
         self.discard_deck.append(card)

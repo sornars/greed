@@ -1381,3 +1381,16 @@ class TakeCareOfBusiness(Card):
             orig_end_round()
 
         game.end_round = types.MethodType(lose_thug_end_of_next_turn, game)
+
+class Gambit(Card):
+    def __init__(self):
+        super().__init__(
+            card_type=CardType.ACTION,
+            priority=26,
+            name='Gambit!',
+            rules_text='Gain $30,000.',
+            costs=[Cost(cards=1)]
+        )
+
+    def when_played(self, game, tableau):
+        tableau.cash += 30000

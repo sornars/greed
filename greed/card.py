@@ -42,16 +42,18 @@ class CardType(enum.Enum):
 
 class Cost:
     # TODO: Namedtuple?
-    def __init__(self, cash=0, thugs=0, holdings=0):
+    def __init__(self, cash=0, thugs=0, holdings=0, cards=0):
         self.cash = cash
         self.thugs = thugs
         self.holdings = holdings
+        self.cards = cards
 
     def __repr__(self):
         return str({
             'cash': self.cash,
             'thugs': self.thugs,
-            'holdings': self.holdings
+            'holdings': self.holdings,
+            'cards': self.cards
         })
 
 class Icons:

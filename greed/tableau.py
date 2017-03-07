@@ -43,15 +43,19 @@ class Tableau:
         discarded_thugs = []
         discarded_holdings = []
         if (cost.cash <= self.cash and
-            cost.thugs <= len(self.thugs) and
-            cost.holdings <= len(self.holdings)):
+                cost.thugs <= len(self.thugs) and
+                cost.holdings <= len(self.holdings) and
+                cost.cards <= len(self.hand)):
             self.cash -= cost.cash
-            for thug in range(cost.thugs):
+            for _ in range(cost.thugs):
                 discarded_thug = self.discard_thug(game)
                 discarded_thugs.append(discarded_thug)
-            for holding in range(cost.holdings):
+            for _ in range(cost.holdings):
                 discarded_holding = self.discard_holding(game)
                 discarded_holdings.append(discarded_holding)
+            for _ in range(cost.cards):
+                discarded_card = self.select_option(self.hand)
+                game.discard_card(self, discarded_card, on_discard=False)
             cost_paid = True
         return cost_paid, discarded_thugs, discarded_holdings
 
