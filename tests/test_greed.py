@@ -1082,3 +1082,16 @@ def test_suckerconvention_when_played():
     sc.when_played(game, player_1)
     assert player_1.cash == 30000
     assert player_2.cash == 10000
+
+def test_circusofcrime_when_played():
+    coc = greed.deck.CircusOfCrime()
+    player_1 = greed.Tableau('Test Player 1')
+    card_1 = greed.Card(greed.card.CardType.THUG, 1, 'Test Card 1')
+    card_2 = greed.Card(greed.card.CardType.THUG, 2, 'Test Card 2')
+    card_3 = greed.Card(greed.card.CardType.THUG, 3, 'Test Card 3')
+    player_1.thugs.append(card_1)
+    player_1.thugs.append(card_2)
+    player_1.thugs.append(card_3)
+    game = greed.Game((player_1,))
+    coc.when_played(game, player_1)
+    assert player_1.cash == 30000

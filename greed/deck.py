@@ -1410,3 +1410,16 @@ class SuckerConvention(Card):
                 player.cash += 30000
             else:
                 player.cash += 10000
+
+class CircusOfCrime(Card):
+    def __init__(self):
+        super().__init__(
+            card_type=CardType.ACTION,
+            priority=26,
+            name='Circus of crime!',
+            rules_text='Gain $10,000 for each THUG you have.',
+            costs=[Cost(holdings=2)]
+        )
+
+    def when_played(self, game, tableau):
+        tableau.cash = 10000 * len(tableau.thugs)
