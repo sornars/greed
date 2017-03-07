@@ -1073,3 +1073,12 @@ def test_gambit_when_played(mock_input):
     game = greed.Game((player_1,))
     g.when_played(game, player_1)
     assert player_1.cash == 30000
+
+def test_suckerconvention_when_played():
+    sc = greed.deck.SuckerConvention()
+    player_1 = greed.Tableau('Test Player 1')
+    player_2 = greed.Tableau('Test Player 2')
+    game = greed.Game((player_1, player_2))
+    sc.when_played(game, player_1)
+    assert player_1.cash == 30000
+    assert player_2.cash == 10000

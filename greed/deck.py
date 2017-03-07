@@ -1394,3 +1394,19 @@ class Gambit(Card):
 
     def when_played(self, game, tableau):
         tableau.cash += 30000
+
+class SuckerConvention(Card):
+    def __init__(self):
+        super().__init__(
+            card_type=CardType.ACTION,
+            priority=34,
+            name='Sucker Convention!',
+            rules_text='Gain $30,000. Each other player gain $10,000.'
+        )
+
+    def when_played(self, game, tableau):
+        for player in game.players:
+            if player == tableau:
+                player.cash += 30000
+            else:
+                player.cash += 10000
