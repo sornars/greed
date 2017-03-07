@@ -1355,3 +1355,29 @@ class EstateHeist(Card):
 
         if total_icons.keys > 0:
             tableau.cash += 10000
+
+class TakeCareOfBusiness(Card):
+    def __init__(self):
+        super().__init__(
+            card_type=CardType.ACTION,
+            priority=40,
+            name='Take care of business!',
+            rules_text='Place a marker on each of your HOLDIGNS with no more than one marker. '
+                       'At the end of next turn each opponent loses a THUG they choose.'
+        )
+
+    def when_played(self, game, tableau):
+        for holding in tableau.holdings:
+            if holding.markers <= 1:
+                holding.markers += 1
+
+        next_round = game.current_round + 1
+        orig_end_round = game.end_round
+        def lose_thug_end_of_next_turn(game):
+            if game.current_round == next_round:
+                for player in game.players:
+                    if player != tableau:
+                        player.discard_thug(game)
+            orig_end_round()
+
+        game.end_round = types.MethodType(lose_thug_end_of_next_turn, game)

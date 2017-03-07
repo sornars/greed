@@ -1025,3 +1025,33 @@ def test_estateheist_when_played():
     player_1.thugs.append(card_3)
     eh.when_played(game, player_1)
     assert player_1.cash == 60000
+
+def test_discard_holding_succeeds_with_no_holdings():
+    player_1 = greed.Tableau('Test Player 1')
+    game = greed.Game((player_1,))
+    player_1.discard_holding(game)
+
+def test_discard_thug_succeeds_with_no_thugs():
+    player_1 = greed.Tableau('Test Player 1')
+    game = greed.Game((player_1,))
+    player_1.discard_thug(game)
+
+@patch('builtins.input', return_value='0')
+def test_takecareofbusiness_when_played(mock_input):
+    tcob = greed.deck.TakeCareOfBusiness()
+    player_1 = greed.Tableau('Test Player 1')
+    card_1 = greed.Card(greed.card.CardType.HOLDING, 1, 'Test Card 1')
+    card_1.markers = 3
+    card_2 = greed.Card(greed.card.CardType.HOLDING, 1, 'Test Card 1')
+    card_2.markers = 1
+    player_1.holdings.append(card_2)
+    player_2 = greed.Tableau('Test Player 2')
+    card_3 = greed.Card(greed.card.CardType.THUG, 1, 'Test Card 1')
+    player_2.thugs.append(card_3)
+    game = greed.Game((player_1, player_2))
+    tcob.when_played(game, player_1)
+    assert card_1.markers == 3
+    assert card_2.markers == 2
+    game.current_round += 1
+    game.end_round()
+    assert len(player_2.thugs) == 0

@@ -26,13 +26,15 @@ class Tableau:
         self.hand.append(draft_card)
 
     def discard_thug(self, game):
-        discarded_thug = self.select_option(self.thugs)
-        discarded_thug.on_discard(game, self)
+        discarded_thug = self.select_option(self.thugs) if self.thugs else None
+        if discarded_thug:
+            discarded_thug.on_discard(game, self)
         return discarded_thug
 
     def discard_holding(self, game):
-        discarded_holding = self.select_option(self.holdings)
-        discarded_holding.on_discard(game, self)
+        discarded_holding = self.select_option(self.holdings) if self.holdings else None
+        if discarded_holding:
+            discarded_holding.on_discard(game, self)
         return discarded_holding
 
     def pay_cost(self, game, card):
