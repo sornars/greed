@@ -1296,3 +1296,27 @@ class Renovate(Card):
     def when_played(self, game, tableau):
         selected_holding = tableau.select_option(tableau.holdings, remove_option=False)
         selected_holding.markers += 2
+
+class Scouting(Card):
+    def __init__(self):
+        super().__init__(
+            card_type=CardType.ACTION,
+            priority=74,
+            name='Scouting!',
+            rules_text='If you have a CAR, gain $10,000. '
+                       'If you have a GUN, each opponent loses $10,000. '
+                       'If you have a KEY, draw a card from the deck, taking it to your hand.'
+        )
+
+    def when_played(self, game, tableau):
+        total_icons = tableau.calculate_icons()
+        if total_icons.cars > 0:
+            tableau.cash += 10000
+
+        if total_icons.guns > 0:
+            for player in game.players:
+                if player != tableau:
+                    player.cash -= 10000
+
+        if total_icons.keys > 0:
+            tableau.hand.append(game.draw_deck.pop())

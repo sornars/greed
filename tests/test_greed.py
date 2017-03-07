@@ -972,10 +972,32 @@ def test_liquidate_when_played(mock_input):
 
 @patch('builtins.input', return_value='0')
 def test_renovate_when_played(mock_input):
-    l = greed.deck.Renovate()
+    r = greed.deck.Renovate()
     player_1 = greed.Tableau('Test Player 1')
     card = greed.Card(greed.card.CardType.HOLDING, 1, 'Test Card 1')
     player_1.holdings.append(card)
     game = greed.Game((player_1,))
-    player_1.play_card(game, l)
+    r.when_played(game, player_1)
     assert card.markers == 2
+
+def test_scouting_when_played():
+    s = greed.deck.Scouting()
+    player_1 = greed.Tableau('Test Player 1')
+    player_2 = greed.Tableau('Test Player 2')
+    player_2.cash = 20000
+    game = greed.Game((player_1, player_2))
+    card_1 = greed.Card(greed.card.CardType.THUG, 1, 'Test Card 1', icons=greed.card.Icons(cars=1))
+    player_1.thugs.append(card_1)
+    s.when_played(game, player_1)
+    assert player_1.cash == 10000
+    card_2 = greed.Card(greed.card.CardType.THUG, 2, 'Test Card 2', icons=greed.card.Icons(guns=1))
+    player_1.thugs.append(card_2)
+    s.when_played(game, player_1)
+    assert player_1.cash == 20000
+    assert player_2.cash == 10000
+    card_3 = greed.Card(greed.card.CardType.THUG, 3, 'Test Card 3', icons=greed.card.Icons(keys=1))
+    player_1.thugs.append(card_3)
+    s.when_played(game, player_1)
+    assert player_1.cash == 30000
+    assert player_2.cash == 0
+    assert len(player_1.hand) == 1
