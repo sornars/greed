@@ -1001,3 +1001,10 @@ def test_scouting_when_played():
     assert player_1.cash == 30000
     assert player_2.cash == 0
     assert len(player_1.hand) == 1
+
+def test_smuggling_when_played():
+    s = greed.deck.Smuggling()
+    player_1 = greed.Tableau('Test Player 1')
+    game = greed.Game((player_1,))
+    s.when_played(game, player_1)
+    assert player_1.cash == 25000

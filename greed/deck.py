@@ -1320,3 +1320,16 @@ class Scouting(Card):
 
         if total_icons.keys > 0:
             tableau.hand.append(game.draw_deck.pop())
+
+class Smuggling(Card):
+    def __init__(self):
+        super().__init__(
+            card_type=CardType.ACTION,
+            priority=32,
+            name='Smuggling!',
+            rules_text='Gain $25,000.',
+            needs=Icons(cars=1, alcohol=1)
+        )
+
+    def when_played(self, game, tableau):
+        tableau.cash += 25000
