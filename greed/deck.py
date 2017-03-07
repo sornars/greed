@@ -1283,3 +1283,16 @@ class Liquidate(Card):
     def when_played(self, game, tableau):
         discarded_holding = game.discard_deck[-1]
         tableau.cash += 15000 * discarded_holding.markers
+
+class Renovate(Card):
+    def __init__(self):
+        super().__init__(
+            card_type=CardType.ACTION,
+            priority=38,
+            name='Renovate!',
+            rules_text='Place two markers on one of your HOLDINGS.'
+        )
+
+    def when_played(self, game, tableau):
+        selected_holding = tableau.select_option(tableau.holdings, remove_option=False)
+        selected_holding.markers += 2

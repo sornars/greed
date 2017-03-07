@@ -968,3 +968,14 @@ def test_liquidate_when_played(mock_input):
     game = greed.Game((player_1,))
     player_1.play_card(game, l)
     assert player_1.cash == 75000
+    assert len(player_1.holdings) == 0
+
+@patch('builtins.input', return_value='0')
+def test_renovate_when_played(mock_input):
+    l = greed.deck.Renovate()
+    player_1 = greed.Tableau('Test Player 1')
+    card = greed.Card(greed.card.CardType.HOLDING, 1, 'Test Card 1')
+    player_1.holdings.append(card)
+    game = greed.Game((player_1,))
+    player_1.play_card(game, l)
+    assert card.markers == 2
