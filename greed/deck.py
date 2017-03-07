@@ -1333,3 +1333,25 @@ class Smuggling(Card):
 
     def when_played(self, game, tableau):
         tableau.cash += 25000
+
+class EstateHeist(Card):
+    def __init__(self):
+        super().__init__(
+            card_type=CardType.ACTION,
+            priority=74,
+            name='Estate heist!',
+            rules_text='Gain $10,000 if you have a GUN. '
+                       'Gain $10,000 if you have a CAR. '
+                       'Gain $10,000 if you have a KEYß.'
+        )
+
+    def when_played(self, game, tableau):
+        total_icons = tableau.calculate_icons()
+        if total_icons.cars > 0:
+            tableau.cash += 10000
+
+        if total_icons.guns > 0:
+            tableau.cash += 10000
+
+        if total_icons.keys > 0:
+            tableau.cash += 10000

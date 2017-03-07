@@ -1008,3 +1008,20 @@ def test_smuggling_when_played():
     game = greed.Game((player_1,))
     s.when_played(game, player_1)
     assert player_1.cash == 25000
+
+def test_estateheist_when_played():
+    eh = greed.deck.EstateHeist()
+    player_1 = greed.Tableau('Test Player 1')
+    game = greed.Game((player_1,))
+    card_1 = greed.Card(greed.card.CardType.THUG, 1, 'Test Card 1', icons=greed.card.Icons(guns=1))
+    player_1.thugs.append(card_1)
+    eh.when_played(game, player_1)
+    assert player_1.cash == 10000
+    card_2 = greed.Card(greed.card.CardType.THUG, 2, 'Test Card 2', icons=greed.card.Icons(cars=1))
+    player_1.thugs.append(card_2)
+    eh.when_played(game, player_1)
+    assert player_1.cash == 30000
+    card_3 = greed.Card(greed.card.CardType.THUG, 3, 'Test Card 3', icons=greed.card.Icons(keys=1))
+    player_1.thugs.append(card_3)
+    eh.when_played(game, player_1)
+    assert player_1.cash == 60000
