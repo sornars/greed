@@ -1146,3 +1146,17 @@ def test_honestwork_when_played():
     assert len(player_1.hand) == 1
     hw.when_played(game, player_1)
     assert player_1.cash == 50000
+
+@patch('builtins.input', return_value='0')
+def test_seance_when_played(mock_input):
+    s = greed.deck.Seance()
+    player_1 = greed.Tableau('Test Player 1')
+    card_1 = greed.Card(greed.card.CardType.HOLDING, 1, 'Test Card 1')
+    player_1.holdings.append(card_1)
+    card_2 = greed.Card(greed.card.CardType.THUG, 2, 'Test Card 2')
+    player_1.hand.append(card_2)
+    game = greed.Game((player_1,))
+    s.when_played(game, player_1)
+    assert player_1.cash == 10000
+    assert card_1.markers == 1
+    assert len(player_1.thugs) == 1

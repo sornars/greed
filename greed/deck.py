@@ -1511,3 +1511,20 @@ class HonestWork(Card):
                                      if discarded_card != card]
 
         game.discard_card = types.MethodType(return_card_to_hand_if_less_than_5000, game)
+
+class Seance(Card):
+    def __init__(self):
+        super().__init__(
+            card_type=CardType.ACTION,
+            priority=40,
+            name='Seance!',
+            rules_text='Gain $10,000. Place a marker on one of your HOLDINGS. '
+                       'You may play another card.'
+        )
+
+    def when_played(self, game, tableau):
+        tableau.cash += 10000
+        selected_holding = tableau.select_option(tableau.holdings, remove_option=False)
+        selected_holding.markers += 1
+        selected_card = tableau.select_option(tableau.hand)
+        tableau.play_card(game, selected_card)
