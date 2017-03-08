@@ -1442,3 +1442,18 @@ class ComplexScheme(Card):
             orig_play_holding(game, card)
 
         tableau.play_holding = types.MethodType(place_3_extra_markers, tableau)
+
+class BeggarsBanquet(Card):
+    def __init__(self):
+        super().__init__(
+            card_type=CardType.ACTION,
+            priority=20,
+            name='Beggars Banquet!',
+            rules_text='Gain $25,000.'
+        )
+
+    def when_played(self, game, tableau):
+        min_thugs_count = min([player.calculate_icons().thugs for player in game.players])
+        min_thugs = [player for player in game.players if player.calculate_icons().thugs == min_thugs_count]
+        if len(min_thugs) == 1 and min_thugs[0] == tableau:
+            tableau.cash += 25000

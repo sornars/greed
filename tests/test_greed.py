@@ -1105,3 +1105,15 @@ def test_complexscheme_when_played():
     game.current_round += 1
     player_1.play_holding(game, card_1)
     assert card_1.markers == 3
+
+def test_beggarsbanquet_when_played():
+    bb = greed.deck.BeggarsBanquet()
+    player_1 = greed.Tableau('Test Player 1')
+    player_2 = greed.Tableau('Test Player 2')
+    game = greed.Game((player_1, player_2))
+    bb.when_played(game, player_1)
+    assert player_1.cash == 0
+    card_1 = greed.Card(greed.card.CardType.THUG, 1, 'Test Card 1')
+    player_2.thugs.append(card_1)
+    bb.when_played(game, player_1)
+    assert player_1.cash == 25000
