@@ -1095,3 +1095,13 @@ def test_circusofcrime_when_played():
     game = greed.Game((player_1,))
     coc.when_played(game, player_1)
     assert player_1.cash == 30000
+
+def test_complexscheme_when_played():
+    cs = greed.deck.ComplexScheme()
+    player_1 = greed.Tableau('Test Player 1')
+    game = greed.Game((player_1,))
+    card_1 = greed.Card(greed.card.CardType.HOLDING, 1, 'Test Card 1')
+    cs.when_played(game, player_1)
+    game.current_round += 1
+    player_1.play_holding(game, card_1)
+    assert card_1.markers == 3

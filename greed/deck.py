@@ -1400,7 +1400,7 @@ class SuckerConvention(Card):
         super().__init__(
             card_type=CardType.ACTION,
             priority=34,
-            name='Sucker Convention!',
+            name='Sucker convention!',
             rules_text='Gain $30,000. Each other player gain $10,000.'
         )
 
@@ -1423,3 +1423,22 @@ class CircusOfCrime(Card):
 
     def when_played(self, game, tableau):
         tableau.cash = 10000 * len(tableau.thugs)
+
+class ComplexScheme(Card):
+    def __init__(self):
+        super().__init__(
+            card_type=CardType.ACTION,
+            priority=43,
+            name='Complex Scheme!',
+            rules_text='Next turn, any time you play a HOLDING, place 3 extra markers on it.',
+            needs=Icons(keys=1, wrenches=1)
+        )
+
+    def when_played(self, game, tableau):
+        orig_play_holding = tableau.play_holding
+        next_turn = game.current_round + 1
+        def place_3_extra_markers(tableau, game, card):
+            card.markers += 3
+            orig_play_holding(game, card)
+
+        tableau.play_holding = types.MethodType(place_3_extra_markers, tableau)
