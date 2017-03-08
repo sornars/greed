@@ -1117,3 +1117,20 @@ def test_beggarsbanquet_when_played():
     player_2.thugs.append(card_1)
     bb.when_played(game, player_1)
     assert player_1.cash == 25000
+
+def test_inform_when_played():
+    i = greed.deck.Inform()
+    player_1 = greed.Tableau('Test Player 1')
+    player_2 = greed.Tableau('Test Player 2')
+    player_3 = greed.Tableau('Test Player 3')
+    player_4 = greed.Tableau('Test Player 4')
+    game = greed.Game((player_1, player_2, player_3, player_4))
+    i.when_played(game, player_1)
+    assert player_1.cash == 10000
+    card_1 = greed.Card(greed.card.CardType.ACTION, 1, 'Test Card 1')
+    player_2.play_action(game, card_1)
+    assert player_1.cash == 20000
+    player_3.play_action(game, card_1)
+    assert player_1.cash == 20000
+    player_4.play_action(game, card_1)
+    assert player_1.cash == 30000

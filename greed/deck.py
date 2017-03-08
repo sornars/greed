@@ -1457,3 +1457,29 @@ class BeggarsBanquet(Card):
         min_thugs = [player for player in game.players if player.calculate_icons().thugs == min_thugs_count]
         if len(min_thugs) == 1 and min_thugs[0] == tableau:
             tableau.cash += 25000
+
+class Inform(Card):
+    def __init__(self):
+        super().__init__(
+            card_type=CardType.ACTION,
+            priority=2,
+            name='Inform!',
+            rules_text='Gain $10,000. When an adjactent player plays an ACTION this turn, gain $10,000.'
+        )
+
+    def when_played(self, game, tableau):
+        tableau.cash += 10000
+        current_player = tableau
+        current_round = game.current_round
+        current_player_index = game.players.index(tableau)
+        left_player = [game.players[current_player_index - 1]] if len(game.players) >= 2 else []
+        right_player = [game.players[current_player_index + 1]] if len(game.players) > 2 else []
+        adjacent_players = left_player + right_player
+        for player in adjacent_players:
+            orig_play_action = player.play_action
+            def gain_10000_when_action_played_this_turn(tableau, game, card):
+                if game.current_round == current_round:
+                    current_player.cash += 10000
+                return orig_play_action(game, card)
+
+            player.play_action = types.MethodType(gain_10000_when_action_played_this_turn, player)
