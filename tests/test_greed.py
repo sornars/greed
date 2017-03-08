@@ -1134,3 +1134,15 @@ def test_inform_when_played():
     assert player_1.cash == 20000
     player_4.play_action(game, card_1)
     assert player_1.cash == 30000
+
+def test_honestwork_when_played():
+    hw = greed.deck.HonestWork()
+    player_1 = greed.Tableau('Test Player 1')
+    player_1.cash = 20000
+    game = greed.Game((player_1,))
+    hw.when_played(game, player_1)
+    assert player_1.cash == 35000
+    game.discard_card(player_1, hw)
+    assert len(player_1.hand) == 1
+    hw.when_played(game, player_1)
+    assert player_1.cash == 50000

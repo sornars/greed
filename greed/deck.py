@@ -217,7 +217,7 @@ class PolycephalusPatriciaJones(Card):
     def when_played(self, game, tableau):
         drawn_card = game.draw_deck.pop()
         while drawn_card.card_type is not CardType.THUG:
-            game.discard_deck.append(drawn_card)
+            game.discard_card(tableau, drawn_card, on_discard=False)
             drawn_card = game.draw_deck.pop()
 
         tableau.play_card(game, drawn_card, ignore_costs=True, ignore_needs=True)
@@ -430,12 +430,14 @@ class PeteRepeatFell(Card):
         orig_discard_card = game.discard_card
         next_round = game.current_round + 1
         current_player = tableau
-        def return_action_to_hand_next_turn(game, tableau, card):
-            orig_discard_card_results = orig_discard_card(tableau, card)
+        def return_action_to_hand_next_turn(game, tableau, card, on_discard=True):
+            orig_discard_card_results = orig_discard_card(tableau, card, on_discard)
             if (game.current_round == next_round and
                     tableau == current_player and
                     card.card_type is CardType.ACTION):
-                tableau.hand.append(game.discard_deck.pop())
+                tableau.hand.append(card)
+                game.discard_deck = [discarded_card for discarded_card in game.discard_deck
+                                     if discarded_card != card]
             return orig_discard_card_results
 
         game.discard_card = types.MethodType(return_action_to_hand_next_turn, game)
@@ -1483,3 +1485,29 @@ class Inform(Card):
                 return orig_play_action(game, card)
 
             player.play_action = types.MethodType(gain_10000_when_action_played_this_turn, player)
+
+class HonestWork(Card):
+    def __init__(self):
+        super().__init__(
+            card_type=CardType.ACTION,
+            priority=36,
+            name='Honest work!',
+            rules_text='Gain $15,000. Then, if you have less than $50,000, return this card to your hand.'
+        )
+
+    def when_played(self, game, tableau):
+        tableau.cash += 15000
+        current_round = game.current_round
+        current_player = tableau
+        orig_discard_card = game.discard_card
+        def return_card_to_hand_if_less_than_5000(game, tableau, card, on_discard=True):
+            orig_discard_card(tableau, card, on_discard)
+            if (game.current_round == current_round and
+                    tableau == current_player and
+                    card == self and
+                    tableau.cash < 50000):
+                tableau.hand.append(card)
+                game.discard_deck = [discarded_card for discarded_card in game.discard_deck
+                                     if discarded_card != card]
+
+        game.discard_card = types.MethodType(return_card_to_hand_if_less_than_5000, game)
