@@ -1516,7 +1516,7 @@ class Seance(Card):
     def __init__(self):
         super().__init__(
             card_type=CardType.ACTION,
-            priority=40,
+            priority=80,
             name='Seance!',
             rules_text='Gain $10,000. Place a marker on one of your HOLDINGS. '
                        'You may play another card.'
