@@ -1440,7 +1440,8 @@ class ComplexScheme(Card):
         orig_play_holding = tableau.play_holding
         next_turn = game.current_round + 1
         def place_3_extra_markers(tableau, game, card):
-            card.markers += 3
+            if game.current_round == next_turn:
+                card.markers += 3
             orig_play_holding(game, card)
 
         tableau.play_holding = types.MethodType(place_3_extra_markers, tableau)
@@ -1528,3 +1529,29 @@ class Seance(Card):
         selected_holding.markers += 1
         selected_card = tableau.select_option(tableau.hand)
         tableau.play_card(game, selected_card)
+
+class Relocate(Card):
+    def __init__(self):
+        super().__init__(
+            card_type=CardType.ACTION,
+            priority=41,
+            name='Relocate!',
+            costs=[Cost(holdings=1)],
+            rules_text='Next turn, any time you play a HOLDING, '
+                       'place as many extra markers on it as were on the '
+                       'HOLDING you paid, plus two.'
+        )
+
+    def when_played(self, game, tableau):
+        cost_paid = self.costs_paid.pop()
+        extra_markers = cost_paid.markers
+        cost_paid.markers = 0
+        tableau.hand.append(cost_paid)
+        orig_play_holding = tableau.play_holding
+        next_turn = game.current_round + 1
+        def place_extra_markers_plus_2(tableau, game, card):
+            if game.current_round == next_turn:
+                card.markers += extra_markers + 2
+            orig_play_holding(game, card)
+
+        tableau.play_holding = types.MethodType(place_extra_markers_plus_2, tableau)

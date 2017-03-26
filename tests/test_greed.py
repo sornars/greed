@@ -1160,3 +1160,30 @@ def test_seance_when_played(mock_input):
     assert player_1.cash == 10000
     assert card_1.markers == 1
     assert len(player_1.thugs) == 1
+
+@patch('builtins.input', return_value='0')
+def test_relocate_when_played(mock_input):
+    r = greed.deck.Relocate()
+    player_1 = greed.Tableau('Test Player 1')
+    card_1 = greed.Card(greed.card.CardType.HOLDING, 1, 'Test Card 1')
+    card_1.markers = 3
+    player_1.holdings.append(card_1)
+    game = greed.Game((player_1,))
+    r.costs_paid.append(card_1)
+    r.when_played(game, player_1)
+    assert player_1.hand[0] == card_1
+    game.current_round += 1
+    player_1.play_holding(game, card_1)
+    assert card_1.markers == 5
+
+@patch('builtins.input', return_value='0')
+def test_tableau_pay_cost_records_cost_paid(mock_input):
+    player_1 = greed.Tableau('Test Player 1')
+    card_1 = greed.Card(greed.card.CardType.HOLDING, 1, 'Test Card 1')
+    player_1.holdings.append(card_1)
+    card_2 = greed.Card(greed.card.CardType.HOLDING, 2, 'Test Card 1', costs=[greed.card.Cost(holdings=1)])
+    game = greed.Game((player_1,))
+    player_1.pay_cost(game, card_2)
+    assert len(player_1.holdings) == 0
+    assert len(card_2.costs_paid) == 1
+    assert card_2.costs_paid[0] == card_1

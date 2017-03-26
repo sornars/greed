@@ -57,6 +57,8 @@ class Tableau:
                 discarded_card = self.select_option(self.hand)
                 game.discard_card(self, discarded_card, on_discard=False)
             cost_paid = True
+            for card_paid in discarded_thugs + discarded_holdings:
+                card.costs_paid.append(card_paid)
         return cost_paid, discarded_thugs, discarded_holdings
 
     def check_needs(self, needs):

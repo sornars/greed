@@ -12,6 +12,7 @@ class Card:
         self.needs = needs if needs else Icons()
         self.icons = icons if icons else Icons()
         self._markers = 0
+        self.costs_paid = []
 
     @property
     def markers(self):
