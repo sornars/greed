@@ -20,11 +20,17 @@ class Game:
             for player, card in played_cards:
                 player.play_card(self, card)
 
+        if self.current_round > 2:
+            played_cards = [(player, player.select_option(player.hand, text='Play card')) for player in self.players]
+            played_cards.sort(key=lambda x: x[1].priority)
+            for player, card in played_cards:
+                player.play_card(self, card)
+
             each_turn_cards = [(player, card) for player in self.players for card in player.thugs + player.holdings]
             each_turn_cards.sort(key=lambda x: x[1].priority)
             for player, card in each_turn_cards:
                 card.each_turn(self, player)
-        
+
         self.end_round()
 
     def end_round(self):
@@ -34,6 +40,9 @@ class Game:
             end_of_game_cards.sort(key=lambda x: x[1].priority)
             for player, card in end_of_game_cards:
                 card.end_of_game(self, player)
+
+            print(sorted(self.players, lambda x: x.cash))
+
 
     def discard_card(self, tableau, card, on_discard=True):
         if on_discard:
