@@ -219,21 +219,20 @@ class WolfgangButtercup(Card):
         )
 
     def when_played(self, game, tableau):
-        orig_place_markers = tableau.place_markers
-        def place_extra_marker(tableau, card):
+        orig_play_holding = tableau.play_holding
+        def place_extra_marker(tableau, game, card):
             card.markers += 1
-            return orig_place_markers(card)
+            orig_play_holding(game, card)
 
-        tableau.place_markers = types.MethodType(place_extra_marker, tableau)
+        tableau.play_holding = types.MethodType(place_extra_marker, tableau)
 
     def on_discard(self, game, tableau):
-        orig_place_markers = tableau.place_markers
-        def disable_place_extra_marker(tableau, card):
-            orig_place_markers_result = orig_place_markers(card)
+        orig_play_holding = tableau.play_holding
+        def disable_place_extra_marker(tableau, game, card):
+            orig_play_holding(game, card)
             card.markers -= 1
-            return orig_place_markers_result
 
-        tableau.place_markers = types.MethodType(disable_place_extra_marker, tableau)
+        tableau.play_holding = types.MethodType(disable_place_extra_marker, tableau)
 
 class PolycephalusPatriciaJones(Card):
     def __init__(self):

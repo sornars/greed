@@ -263,12 +263,12 @@ def test_wolfgangbuttercup_when_played_and_on_discard():
     card_1 = greed.Card(greed.card.CardType.HOLDING, 1, 'Test Card', icons=greed.card.Icons(alcohol=3))
     game = greed.Game((player_1,))
     wb.when_played(game, player_1)
-    player_1.place_markers(card_1)
+    player_1.play_holding(game, card_1)
     assert card_1.markers == 4
     card_2 = greed.Card(greed.card.CardType.HOLDING, 1, 'Test Card', icons=greed.card.Icons(alcohol=3))
     wb.on_discard(game, player_1)
-    player_1.place_markers(card_2)
-    assert card_2.markers == 3
+    player_1.play_holding(game, card_2)
+    assert card_2.markers == 6
 
 def test_tableau_place_markers():
     player_1 = greed.Tableau('Test Player 1')

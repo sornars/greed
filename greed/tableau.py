@@ -105,7 +105,7 @@ class Tableau:
         return icons
 
     def _calculate_markers(self, card):
-        icons = self.calculate_icons() + card.icons
+        icons = self.calculate_icons()
         if card.icons.alcohol == 0:
             icons.alochol = 0
         if card.icons.hearts == 0:
