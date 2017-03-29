@@ -22,23 +22,23 @@ class Tableau:
         self._cash = value
 
     def draft_card(self, draft_deck):
-        draft_card = self.select_option(draft_deck, reason='Draft a card from the pack')
+        draft_card = self.select_option(draft_deck, text='Draft card')
         self.hand.append(draft_card)
 
     def discard_thug(self, game):
-        discarded_thug = self.select_option(self.thugs, reason='Select a THUG to discard') if self.thugs else None
+        discarded_thug = self.select_option(self.thugs, text='Choose THUG to discard') if self.thugs else None
         if discarded_thug:
             discarded_thug.on_discard(game, self)
         return discarded_thug
 
     def discard_holding(self, game):
-        discarded_holding = self.select_option(self.holdings, reason='Select a HOLDING to discard') if self.holdings else None
+        discarded_holding = self.select_option(self.holdings, text='Choose HOLDING to discard') if self.holdings else None
         if discarded_holding:
             discarded_holding.on_discard(game, self)
         return discarded_holding
 
     def pay_cost(self, game, card):
-        cost = self.select_option(card.costs, remove_option=False, reason='Select a cost to pay')
+        cost = self.select_option(card.costs, remove_option=False, text='Select cost')
         cost_paid = False
         discarded_thugs = []
         discarded_holdings = []
@@ -54,7 +54,7 @@ class Tableau:
                 discarded_holding = self.discard_holding(game)
                 discarded_holdings.append(discarded_holding)
             for _ in range(cost.cards):
-                discarded_card = self.select_option(self.hand, reason='Select a card to pay')
+                discarded_card = self.select_option(self.hand, text='Choose card to discard')
                 game.discard_card(self, discarded_card, on_discard=False)
             cost_paid = True
             for card_paid in discarded_thugs + discarded_holdings:
@@ -119,9 +119,9 @@ class Tableau:
         card.markers += total_markers
         return total_markers
 
-    def select_option(self, options, remove_option=True, reason='Please select an option'):
+    def select_option(self, options, remove_option=True, text=''):
         if options:
-            print(self)
+            print(text)
             selected_option = None
             while selected_option is None:
                 more_details = False
@@ -129,7 +129,7 @@ class Tableau:
                     print(index, option)
                 try:
                     print('Add a question mark (?) for further details on an option')
-                    selected_option_index = input(reason + ': ')
+                    selected_option_index = input(text + ': ')
                     if selected_option_index[-1] == '?':
                         selected_option_index = selected_option_index[:-1]
                         more_details = True
