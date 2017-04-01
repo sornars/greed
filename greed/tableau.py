@@ -104,10 +104,10 @@ class Tableau:
             icons += holding.icons
         return icons
 
-    def _calculate_markers(self, card):
+    def calculate_markers(self, card):
         icons = self.calculate_icons()
         if card.icons.alcohol == 0:
-            icons.alochol = 0
+            icons.alcohol = 0
         if card.icons.hearts == 0:
             icons.hearts = 0
         if card.icons.wrenches == 0:
@@ -115,9 +115,8 @@ class Tableau:
         return icons.alcohol + icons.hearts + icons.wrenches
 
     def place_markers(self, card):
-        total_markers = self._calculate_markers(card)
+        total_markers = self.calculate_markers(card)
         card.markers += total_markers
-        return total_markers
 
     def select_option(self, options, remove_option=True, text=''):
         if options:

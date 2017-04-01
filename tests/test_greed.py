@@ -270,13 +270,25 @@ def test_wolfgangbuttercup_when_played_and_on_discard():
     player_1.play_holding(game, card_2)
     assert card_2.markers == 6
 
+def test_tableau_calculate_markers():
+    player_1 = greed.Tableau('Test Player 1')
+    card_1 = greed.Card(greed.card.CardType.HOLDING, 1, 'Test Card', icons=greed.card.Icons(alcohol=3))
+    player_1.holdings.append(card_1)
+    assert player_1.calculate_markers(card_1) == 3
+    card_2 = greed.Card(greed.card.CardType.HOLDING, 2, 'Test Card', icons=greed.card.Icons(wrenches=2))
+    player_1.holdings.append(card_2)
+    assert player_1.calculate_markers(card_2) == 2
+    player_1.holdings.append(card_1)
+    assert player_1.calculate_markers(card_1) == 6
+
 def test_tableau_place_markers():
     player_1 = greed.Tableau('Test Player 1')
     card_1 = greed.Card(greed.card.CardType.HOLDING, 1, 'Test Card', icons=greed.card.Icons(alcohol=3))
+    player_1.holdings.append(card_1)
     player_1.place_markers(card_1)
     assert card_1.markers == 3
-    player_1.holdings.append(card_1)
     card_2 = greed.Card(greed.card.CardType.HOLDING, 1, 'Test Card', icons=greed.card.Icons(alcohol=3))
+    player_1.holdings.append(card_2)
     player_1.place_markers(card_2)
     assert card_2.markers == 6
 
@@ -588,6 +600,7 @@ def test_junkyard_when_played_and_end_of_game():
     player_1 = greed.Tableau('Test Player 1')
     game = greed.Game((player_1,))
     j.when_played(game, player_1)
+    player_1.holdings.append(j)
     player_1.place_markers(j)
     assert j.markers == 0
     j.end_of_game(game, player_1)
@@ -654,12 +667,12 @@ def test_loanshark_when_played():
     ls.when_played(game, player_1)
     assert player_1.cash == 20000
     card_1 = greed.Card(greed.card.CardType.HOLDING, 1, 'Test Card 1', icons=greed.card.Icons(hearts=1))
-    player_1.place_markers(card_1)
+    player_1.play_holding(game, card_1)
     assert card_1.markers == 0
     card_2 = greed.Card(greed.card.CardType.HOLDING, 2, 'Test Card 2', icons=greed.card.Icons(hearts=1))
     ls.on_discard(game, player_1)
-    player_1.place_markers(card_2)
-    assert card_2.markers == 1
+    player_1.play_holding(game, card_2)
+    assert card_2.markers == 2
 
 def test_poorhouse_each_turn():
     ph = greed.deck.PoorHouse()

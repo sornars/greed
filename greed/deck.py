@@ -707,22 +707,18 @@ class Junkyard(Card):
         )
 
     def when_played(self, game, tableau):
-        normal_markers = tableau._calculate_markers(self)
+        # Plus 1 to account for its own icon
+        normal_markers = tableau.calculate_markers(self) + 1
         orig_place_markers = tableau.place_markers
         def remove_normal_markers(tableau, card):
-            orig_place_markers_result = orig_place_markers(card)
+            orig_place_markers(card)
             if card == self:
                 card.markers -= normal_markers
 
-            return orig_place_markers_result
-
         tableau.place_markers = types.MethodType(remove_normal_markers, tableau)
 
-    def each_turn_(self, game, tableau):
-        self.markers = self.markers
-
     def end_of_game(self, game, tableau):
-        normal_markers = tableau._calculate_markers(self)
+        normal_markers = tableau.calculate_markers(self)
         self.markers += normal_markers
 
 class ZoningOffice(Card):
@@ -872,26 +868,20 @@ class Loanshark(Card):
 
     def when_played(self, game, tableau):
         tableau.cash += 20000
-        orig_place_markers = tableau.place_markers
+        orig_play_holding = tableau.play_holding
+        def remove_marker(tableau, game, card):
+            orig_play_holding(game, card)
+            card.markers -= 1
 
-        def remove_marker(tableau, card):
-            orig_place_markers_result = orig_place_markers(card)
-            if orig_place_markers_result >= 1:
-                card.markers -= 1
-            return orig_place_markers_result
-
-        tableau.place_markers = types.MethodType(remove_marker, tableau)
+        tableau.play_holding = types.MethodType(remove_marker, tableau)
 
     def on_discard(self, game, tableau):
-        orig_place_markers = tableau.place_markers
+        orig_play_holding = tableau.play_holding
+        def disable_remove_marker(tableau, game, card):
+            card.markers += 1
+            orig_play_holding(game, card)
 
-        def disable_remove_marker(tableau, card):
-            orig_place_markers_result = orig_place_markers(card)
-            if orig_place_markers_result >= 1:
-                card.markers += 1
-            return orig_place_markers_result
-
-        tableau.place_markers = types.MethodType(disable_remove_marker, tableau)
+        tableau.play_holding = types.MethodType(disable_remove_marker, tableau)
 
 class DaisysCookies(Card):
     def __init__(self):

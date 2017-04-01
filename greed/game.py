@@ -41,7 +41,7 @@ class Game:
             for player, card in end_of_game_cards:
                 card.end_of_game(self, player)
 
-            print(sorted(self.players, lambda x: x.cash))
+            print(sorted(self.players, key=lambda x: x.cash))
 
 
     def discard_card(self, tableau, card, on_discard=True):
