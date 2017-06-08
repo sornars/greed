@@ -120,9 +120,9 @@ def test_tableau_play_card_extends_holdings(mock_input):
 def test_tableau_pay_cost_removes_thugs(mock_input):
     player_1 = greed.Tableau('Test Player 1')
     game = greed.Game((player_1,))
-    card_1 = greed.Card(greed.card.CardType.THUG, 'Test Card 1', 1)
+    card_1 = greed.Card(greed.card.CardType.THUG, 1, 'Test Card 1')
     player_1.thugs.append(card_1)
-    card_2 = greed.Card(greed.card.CardType.THUG, 'Test Card 2', 2, costs=[greed.card.Cost(thugs=1)])
+    card_2 = greed.Card(greed.card.CardType.THUG, 2, 'Test Card 2', costs=[greed.card.Cost(thugs=1)])
     player_1.pay_cost(game, card_2)
     assert len(player_1.thugs) == 0
 
@@ -130,9 +130,9 @@ def test_tableau_pay_cost_removes_thugs(mock_input):
 def test_tableau_pay_cost_removes_holdings(mock_input):
     player_1 = greed.Tableau('Test Player 1')
     game = greed.Game((player_1,))
-    card_1 = greed.Card(greed.card.CardType.HOLDING, 'Test Card 1', 1)
+    card_1 = greed.Card(greed.card.CardType.HOLDING, 1, 'Test Card 1')
     player_1.holdings.append(card_1)
-    card_2 = greed.Card(greed.card.CardType.THUG, 'Test Card 2', 2, costs=[greed.card.Cost(holdings=1)])
+    card_2 = greed.Card(greed.card.CardType.THUG, 2, 'Test Card 2', costs=[greed.card.Cost(holdings=1)])
     player_1.pay_cost(game, card_2)
     assert len(player_1.holdings) == 0
 
@@ -140,9 +140,9 @@ def test_tableau_pay_cost_removes_holdings(mock_input):
 def test_tableau_pay_cost_removes_cards(mock_input):
     player_1 = greed.Tableau('Test Player 1')
     game = greed.Game((player_1,))
-    card_1 = greed.Card(greed.card.CardType.HOLDING, 'Test Card 1', 1)
+    card_1 = greed.Card(greed.card.CardType.HOLDING, 1, 'Test Card 1')
     player_1.hand.append(card_1)
-    card_2 = greed.Card(greed.card.CardType.THUG, 'Test Card 2', 2, costs=[greed.card.Cost(cards=1)])
+    card_2 = greed.Card(greed.card.CardType.THUG, 2, 'Test Card 2', costs=[greed.card.Cost(cards=1)])
     player_1.pay_cost(game, card_2)
     assert len(player_1.hand) == 0
 
@@ -150,10 +150,10 @@ def test_tableau_pay_cost_removes_cards(mock_input):
 def test_tableau_play_card_discards_costs(mock_input):
     player_1 = greed.Tableau('Test Player 1')
     game = greed.Game((player_1,))
-    card_1 = greed.Card(greed.card.CardType.HOLDING, 'Test Card', 1)
+    card_1 = greed.Card(greed.card.CardType.HOLDING, 1, 'Test Card')
     player_1.holdings.append(card_1)
     cost = greed.card.Cost(holdings=1)
-    card_2 = greed.Card(greed.card.CardType.HOLDING, 'Test Card', 1, costs=[cost])
+    card_2 = greed.Card(greed.card.CardType.HOLDING, 1, 'Test Card', costs=[cost])
     player_1.play_card(game, card_2)
     assert len(game.discard_deck) == 1
 
@@ -207,6 +207,7 @@ def test_game_start_round_calls_each_turn(mock_input, mock_each_turn):
     card = greed.Card(greed.card.CardType.THUG, 1, 'Test Card')
     player_1.thugs.append(card)
     game = greed.Game((player_1,))
+    game.current_round = 3
     game.start_round()
     mock_each_turn.assert_called()
 
