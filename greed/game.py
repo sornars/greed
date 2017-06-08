@@ -13,16 +13,19 @@ class Game:
 
         for index, player in enumerate(self.players):
             player.draft_card(self.draft_decks[index])
+        
+        if self.current_round >= 3:
+            played_cards = [(player, player.select_option(player.hand, reason='Play a card from your hand')) for player in self.players]
+            played_cards.sort(key=lambda x: x[1].priority)
+            for player, card in played_cards:
+                player.play_card(self, card)
 
-        played_cards = [(player, player.select_option(player.hand)) for player in self.players]
-        played_cards.sort(key=lambda x: x[1].priority)
-        for player, card in played_cards:
-            player.play_card(self, card)
-
-        each_turn_cards = [(player, card) for player in self.players for card in player.thugs + player.holdings]
-        each_turn_cards.sort(key=lambda x: x[1].priority)
-        for player, card in each_turn_cards:
-            card.each_turn(self, player)
+            each_turn_cards = [(player, card) for player in self.players for card in player.thugs + player.holdings]
+            each_turn_cards.sort(key=lambda x: x[1].priority)
+            for player, card in each_turn_cards:
+                card.each_turn(self, player)
+        
+        self.end_round()
 
     def end_round(self):
         self.draft_decks = self.draft_decks[-1:] + self.draft_decks[:-1]
