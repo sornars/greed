@@ -5,8 +5,7 @@ from .card import Card, CardType, Cost, Icons
 from .tableau import Tableau
 
 def create_draw_deck():
-    # TODO: Implement actual list of cards
-    draw_deck = [Card(random.choice(list(CardType)), i, 'Test Card {0}'.format(i)) for i in range(30)] + generate_thugs() + generate_holdings()
+    draw_deck = generate_thugs() + generate_holdings() + generate_actions()
     random.shuffle(draw_deck)
     return draw_deck
 
@@ -66,6 +65,40 @@ def generate_holdings():
         SixCorners(),
         LamontesEscortService(),
         InsuranceOffice()
+    ]
+
+def generate_actions():
+    return [
+        Shakedown(),
+        Arson(),
+        Sting(),
+        MuseumHeist(),
+        StreetWalkers(),
+        Raid(),
+        MasterPlan(),
+        ProtectionRacket(),
+        InsuranceScam(),
+        SuicideMission(),
+        Vandalism(),
+        OneLastHeist(),
+        StealIdeas(),
+        InsiderTrading(),
+        PickpocketNetwork(),
+        Liquidate(),
+        Renovate(),
+        Scouting(),
+        Smuggling(),
+        EstateHeist(),
+        TakeCareOfBusiness(),
+        Gambit(),
+        SuckerConvention(),
+        CircusOfCrime(),
+        ComplexScheme(),
+        BeggarsBanquet(),
+        Inform(),
+        HonestWork(),
+        Seance(),
+        Relocate()
     ]
 
 class HarveyBrainsRatcliffe(Card):
