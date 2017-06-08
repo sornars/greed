@@ -36,6 +36,20 @@ class Card:
     def end_of_game(self, game, tableau):
         pass
 
+    def __str__(self):
+        return self.name
+
+    def __repr__(self):
+        return str({
+            'card_type': self.card_type,
+            'priority': self.priority,
+            'name': self.name,
+            'rules_text': self.rules_text,
+            'costs': self.costs,
+            'needs': self.needs,
+            'icons': self.icons
+        })
+
 class CardType(enum.Enum):
     ACTION = 1
     THUG = 2
