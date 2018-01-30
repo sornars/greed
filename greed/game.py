@@ -13,12 +13,6 @@ class Game:
 
         for index, player in enumerate(self.players):
             player.draft_card(self.draft_decks[index])
-        
-        if self.current_round >= 3:
-            played_cards = [(player, player.select_option(player.hand, reason='Play a card from your hand')) for player in self.players]
-            played_cards.sort(key=lambda x: x[1].priority)
-            for player, card in played_cards:
-                player.play_card(self, card)
 
         if self.current_round > 2:
             played_cards = [(player, player.select_option(player.hand, text='Play card')) for player in self.players]
