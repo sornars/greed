@@ -2,7 +2,7 @@ import random
 import types
 
 from .card import Card, CardType, Cost, Icons
-from .tableau import Tableau
+from .tableau import ConsoleTableau
 
 def create_draw_deck():
     draw_deck = generate_thugs() + generate_holdings() + generate_actions()
@@ -266,7 +266,7 @@ class EdRubberfaceTeach(Card):
 
     def when_played(self, game, tableau):
         # pylint: disable=E0202
-        selected_thug = tableau.select_option(tableau.thugs, remove_option=False)
+        selected_thug, tableau.thugs = tableau.select_option(tableau.thugs, remove_option=False)
         copied_card = type(selected_thug)()
         self.rules_text = copied_card.rules_text
         self.icons = copied_card.icons
@@ -443,7 +443,8 @@ class LouieSavoirOFarrell(Card):
         next_round = game.current_round + 1
         def play_extra_card_next_turn(game):
             if game.current_round == next_round:
-                tableau.play_card(game, tableau.select_option(tableau.hand))
+                played_card, tableau.hand = tableau.select_option(tableau.hand)
+                tableau.play_card(game, played_card)
             return orig_end_round()
 
         game.end_round = types.MethodType(play_extra_card_next_turn, game)
@@ -1262,7 +1263,7 @@ class StealIdeas(Card):
         )
 
     def when_played(self, game, tableau):
-        selected_holding = tableau.select_option(tableau.holdings, remove_option=False)
+        selected_holding, tableau.holdings = tableau.select_option(tableau.holdings, remove_option=False)
         max_markers_count = max([holding.markers for player in game.players for holding in player.holdings if player != tableau])
         max_markers = [holding for player in game.players for holding in player.holdings if player != tableau and holding.markers == max_markers_count]
         if len(max_markers) == 1:
@@ -1318,7 +1319,7 @@ class Renovate(Card):
         )
 
     def when_played(self, game, tableau):
-        selected_holding = tableau.select_option(tableau.holdings, remove_option=False)
+        selected_holding, tableau.holdings = tableau.select_option(tableau.holdings, remove_option=False)
         selected_holding.markers += 2
 
 class Scouting(Card):
@@ -1547,9 +1548,9 @@ class Seance(Card):
 
     def when_played(self, game, tableau):
         tableau.cash += 10000
-        selected_holding = tableau.select_option(tableau.holdings, remove_option=False)
+        selected_holding, tableau.holdings = tableau.select_option(tableau.holdings, remove_option=False)
         selected_holding.markers += 1
-        selected_card = tableau.select_option(tableau.hand)
+        selected_card, tableau.hand = tableau.select_option(tableau.hand)
         tableau.play_card(game, selected_card)
 
 class Relocate(Card):

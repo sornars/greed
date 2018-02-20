@@ -12,12 +12,13 @@ class Game:
         self.current_round += 1
 
         for index, player in enumerate(self.players):
-            player.draft_card(self.draft_decks[index])
+            self.draft_decks[index] = player.draft_card(self.draft_decks[index])
 
         if self.current_round > 2:
             played_cards = [(player, player.select_option(player.hand, text='Play card')) for player in self.players]
-            played_cards.sort(key=lambda x: x[1].priority)
-            for player, card in played_cards:
+            played_cards.sort(key=lambda x: x[1][0].priority)
+            for player, (card, hand) in played_cards:
+                player.hand = hand,
                 player.play_card(self, card)
 
             each_turn_cards = [(player, card) for player in self.players for card in player.thugs + player.holdings]

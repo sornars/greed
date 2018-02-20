@@ -1,6 +1,9 @@
+import abc
+
 from .card import CardType, Icons
 
-class Tableau:
+
+class Tableau(abc.ABC):
     def __init__(self, player_name, cash=0, thugs=None, holdings=None, hand=None):
         self.player_name = player_name
         self._cash = cash
@@ -22,23 +25,25 @@ class Tableau:
         self._cash = value
 
     def draft_card(self, draft_deck):
-        draft_card = self.select_option(draft_deck, text='Draft card')
+        draft_card, draft_deck = self.select_option(draft_deck, text='Draft card')
         self.hand.append(draft_card)
+        return draft_deck
 
     def discard_thug(self, game):
-        discarded_thug = self.select_option(self.thugs, text='Choose THUG to discard') if self.thugs else None
+        discarded_thug, self.thugs = self.select_option(self.thugs, text='Choose THUG to discard') if self.thugs else (None, self.thugs)
         if discarded_thug:
             discarded_thug.on_discard(game, self)
         return discarded_thug
 
     def discard_holding(self, game):
-        discarded_holding = self.select_option(self.holdings, text='Choose HOLDING to discard') if self.holdings else None
+        discarded_holding, self.holdings = self.select_option(self.holdings,
+                                               text='Choose HOLDING to discard') if self.holdings else (None, self.holdings)
         if discarded_holding:
             discarded_holding.on_discard(game, self)
         return discarded_holding
 
     def pay_cost(self, game, card):
-        cost = self.select_option(card.costs, remove_option=False, text='Select cost')
+        cost, card.costs = self.select_option(card.costs, remove_option=False, text='Select cost')
         cost_paid = False
         discarded_thugs = []
         discarded_holdings = []
@@ -54,7 +59,7 @@ class Tableau:
                 discarded_holding = self.discard_holding(game)
                 discarded_holdings.append(discarded_holding)
             for _ in range(cost.cards):
-                discarded_card = self.select_option(self.hand, text='Choose card to discard')
+                discarded_card, self.hand = self.select_option(self.hand, text='Choose card to discard')
                 game.discard_card(self, discarded_card, on_discard=False)
             cost_paid = True
             for card_paid in discarded_thugs + discarded_holdings:
@@ -118,13 +123,31 @@ class Tableau:
         total_markers = self.calculate_markers(card)
         card.markers += total_markers
 
+    @abc.abstractmethod
+    def select_option(self, options, remove_option, *args, **kwargs):
+        """Take a list of options and return the selected option and the new set of available options"""
+        return None, []
+
+    def __repr__(self):
+        return str({
+            'player_name': self.player_name,
+            'cash': self.cash,
+            'thugs': self.thugs,
+            'holdings': self.holdings,
+            'hand': self.hand
+        })
+
+
+class ConsoleTableau(Tableau):
+
     def select_option(self, options, remove_option=True, text=''):
         if options:
             print(text)
             selected_option = None
+            available_options = options[:]
             while selected_option is None:
                 more_details = False
-                for index, option in enumerate(options):
+                for index, option in enumerate(available_options):
                     print(index, option)
                 try:
                     print('Add a question mark (?) for further details on an option')
@@ -135,25 +158,16 @@ class Tableau:
                     selected_option_index = int(selected_option_index)
                 except ValueError:
                     selected_option_index = -1
-                if selected_option_index in range(len(options)):
-                    selected_option = options[selected_option_index]
+                if selected_option_index in range(len(available_options)):
+                    selected_option = available_options[selected_option_index]
                     if more_details:
                         print(repr(selected_option))
                         selected_option = None
                     elif remove_option:
-                        selected_option = options.pop(selected_option_index)
+                        selected_option = available_options.pop(selected_option_index)
                 else:
                     print('Please select a valid option')
 
-            return selected_option
+            return selected_option, available_options
         else:
             raise ValueError('Empty options not allowed')
-
-    def __repr__(self):
-        return str({
-            'player_name': self.player_name,
-            'cash': self.cash,
-            'thugs': self.thugs,
-            'holdings': self.holdings,
-            'hand': self.hand
-        })
