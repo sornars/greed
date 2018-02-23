@@ -1201,3 +1201,4 @@ def test_tableau_pay_cost_records_cost_paid(mock_input):
     assert len(player_1.holdings) == 0
     assert len(card_2.costs_paid) == 1
     assert card_2.costs_paid[0] == card_1
+

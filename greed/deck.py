@@ -1475,7 +1475,7 @@ class BeggarsBanquet(Card):
             card_type=CardType.ACTION,
             priority=20,
             name='Beggars Banquet!',
-            rules_text='Gain $25,000.'
+            rules_text='(Need: You are the one player with the fewest thugs) Gain $25,000.'
         )
 
     def when_played(self, game, tableau):

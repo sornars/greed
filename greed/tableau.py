@@ -152,7 +152,7 @@ class ConsoleTableau(Tableau):
                 try:
                     print('Add a question mark (?) for further details on an option')
                     selected_option_index = input(text + ': ')
-                    if selected_option_index[-1] == '?':
+                    if len(selected_option_index) == 2 and selected_option_index[-1] == '?':
                         selected_option_index = selected_option_index[:-1]
                         more_details = True
                     selected_option_index = int(selected_option_index)
